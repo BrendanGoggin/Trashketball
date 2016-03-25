@@ -53,7 +53,7 @@ class PlatformGame extends Game {
         var marioHitboxWidth = 55;
         var marioHitboxHeight = 80;
         this.mario.hitbox = new Rectangle(marioHitboxTopLeft, marioHitboxWidth, marioHitboxHeight);
-        // this.mario.showHitbox = true;
+        this.mario.showHitbox = true;
         this.mario.setPosition({x: 50.0, y: 50.0});
         this.mario.setPivotPoint({x:32, y:44}); // center
 
@@ -72,26 +72,26 @@ class PlatformGame extends Game {
         ground.setPosition({x: 500, y: 480});
         ground.setPivotPoint({x: 168, y: 24});
         ground.setScaleX(3);
-        // ground.showHitbox = true;
+        ground.showHitbox = true;
         ground.hitbox = new Rectangle({x:-170, y:-24}, 400, 48);
 
         this.root.addChild(ground);
         this.platforms = [ground];
 
-        var platformOne = new Sprite("PlatformOne", "Platform.png");
-        platformOne.setPosition({x: 450, y: 325});
-        platformOne.setPivotPoint({x: 168, y: 24});
-        this.root.addChild(platformOne);
-        this.platforms.push(platformOne);
-        // platformOne.showHitbox = true;
-        platformOne.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
+        // var platformOne = new Sprite("PlatformOne", "Platform.png");
+        // platformOne.setPosition({x: 450, y: 325});
+        // platformOne.setPivotPoint({x: 168, y: 24});
+        // this.root.addChild(platformOne);
+        // this.platforms.push(platformOne);
+        // // platformOne.showHitbox = true;
+        // platformOne.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
 
-        var platformTwo = new Sprite("PlatformTwo", "Platform.png");
-        platformTwo.setPosition({x:750, y:150});
-        platformTwo.setPivotPoint({x:168, y: 24});
-        platformTwo.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
-        this.root.addChild(platformTwo);
-        this.platforms.push(platformTwo);
+        // var platformTwo = new Sprite("PlatformTwo", "Platform.png");
+        // platformTwo.setPosition({x:750, y:150});
+        // platformTwo.setPivotPoint({x:168, y: 24});
+        // platformTwo.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
+        // this.root.addChild(platformTwo);
+        // this.platforms.push(platformTwo);
 
         // coin for mario to get (208x278 sprite)
         this.coin = new Sprite("Coin", "Coin.png");
@@ -100,7 +100,7 @@ class PlatformGame extends Game {
         var hitboxWidth = 208;
         var hitboxHeight = 278;
         this.coin.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
-        // this.coin.showHitbox = true;
+        this.coin.showHitbox = true;
         this.coin.setPosition({x:900,y:80});
         this.coin.setPivotPoint({x:104,y:139});
         this.coin.setScale({x:0.15, y:0.15});
@@ -120,6 +120,9 @@ class PlatformGame extends Game {
             this.coinPickUpEvent.eventType
         );
 
+        var coinMass = 50;
+        this.coin.physics = new Physics(coinMass);
+
 
     }
 
@@ -129,6 +132,8 @@ class PlatformGame extends Game {
         this.root.update(dt);
         var newPosition = this.mario.getPosition();
         var oldPosition = {x:newPosition.x, y:newPosition.y};
+        var coinNewPosition = this.coin.getPosition();
+        var coinOldPosition = {x:coinNewPosition.x, y:coinNewPosition.y};
         var newScale = this.mario.getScale();
         var newRotation = this.mario.getRotation();
 
@@ -201,77 +206,34 @@ class PlatformGame extends Game {
                 // console.log('here');
                 //this.mario.physics.velocity = {x:0, y:0};
             }
+            if (this.coin.collidesWith(this.platforms[i]) || this.platforms[i].collidesWith(this.coin)) {
+                var xDiff = coinOldPosition.x - coinNewPosition.x;
+                var yDiff = coinOldPosition.y - coinNewPosition.y;
+                var direction = -1;
+                if (yDiff > 0) {
+                    direction = 1;
+                }
+                this.coin.setPosition(coinOldPosition)
+                // this.mario.setPosition({x:newPosition.x + 10*xDiff, y:newPosition.y + 10*yDiff});
+                // this.mario.setPosition({x:oldPosition.x + 10*xDiff, y:oldPosition.y +10*yDiff});
+                // this.mario.setPosition({x:oldPosition.x + 5*xDiff, y:oldPosition.y + 5000*yDiff});
+                // this.mario.setPosition({x: oldPosition.x, y: oldPosition.y - yDiff/2});
+                // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y:this.mario.physics.velocity.y * -1};
+                // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y: 0};
+                this.coin.physics.velocity = {x:0, y:direction*.01};
+                // this.mario.physics.gravity = {x:0, y:0};
+                // console.log('here');
+                //this.mario.physics.velocity = {x:0, y:0};
+            }
         }  
 
         // mario collides with coin: cha-ching sound, tween coin away
         if (this.mario.collidesWith(this.coin) || this.coin.collidesWith(this.mario)) {
             console.log("Cha-ching!");
-            // this.coin.visible = false;
-            this.coin.hitbox = false;
-            debugger;
-            // dispatch the event
-            this.coin.eventDispatcher.dispatchEvent(this.coinPickUpEvent);
-
-            // tween the coin away
-            var easeInOutTransition = new EaseInOutTransition();
-            var shockAbsorbTransition = new ShockAbsorbTransition();
-            // var coinAlphaTween = new Tween(this.coin, easeInOutTransition);
-            // coinAlphaTween.animate(TweenableParam.ALPHA, 1.0, 0.0, 500);
-            // this.tweenJuggler.add(coinAlphaTween);
-
-            var coinTweenTime = 1000; // time for scale and position tweens
-            var coinTweenEventDispatcher = new EventDispatcher();
-            var coinTweenEndEvent = new Event("coinTweenDone", coinTweenEventDispatcher);
-            coinTweenEventDispatcher.addEventListener(
-                this.questLoveManager,
-                coinTweenEndEvent.eventType
-            );
-            
-            var coinScaleXTween = new Tween(this.coin, shockAbsorbTransition);
-            coinScaleXTween.eventDispatcher = coinTweenEventDispatcher;
-            coinScaleXTween.event = coinTweenEndEvent;
-            coinScaleXTween.animate(
-                TweenableParam.SCALE_X, 
-                this.coin.scale.x, 
-                this.coin.scale.x * 4.0, 
-                coinTweenTime
-            );
-            this.tweenJuggler.add(coinScaleXTween);
-
-            var coinScaleYTween = new Tween(this.coin, shockAbsorbTransition);
-            coinScaleYTween.eventDispatcher = coinTweenEventDispatcher;
-            coinScaleYTween.event = coinTweenEndEvent;
-            coinScaleYTween.animate(
-                TweenableParam.SCALE_Y,
-                this.coin.scale.y,
-                this.coin.scale.y * 4.0,
-                coinTweenTime
-            );
-            this.tweenJuggler.add(coinScaleYTween);
-
-            var coinXTween = new Tween(this.coin, shockAbsorbTransition);
-            coinXTween.eventDispatcher = coinTweenEventDispatcher;
-            coinXTween.event = coinTweenEndEvent;
-            coinXTween.animate(
-                TweenableParam.POSITION_X,
-                this.coin.position.x,
-                500,
-                coinTweenTime
-            );
-            this.tweenJuggler.add(coinXTween);
-
-            var coinYTween = new Tween(this.coin, easeInOutTransition);
-            coinYTween.eventDispatcher = coinTweenEventDispatcher;
-            coinYTween.event = coinTweenEndEvent;
-            coinYTween.animate(
-                TweenableParam.POSITION_Y,
-                this.coin.position.y,
-                300,
-                coinTweenTime
-            );
-            this.tweenJuggler.add(coinYTween);
-
-
+            this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
+            this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
+            this.coin.physics.velocity.x += -.01;
+            this.coin.physics.velocity.y += -.1;
         }
 
 

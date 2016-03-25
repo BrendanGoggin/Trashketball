@@ -8,7 +8,7 @@ class Physics {
         this.mass = mass;
         this.velocity = {'x': 0, 'y': 0};
         // this.forces = false;
-        this.gravity = {'x': 0, 'y': .0001};
+        this.gravity = {'x': 0, 'y': .00001};
         this.acceleration = {'x': 0, 'y': 0};
     }
 
@@ -18,8 +18,8 @@ class Physics {
      */
     update(position, dt) {
         // debugger;
-        this.acceleration.x = this.gravity.x;
-        this.acceleration.y = this.gravity.y;
+        this.acceleration.x = this.gravity.x * dt;
+        this.acceleration.y = this.gravity.y * dt;
         this.velocity.x += this.acceleration.x * dt;
         this.velocity.y += this.acceleration.y * dt;
         position.x += this.velocity.x * dt;
