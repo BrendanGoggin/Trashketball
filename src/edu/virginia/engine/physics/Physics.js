@@ -14,16 +14,19 @@ class Physics {
 
     /**
      * Updates the position and this obj's fields for the time change 'dt' (milliseconds)
-     *
      */
     update(position, dt) {
-        // debugger;
+
         this.acceleration.x = this.gravity.x * dt;
         this.acceleration.y = this.gravity.y * dt;
+
         this.velocity.x += this.acceleration.x * dt;
         this.velocity.y += this.acceleration.y * dt;
+
         position.x += this.velocity.x * dt;
         position.y += this.velocity.y * dt;
+
     }
 
 }
+

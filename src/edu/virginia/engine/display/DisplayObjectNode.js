@@ -14,8 +14,10 @@ class DisplayObjectNode extends DisplayObject {
         this.children = []; // child nodes of this DONode
         this.parent = false; // the parent node of this node
         this.hitbox = false;
+        // this.hitbox.color = "black";
         this.showHitbox = false; // set to true to draw the object's hitbox (for debugging)
         this.physics = false;
+        // this.normal = false; // normal is in the y direction unless otherwise specified
     }
 
     /**
@@ -60,7 +62,12 @@ class DisplayObjectNode extends DisplayObject {
      */
      drawHitbox(g) {
         if (this.hitbox) {
-            g.strokeStyle = "black";
+            if (this.hitbox.color) {
+                g.strokeStyle = this.hitbox.color;
+            }
+            else {
+                g.strokeStyle = "black";
+            }
             g.strokeRect(this.hitbox.x, this.hitbox.y, this.hitbox.width, this.hitbox.height);
         }
      }
@@ -73,7 +80,7 @@ class DisplayObjectNode extends DisplayObject {
     convertPointFromLocalToGlobal(point) {
         // transformations for this node, then call recursively on parent
         scale(point, this.scale);
-        rotate(point, this.rotation);
+        rotate(point, -this.rotation);
         translate(point, this.position);
 
         if (this.hasParent()) this.parent.convertPointFromLocalToGlobal(point);
@@ -90,7 +97,7 @@ class DisplayObjectNode extends DisplayObject {
         // call recursively on parent
         if (this.hasParent()) this.parent.convertPointFromGlobalToLocal(point);
         translate(point, {'x':-this.position.x, 'y':-this.position.y});
-        rotate(point, -this.rotation);
+        rotate(point, this.rotation);
         scale(point, {'x': 1/this.scale.x, 'y': 1/this.scale.y});
         return;
     }
@@ -218,7 +225,13 @@ class DisplayObjectNode extends DisplayObject {
     }
 
 
-
+    /**
+     * Bounces this node off of the node passed in as a param
+     * Assumes the param node is immovable, this node gets bounced
+     */
+    bounceOffOf(otherNode) {
+        
+    }
 
 
 

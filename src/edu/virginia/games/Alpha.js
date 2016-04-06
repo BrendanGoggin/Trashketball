@@ -4,6 +4,10 @@
 
 // change in position per frame
 var POSITION_CHANGE = 5;
+var WALK_SPEED = 0.25;
+var RUN_SPEED = WALK_SPEED * 2.0;
+var JUMP_SPEED = 0.25;
+var FALL_SPEED = JUMP_SPEED;
 var ROTATION_CHANGE = 0.05;
 var SCALE_CHANGE = 0.1;
 var ALPHA_CHANGE = 0.01;
@@ -54,7 +58,7 @@ class PlatformGame extends Game {
         var marioHitboxHeight = 80;
         this.mario.hitbox = new Rectangle(marioHitboxTopLeft, marioHitboxWidth, marioHitboxHeight);
         this.mario.showHitbox = true;
-        this.mario.setPosition({x: 50.0, y: 50.0});
+        this.mario.setPosition({x: 250.0, y: 50.0});
         this.mario.setPivotPoint({x:32, y:44}); // center
 
         this.mario.setAlpha(1.0);
@@ -62,7 +66,8 @@ class PlatformGame extends Game {
         marioAlphaTween.animate(TweenableParam.ALPHA, 0.0, 1.0, 1000);
         this.tweenJuggler.add(marioAlphaTween);
 
-
+        // for mario's hitbox to light up red on collision
+        this.mario.hitbox.color = "black";
 
         var marioMass = 50;
         this.mario.physics = new Physics(marioMass);
@@ -78,13 +83,16 @@ class PlatformGame extends Game {
         this.root.addChild(ground);
         this.platforms = [ground];
 
-        // var platformOne = new Sprite("PlatformOne", "Platform.png");
-        // platformOne.setPosition({x: 450, y: 325});
-        // platformOne.setPivotPoint({x: 168, y: 24});
-        // this.root.addChild(platformOne);
-        // this.platforms.push(platformOne);
-        // // platformOne.showHitbox = true;
-        // platformOne.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
+        var leftWall = new Sprite("LeftWall", "Platform.png");
+        leftWall.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
+        // leftWall.setRotation(-1 * Math.PI / 2.0);
+        leftWall.setRotation(-.5 * Math.PI / 2.0);
+        leftWall.setPosition({x: 4, y: 300});
+        leftWall.setPivotPoint({x: 168, y: 24});
+        leftWall.setScale({x:2, y:1});
+        this.root.addChild(leftWall);
+        this.platforms.push(leftWall);
+        leftWall.showHitbox = true;
 
         // var platformTwo = new Sprite("PlatformTwo", "Platform.png");
         // platformTwo.setPosition({x:750, y:150});
@@ -103,7 +111,7 @@ class PlatformGame extends Game {
         this.coin.showHitbox = true;
         this.coin.setPosition({x:900,y:80});
         this.coin.setPivotPoint({x:104,y:139});
-        this.coin.setScale({x:0.15, y:0.15});
+        this.coin.setScale({x:0.25, y:0.15});
 
         // the event dispatcher that will throw events for coiny things
         this.coin.eventDispatcher = new EventDispatcher();
@@ -129,61 +137,75 @@ class PlatformGame extends Game {
     update(pressedKeys, dt){
         this.tweenJuggler.update();
         super.update(pressedKeys, dt);
-        this.root.update(dt);
+        
         var newPosition = this.mario.getPosition();
         var oldPosition = {x:newPosition.x, y:newPosition.y};
+        var newVelocity = this.mario.physics.velocity;
+        // var oldVelocity = {x:newVelocity.x, y:newVelocity.y};
         var coinNewPosition = this.coin.getPosition();
         var coinOldPosition = {x:coinNewPosition.x, y:coinNewPosition.y};
         var newScale = this.mario.getScale();
         var newRotation = this.mario.getRotation();
 
         // use key codes to update position coordinates
-        if (pressedKeys.contains(KEY_W) || pressedKeys.contains(KEY_UP)) {
-            newPosition.y -= POSITION_CHANGE;
-        }
-
-        if (pressedKeys.contains(KEY_A) || pressedKeys.contains(KEY_LEFT)) {
-            newPosition.x -= POSITION_CHANGE;
-            if (newScale.x >= 0) newScale.x *= -1.0;
-            if (pressedKeys.contains(KEY_Y)) {
-                this.mario.animate("run");
-                this.mario.setSpeed(15);
-                newPosition.x -= POSITION_CHANGE;
-            }
-            else {
-                this.mario.animate("walk");
-                this.mario.setSpeed(20);
-            };
-        }
-
-        if (pressedKeys.contains(KEY_D) || pressedKeys.contains(KEY_RIGHT)) {
-            newPosition.x += POSITION_CHANGE;
-            if (newScale.x < 0) newScale.x *= -1.0;
-            if (pressedKeys.contains(KEY_Y)) {
-                this.mario.animate("run");
-                this.mario.setSpeed(15);
-                newPosition.x += POSITION_CHANGE;
-            }
-            else {
-                this.mario.animate("walk");
-                this.mario.setSpeed(20);
-            };
-            
-        }
-
-        if (!(pressedKeys.contains(KEY_D) || pressedKeys.contains(KEY_RIGHT) 
-            || pressedKeys.contains(KEY_A) || pressedKeys.contains(KEY_LEFT))) {
-            if (!this.mario.stopped) this.mario.stopAnimation();
-        }
-
-        if (pressedKeys.contains(KEY_S) || pressedKeys.contains(KEY_DOWN)) {
-            newPosition.y += POSITION_CHANGE;
-        }
-
         if (pressedKeys.size() != 0) {
+
+            // Jump
+            if (pressedKeys.contains(KEY_SPACE)) {
+                newVelocity.y = -JUMP_SPEED;
+            }
+
+            // Walk left
+            if (pressedKeys.contains(KEY_A)) {
+                newVelocity.x = -WALK_SPEED;
+                if (newScale.x >= 0) newScale.x *= -1.0;
+                if (pressedKeys.contains(KEY_Y)) {
+                    this.mario.animate("run");
+                    this.mario.setSpeed(15);
+                    newVelocity.x = -RUN_SPEED;
+                }
+                else {
+                    this.mario.animate("walk");
+                    this.mario.setSpeed(20);
+                };
+            }
+
+            // Walk right
+            if (pressedKeys.contains(KEY_D)) {
+                newVelocity.x = WALK_SPEED;
+                if (newScale.x < 0) newScale.x *= -1.0;
+                if (pressedKeys.contains(KEY_Y)) {
+                    this.mario.animate("run");
+                    this.mario.setSpeed(15);
+                    newVelocity.x = RUN_SPEED;
+                }
+                else {
+                    this.mario.animate("walk");
+                    this.mario.setSpeed(20);
+                };
+                
+            }
+
+            // Down
+            if (pressedKeys.contains(KEY_S)) {
+                newVelocity.y = FALL_SPEED;
+            }
+
+            // If not moving left or right, stop animation (animations are running or walking)
+            if (! (pressedKeys.contains(KEY_D) || pressedKeys.contains(KEY_A)) ) {
+                if (!this.mario.stopped) this.mario.stopAnimation();
+            }
+
+            // update mario's info
             this.mario.setPosition(newPosition);
+            this.mario.physics.velocity = newVelocity;
             this.mario.setScale(newScale);
             this.mario.setRotation(newRotation);
+        }
+
+        // No buttons pressed
+        else {
+            // nothing here right now
         }
 
         for (var i = 0; i < this.platforms.length; i++) {
@@ -195,16 +217,15 @@ class PlatformGame extends Game {
                     direction = 1;
                 }
                 this.mario.setPosition(oldPosition)
-                // this.mario.setPosition({x:newPosition.x + 10*xDiff, y:newPosition.y + 10*yDiff});
-                // this.mario.setPosition({x:oldPosition.x + 10*xDiff, y:oldPosition.y +10*yDiff});
-                // this.mario.setPosition({x:oldPosition.x + 5*xDiff, y:oldPosition.y + 5000*yDiff});
-                // this.mario.setPosition({x: oldPosition.x, y: oldPosition.y - yDiff/2});
-                // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y:this.mario.physics.velocity.y * -1};
-                // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y: 0};
+
                 this.mario.physics.velocity = {x:0, y:direction*.01};
-                // this.mario.physics.gravity = {x:0, y:0};
-                // console.log('here');
-                //this.mario.physics.velocity = {x:0, y:0};
+
+                this.mario.hitbox.color = "red";
+                this.platforms[i].hitbox.color = "red";
+
+            }
+            else {
+                this.platforms[i].hitbox.color = "black";
             }
             if (this.coin.collidesWith(this.platforms[i]) || this.platforms[i].collidesWith(this.coin)) {
                 var xDiff = coinOldPosition.x - coinNewPosition.x;
@@ -232,11 +253,11 @@ class PlatformGame extends Game {
             console.log("Cha-ching!");
             this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
             this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
-            this.coin.physics.velocity.x += -.01;
-            this.coin.physics.velocity.y += -.1;
+            this.coin.physics.velocity.x = -.05;
+            this.coin.physics.velocity.y = -.05;
         }
 
-
+        this.root.update(dt); // update children
     }
 
     draw(g){

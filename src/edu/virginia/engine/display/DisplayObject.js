@@ -77,10 +77,10 @@ class DisplayObject {
 
 		g.translate(this.position.x, this.position.y);
 
-		g.scale(this.scale.x, this.scale.y);
 
 		// g.translate(this.pivotPoint.x, this.pivotPoint.y)
 		g.rotate(-1.0*this.rotation);
+		g.scale(this.scale.x, this.scale.y);
 		// g.translate(-1.0 * this.pivotPoint.x, -1.0 * this.pivotPoint.y)
 
 		g.globalAlpha = this.alpha;
@@ -95,10 +95,10 @@ class DisplayObject {
 		g.globalAlpha = 1.0;
 
 		// g.translate(this.pivotPoint.x, this.pivotPoint.y)
-		g.rotate(this.rotation);
 		// g.translate(-1.0 * this.pivotPoint.x, -1.0 * this.pivotPoint.y)
 
 		g.scale(1.0 / this.scale.x, 1.0 / this.scale.y);
+		g.rotate(this.rotation);
 
 		g.translate(-1.0 * this.position.x, -1.0 * this.position.y);
 
