@@ -139,7 +139,7 @@ class PlatformGame extends Game {
         this.root.addChild(leftWall);
         this.root.addChild(ground);
         this.root.addChild(this.coin);
-        this.root.addChild(this.trashcan);
+        // this.root.addChild(this.trashcan);
         this.root.addChild(this.mario);
 
 
