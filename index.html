@@ -11,7 +11,7 @@
     <p style="font-family: Arial; font-size: 24px; padding-left: 100px;"> 
         WASD or Arrows to Move. Y to run. Get the coin!
     </p>
-    <canvas id="game" width="1000" height="500" style="background-color: #4fc5ff; margin-left: 75px;">
+    <canvas id="game" width="1000" height="600" style="background-color: #4fc5ff; margin-left: 75px;">
     <p>Your browser doesn't support canvas.</p>
     </canvas>
 
@@ -44,6 +44,14 @@
     <p style="font-family: Arial; font-size: 16px; padding-left: 100px;">
         Check the console for some info on Mario's fields.
     </p>
+
+    <script>
+        window.onkeydown = function(e) {
+          if (e.keyCode == 32 && e.target == document.body) {
+            e.preventDefault();
+          }
+        };
+    </script>
 
 </body>
 

@@ -28,6 +28,8 @@ class Rectangle {
         return true;
     }
 
+    
+
     /* The following functions return the max/min X/Y values of the rectangle */
     getMaxX() {return this.x + this.width;}
     getMaxY() {return this.y + this.height;}
