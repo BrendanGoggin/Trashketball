@@ -153,8 +153,10 @@ class DisplayObject {
 		}
 
 		this.alpha = alpha;
-	 	this.displayImage.filter = "alpha(opacity=" + Math.round(this.alpha * 100) + ")";
-	 	this.displayImage.opacity = "" + this.alpha + "";
+		if (this.displayImage) {
+		 	this.displayImage.filter = "alpha(opacity=" + Math.round(this.alpha * 100) + ")";
+		 	this.displayImage.opacity = "" + this.alpha + "";
+		 }
 	}
 
 	getAlpha(){return this.alpha;}
