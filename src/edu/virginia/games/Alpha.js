@@ -54,7 +54,6 @@ class PlatformGame extends Game {
 
         // mario sprite
         this.mario = new AnimatedSprite("Mario", "Mario.png");
-        this.root.addChild(this.mario);
 
         // attach and display mario's hitbox
         var marioHitboxTopLeft = {'x': -30, 'y': -35};
@@ -84,7 +83,6 @@ class PlatformGame extends Game {
         ground.showHitbox = SHOW_HITBOXES;
         ground.hitbox = new Rectangle({x:-170, y:-24}, 400, 48);
 
-        this.root.addChild(ground);
         this.platforms = [ground];
 
         var leftWall = new Sprite("LeftWall", "Platform.png");
@@ -94,9 +92,13 @@ class PlatformGame extends Game {
         leftWall.setPosition({x: 200, y: 480});
         leftWall.setPivotPoint({x: 168, y: 24});
         // leftWall.setScale({x:2, y:1});
-        this.root.addChild(leftWall);
         this.platforms.push(leftWall);
         leftWall.showHitbox = SHOW_HITBOXES;
+
+        // this.trashcan = new Sprite("Trashcan", "Trashcan.png");
+        // this.trashcan.setPosition({x: 500, y: 450});
+        // this.trashcan.setPivotPoint({x:49.5, y: 48});
+        // this.trashcan.setScale({x: 1.4, y: 1.75});
 
         // var platformTwo = new Sprite("PlatformTwo", "Platform.png");
         // platformTwo.setPosition({x:750, y:150});
@@ -107,7 +109,6 @@ class PlatformGame extends Game {
 
         // coin for mario to get (208x278 sprite)
         this.coin = new Sprite("Coin", "Coin.png");
-        this.root.addChild(this.coin);
         var hitboxTopLeft = {x: -95, y: -127};
         var hitboxWidth = 190;
         var hitboxHeight = 254;
@@ -115,7 +116,7 @@ class PlatformGame extends Game {
         this.coin.showHitbox = SHOW_HITBOXES;
         this.coin.setPosition({x:900,y:80});
         this.coin.setPivotPoint({x:104,y:139});
-        this.coin.setScale({x:0.5, y:0.3});
+        this.coin.setScale({x:0.4, y:0.26});
 
         // the event dispatcher that will throw events for coiny things
         this.coin.eventDispatcher = new EventDispatcher();
@@ -134,6 +135,12 @@ class PlatformGame extends Game {
 
         var coinMass = 50;
         this.coin.physics = new Physics(coinMass);
+
+        this.root.addChild(leftWall);
+        this.root.addChild(ground);
+        this.root.addChild(this.coin);
+        this.root.addChild(this.trashcan);
+        this.root.addChild(this.mario);
 
 
     }
@@ -213,6 +220,8 @@ class PlatformGame extends Game {
         }
 
         this.mario.hitbox.color = "black";
+        this.root.update(dt);
+
 
         for (var i = 0; i < this.platforms.length; i++) {
 
@@ -267,7 +276,7 @@ class PlatformGame extends Game {
             this.coin.physics.velocity.y = -.05;
         }
 
-        this.root.update(dt); // update children
+        // this.root.update(dt); // update children
     }
 
     draw(g){
