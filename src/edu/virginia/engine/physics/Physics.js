@@ -2,13 +2,15 @@
 
 // A basic set of physics fields/behavior for objects in the game
 
+var GRAVITY = 0.00002;
+
 class Physics {
 
     constructor(mass) {
         this.mass = mass;
         this.velocity = {'x': 0, 'y': 0};
         // this.forces = false;
-        this.gravity = {'x': 0, 'y': .00001};
+        this.gravity = {'x': 0, 'y': GRAVITY};
         this.acceleration = {'x': 0, 'y': 0};
     }
 
