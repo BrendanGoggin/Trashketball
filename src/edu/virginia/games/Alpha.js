@@ -11,6 +11,9 @@ var FALL_SPEED = JUMP_SPEED;
 var ROTATION_CHANGE = 0.05;
 var SCALE_CHANGE = 0.1;
 var ALPHA_CHANGE = 0.01;
+var SHOW_HITBOXES = false;
+var GAME_WIDTH = 1000;
+var GAME_HEIGHT = 600
 
 // common key codes
 var KEY_W = 87;
@@ -45,7 +48,8 @@ var KEY_R = 82;
 class PlatformGame extends Game {
     
     constructor(canvas) {
-        super("PlatformGame", 1000, 600, canvas);
+
+        super("PlatformGame", GAME_WIDTH, GAME_HEIGHT, canvas);
 
 
         // mario sprite
@@ -57,7 +61,7 @@ class PlatformGame extends Game {
         var marioHitboxWidth = 55;
         var marioHitboxHeight = 80;
         this.mario.hitbox = new Rectangle(marioHitboxTopLeft, marioHitboxWidth, marioHitboxHeight);
-        this.mario.showHitbox = true;
+        this.mario.showHitbox = SHOW_HITBOXES;
         this.mario.setPosition({x: 250.0, y: 50.0});
         this.mario.setPivotPoint({x:32, y:44}); // center
 
@@ -74,10 +78,10 @@ class PlatformGame extends Game {
 
 
         var ground = new Sprite("Ground", "Platform.png");
-        ground.setPosition({x: 500, y: 480});
+        ground.setPosition({x: GAME_WIDTH/2, y: GAME_HEIGHT-20});
         ground.setPivotPoint({x: 168, y: 24});
         ground.setScaleX(3);
-        ground.showHitbox = true;
+        ground.showHitbox = SHOW_HITBOXES;
         ground.hitbox = new Rectangle({x:-170, y:-24}, 400, 48);
 
         this.root.addChild(ground);
@@ -87,12 +91,12 @@ class PlatformGame extends Game {
         leftWall.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
         // leftWall.setRotation(-1 * Math.PI / 2.0);
         leftWall.setRotation(-.5 * Math.PI / 2.0);
-        leftWall.setPosition({x: 4, y: 300});
+        leftWall.setPosition({x: 200, y: 480});
         leftWall.setPivotPoint({x: 168, y: 24});
-        leftWall.setScale({x:2, y:1});
+        // leftWall.setScale({x:2, y:1});
         this.root.addChild(leftWall);
         this.platforms.push(leftWall);
-        leftWall.showHitbox = true;
+        leftWall.showHitbox = SHOW_HITBOXES;
 
         // var platformTwo = new Sprite("PlatformTwo", "Platform.png");
         // platformTwo.setPosition({x:750, y:150});
@@ -104,14 +108,14 @@ class PlatformGame extends Game {
         // coin for mario to get (208x278 sprite)
         this.coin = new Sprite("Coin", "Coin.png");
         this.root.addChild(this.coin);
-        var hitboxTopLeft = {x: -104, y: -139};
-        var hitboxWidth = 208;
-        var hitboxHeight = 278;
+        var hitboxTopLeft = {x: -95, y: -127};
+        var hitboxWidth = 190;
+        var hitboxHeight = 254;
         this.coin.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
-        this.coin.showHitbox = true;
+        this.coin.showHitbox = SHOW_HITBOXES;
         this.coin.setPosition({x:900,y:80});
         this.coin.setPivotPoint({x:104,y:139});
-        this.coin.setScale({x:0.25, y:0.15});
+        this.coin.setScale({x:0.5, y:0.3});
 
         // the event dispatcher that will throw events for coiny things
         this.coin.eventDispatcher = new EventDispatcher();
@@ -205,11 +209,15 @@ class PlatformGame extends Game {
 
         // No buttons pressed
         else {
-            // nothing here right now
+            if (!this.mario.stopped) this.mario.stopAnimation();
         }
 
+        this.mario.hitbox.color = "black";
+
         for (var i = 0; i < this.platforms.length; i++) {
-            if (this.mario.collidesWith(this.platforms[i]) || this.platforms[i].collidesWith(this.mario)) {
+
+            if (this.mario.collidesWith(this.platforms[i]) != -1 || this.platforms[i].collidesWith(this.mario) != -1) {
+
                 var xDiff = oldPosition.x - newPosition.x;
                 var yDiff = oldPosition.y - newPosition.y;
                 var direction = -1;
@@ -227,29 +235,31 @@ class PlatformGame extends Game {
             else {
                 this.platforms[i].hitbox.color = "black";
             }
-            if (this.coin.collidesWith(this.platforms[i]) || this.platforms[i].collidesWith(this.coin)) {
+            if (this.coin.collidesWith(this.platforms[i]) != -1 || this.platforms[i].collidesWith(this.coin) != -1) {
                 var xDiff = coinOldPosition.x - coinNewPosition.x;
                 var yDiff = coinOldPosition.y - coinNewPosition.y;
                 var direction = -1;
                 if (yDiff > 0) {
                     direction = 1;
                 }
-                this.coin.setPosition(coinOldPosition)
+                // this.coin.setPosition(coinOldPosition)
                 // this.mario.setPosition({x:newPosition.x + 10*xDiff, y:newPosition.y + 10*yDiff});
                 // this.mario.setPosition({x:oldPosition.x + 10*xDiff, y:oldPosition.y +10*yDiff});
                 // this.mario.setPosition({x:oldPosition.x + 5*xDiff, y:oldPosition.y + 5000*yDiff});
                 // this.mario.setPosition({x: oldPosition.x, y: oldPosition.y - yDiff/2});
                 // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y:this.mario.physics.velocity.y * -1};
                 // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y: 0};
-                this.coin.physics.velocity = {x:0, y:direction*.01};
+                // this.coin.physics.velocity = {x:0, y:direction*.01};
                 // this.mario.physics.gravity = {x:0, y:0};
                 // console.log('here');
                 //this.mario.physics.velocity = {x:0, y:0};
+                this.coin.bounceOffOf(this.platforms[i]);
+                this.coin.position = coinOldPosition;
             }
         }  
 
         // mario collides with coin: cha-ching sound, tween coin away
-        if (this.mario.collidesWith(this.coin) || this.coin.collidesWith(this.mario)) {
+        if (this.mario.collidesWith(this.coin) != -1 || this.coin.collidesWith(this.mario) != -1) {
             console.log("Cha-ching!");
             this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
             this.coin.position.y = this.coin.position.y - POSITION_CHANGE;

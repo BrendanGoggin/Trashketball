@@ -32,3 +32,39 @@ function translate(point, vector) {
     point.x = point.x + vector.x;
     point.y = point.y + vector.y;
 }
+
+
+/**
+ * Returns the dot product of a and b
+ */
+function dotProduct(a, b) {
+    return a.x * b.x + a.y * b.y;
+}
+
+// /**
+//  * Return the cross product of the two points.
+//  */
+// function crossProduct(a, b) {
+//     return a.x * b.y - a.y * b.x;
+// }
+
+// *
+//  *  Adds the two vectors, returns the result
+ 
+// function vectorAdd(a, b) {
+//     return { x: a.x + b.x, y: a.y + b.y };
+// }
+
+/**
+ * Returns a-b
+ */
+function vectorSubtract(a, b) {
+    return { x: a.x - b.x, y: a.y - b.y };
+}
+
+/**
+ * Returns vector * scalar
+ */
+function multiplyVectorByScalar(vector, scalar) {
+    return {x: vector.x * scalar, y: vector.y * scalar};
+}

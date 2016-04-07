@@ -17,7 +17,7 @@ class DisplayObjectNode extends DisplayObject {
         // this.hitbox.color = "black";
         this.showHitbox = false; // set to true to draw the object's hitbox (for debugging)
         this.physics = false;
-        // this.normal = false; // normal is in the y direction unless otherwise specified
+        this.normal = {x: 0, y: 1}; // normal is in the y direction unless otherwise specified
     }
 
     /**
@@ -68,9 +68,21 @@ class DisplayObjectNode extends DisplayObject {
             else {
                 g.strokeStyle = "black";
             }
+            g.lineWidth = 3;
             g.strokeRect(this.hitbox.x, this.hitbox.y, this.hitbox.width, this.hitbox.height);
         }
      }
+
+
+    /**
+     * Rotates the normal vector and returns it in global space
+     */
+    rotateToGlobal(vector) {
+        rotate(vector, -this.rotation);
+        if (this.hasParent()) this.parent.rotateToGlobal(vector);
+        return;
+    }
+
 
     /**
      * Converts the point from local to global coordinates
@@ -104,7 +116,7 @@ class DisplayObjectNode extends DisplayObject {
 
     /**
      * Checks if this is colliding with the passed in object.
-     * returns true if yes, false otherwise (including an object not having hitbox)
+     * returns point number if yes, -1 otherwise (including an object not having hitbox)
      */
     collidesWith(o) {
         if (!this.hitbox || !o.hitbox) return false;
@@ -124,11 +136,19 @@ class DisplayObjectNode extends DisplayObject {
         this.convertPointFromGlobalToLocal(p2);
         this.convertPointFromGlobalToLocal(p3);
 
-        if (this.hitbox.containsPoint(p0) || this.hitbox.containsPoint(p1) 
-            || this.hitbox.containsPoint(p2) || this.hitbox.containsPoint(p3))  {
-            return true;
-    }
-        return false;
+        if (this.hitbox.containsPoint(p0)) {
+            return 0;
+        }
+        if (this.hitbox.containsPoint(p1)) {
+            return 1;
+        }
+        if (this.hitbox.containsPoint(p2)) {
+            return 2;
+        }
+        if (this.hitbox.containsPoint(p3))  {
+            return 3;
+        }
+        return -1;
     }
 
     /**
@@ -230,7 +250,23 @@ class DisplayObjectNode extends DisplayObject {
      * Assumes the param node is immovable, this node gets bounced
      */
     bounceOffOf(otherNode) {
-        
+        //debugger;
+        // velocity of this, normal of that
+        var v = this.physics.velocity;
+        var n = otherNode.normal;
+        otherNode.rotateToGlobal(n);
+
+        // coefficient of restitution (bounciness)
+        var cRest = 2;
+
+        // component of v parallel to n
+        var vPar = multiplyVectorByScalar(n, dotProduct(v, n));
+
+        // change v for the "bounce": v - vPerp * cRest
+        v = vectorSubtract(v, multiplyVectorByScalar(vPar, cRest));
+
+        // set the new v
+        this.physics.velocity = v;
     }
 
 
