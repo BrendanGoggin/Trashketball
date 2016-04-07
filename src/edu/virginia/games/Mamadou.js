@@ -1,3 +1,7 @@
+/**
+ * Created by Mamadou on 4/6/2016.
+ */
+
 // A basic platformer game
 
 "use strict";
@@ -11,10 +15,9 @@ var FALL_SPEED = JUMP_SPEED;
 var ROTATION_CHANGE = 0.05;
 var SCALE_CHANGE = 0.1;
 var ALPHA_CHANGE = 0.01;
+var SHOW_HITBOXES = false;
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600
-
-var SHOW_HITBOXES = false;
 
 // common key codes
 var KEY_W = 87;
@@ -26,11 +29,9 @@ var KEY_LEFT = 37;
 var KEY_RIGHT = 39;
 var KEY_DOWN = 40;
 var KEY_SPACE = 32;
-var KEY_J = 74;
-var KEY_K = 75;
 // var KEY_P = 80;
 // var KEY_PLUS = 187;
-// var KEY_MINUS = 189; 
+// var KEY_MINUS = 189;
 var KEY_ONE = 49;
 var KEY_TWO = 50;
 var KEY_THREE = 51;
@@ -49,7 +50,7 @@ var KEY_R = 82;
  * You are Mario
  */
 class PlatformGame extends Game {
-    
+
     constructor(canvas) {
 
         super("PlatformGame", GAME_WIDTH, GAME_HEIGHT, canvas);
@@ -57,6 +58,7 @@ class PlatformGame extends Game {
 
         // mario sprite
         this.mario = new AnimatedSprite("Mario", "Mario.png");
+        this.root.addChild(this.mario);
 
         // attach and display mario's hitbox
         var marioHitboxTopLeft = {'x': -30, 'y': -35};
@@ -64,33 +66,8 @@ class PlatformGame extends Game {
         var marioHitboxHeight = 80;
         this.mario.hitbox = new Rectangle(marioHitboxTopLeft, marioHitboxWidth, marioHitboxHeight);
         this.mario.showHitbox = SHOW_HITBOXES;
-        this.mario.setPosition({x: 250.0, y: 350.0});
+        this.mario.setPosition({x: 250.0, y: 50.0});
         this.mario.setPivotPoint({x:32, y:44}); // center
-
-        // mario's kicking foot node
-        this.kicker = new DisplayObjectNode("Kicker", "");
-        this.kicker.setPosition({x:0, y: 32});
-        var kickerWidth = 60;
-        var kickerHeight = 30;
-        this.kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
-        this.kicker.hitbox = false;
-        this.kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
-        // this.kicker.hitbox = this.kickbox;
-        this.kicker.showHitbox = true;
-        this.kicker.normal = {x: 0.70711, y: 0.70711};
-        this.mario.addChild(this.kicker);
-
-        // mario's heading foot node
-        this.header = new DisplayObjectNode("Header", "");
-        this.header.setPosition({x:0, y: -32});
-        var headerWidth = 60;
-        var headerHeight = 30;
-        this.header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
-        this.header.hitbox = false;
-        this.headbox = new Rectangle({x: -headerWidth/2.0, y: -headerHeight/2.0}, headerWidth, headerHeight);
-        this.header.showHitbox = true;
-        this.header.normal = {x: 0.70711, y: 0.70711};
-        this.mario.addChild(this.header);
 
         this.mario.setAlpha(1.0);
         var marioAlphaTween = new Tween(this.mario);
@@ -111,42 +88,19 @@ class PlatformGame extends Game {
         ground.showHitbox = SHOW_HITBOXES;
         ground.hitbox = new Rectangle({x:-170, y:-24}, 400, 48);
 
+        this.root.addChild(ground);
         this.platforms = [ground];
 
-        var leftWall = new Sprite("LeftWall", "Brickwall.jpg");
-        leftWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        leftWall.setRotation(-1 * Math.PI / 2.0);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        leftWall.setPosition({x: -250, y: 300});
-        leftWall.setPivotPoint({x: 476.5, y: 300});
+        var leftWall = new Sprite("LeftWall", "Platform.png");
+        leftWall.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
+        // leftWall.setRotation(-1 * Math.PI / 2.0);
+        leftWall.setRotation(-.5 * Math.PI / 2.0);
+        leftWall.setPosition({x: 200, y: 480});
+        leftWall.setPivotPoint({x: 168, y: 24});
         // leftWall.setScale({x:2, y:1});
+        this.root.addChild(leftWall);
         this.platforms.push(leftWall);
         leftWall.showHitbox = SHOW_HITBOXES;
-
-        var rightWall = new Sprite("RightWall", "Brickwall.jpg");
-        rightWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        rightWall.setRotation(1 * Math.PI / 2.0);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        rightWall.setPosition({x: 1250, y: 300});
-        rightWall.setPivotPoint({x: 476.5, y: 300});
-        // leftWall.setScale({x:2, y:1});
-        this.platforms.push(rightWall);
-        rightWall.showHitbox = SHOW_HITBOXES;
-
-        var ceiling = new Sprite("Ceiling", "Brickwall.jpg");
-        ceiling.hitbox =  new Rectangle({x:-476.5, y:-300}, 953, 600);
-        ceiling.setRotation(Math.PI);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        ceiling.setPosition({x: 500, y: -250});
-        ceiling.setPivotPoint({x: 476.5, y: 300});
-        // leftWall.setScale({x:2, y:1});
-        this.platforms.push(ceiling);
-        ceiling.showHitbox = SHOW_HITBOXES;
-
-        // this.trashcan = new Sprite("Trashcan", "Trashcan.png");
-        // this.trashcan.setPosition({x: 500, y: 450});
-        // this.trashcan.setPivotPoint({x:49.5, y: 48});
-        // this.trashcan.setScale({x: 1.4, y: 1.75});
 
         // var platformTwo = new Sprite("PlatformTwo", "Platform.png");
         // platformTwo.setPosition({x:750, y:150});
@@ -159,30 +113,20 @@ class PlatformGame extends Game {
         this.coin = new Sprite("Coin", "Ball.png");
         this.trash = new Sprite("Trash", "Trash.png");
         this.trash.setScale({x:2,y:2});
-        // this.root.addChild(this.coin);
-        // this.root.addChild(this.trash);
-        // var hitboxTopLeft = {x: -104, y: -139};
+        this.root.addChild(this.coin);
+        this.root.addChild(this.trash);
+        var hitboxTopLeft = {x: -104, y: -139};
         var hitboxWidth = this.coin.displayImage.width;
         var hitboxHeight = this.coin.displayImage.height;
-        // this.coin = new Sprite("Coin", "Coin.png");
-        var hitboxTopLeft = {x: -95, y: -135};
-        var hitboxWidth = 140;
-        var hitboxHeight = 140;
         this.coin.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
-//  HEAD
-        this.coin.showHitbox = SHOW_HITBOXES;
-// ===
-        this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3);
-        this.trash.showHitbox = SHOW_HITBOXES;
-        this.coin.setPosition({x:700,y:180});
-        this.trash.setPosition({x:800,y:460});
-// === master
+        this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3)
+        this.coin.setPosition({x:900,y:80});
+        this.trash.setPosition({x:900,y:460});
         this.coin.setPivotPoint({x:104,y:139});
         this.coin.setScale({x:0.4, y:0.4});
-        // this.coin.showHitbox = true;
-        // this.trash.showHitbox = true;
-        // this.mario.showHitbox = true;
-        // this.coin.setScale({x:0.4, y:0.26});
+        this.coin.showHitbox = true;
+        this.trash.showHitbox = true;
+        this.mario.showHitbox = true;
 
         // the event dispatcher that will throw events for coiny things
         this.coin.eventDispatcher = new EventDispatcher();
@@ -195,20 +139,12 @@ class PlatformGame extends Game {
 
         // add the event listener to the dispatcher
         this.coin.eventDispatcher.addEventListener(
-            this.questLoveManager, 
+            this.questLoveManager,
             this.coinPickUpEvent.eventType
         );
 
         var coinMass = 50;
         this.coin.physics = new Physics(coinMass);
-
-        this.root.addChild(leftWall);
-        this.root.addChild(rightWall);
-        this.root.addChild(ceiling);
-        this.root.addChild(ground);
-        this.root.addChild(this.coin);
-        this.root.addChild(this.trash);
-        this.root.addChild(this.mario);
 
 
     }
@@ -216,7 +152,7 @@ class PlatformGame extends Game {
     update(pressedKeys, dt){
         this.tweenJuggler.update();
         super.update(pressedKeys, dt);
-        
+
         var newPosition = this.mario.getPosition();
         var oldPosition = {x:newPosition.x, y:newPosition.y};
         var newVelocity = this.mario.physics.velocity;
@@ -262,31 +198,12 @@ class PlatformGame extends Game {
                     this.mario.animate("walk");
                     this.mario.setSpeed(20);
                 };
-                
+
             }
 
             // Down
             if (pressedKeys.contains(KEY_S)) {
                 newVelocity.y = FALL_SPEED;
-            }
-
-            // Kick
-            if (pressedKeys.contains(KEY_J)) {
-                // debugger;
-                this.kicker.hitbox = this.kickbox;
-                // this.kicker.hitbox.showHitbox = SHOW_HITBOXES;
-                // console.log("kick");
-            }
-            else {
-                this.kicker.hitbox = false;
-            }
-
-            // Header
-            if (pressedKeys.contains(KEY_K)) {
-                this.header.hitbox = this.headbox;
-            }
-            else {
-                this.header.hitbox = false;
             }
 
             // If not moving left or right, stop animation (animations are running or walking)
@@ -304,13 +221,9 @@ class PlatformGame extends Game {
         // No buttons pressed
         else {
             if (!this.mario.stopped) this.mario.stopAnimation();
-            this.kicker.hitbox = false;
-            this.header.hitbox = false;
         }
 
         this.mario.hitbox.color = "black";
-        this.root.update(dt);
-
 
         for (var i = 0; i < this.platforms.length; i++) {
 
@@ -354,61 +267,26 @@ class PlatformGame extends Game {
                 this.coin.bounceOffOf(this.platforms[i]);
                 this.coin.position = coinOldPosition;
             }
-        }  
+        }
 
         // mario collides with coin: cha-ching sound, tween coin away
-        // if (this.mario.collidesWith(this.coin) != -1 || this.coin.collidesWith(this.mario) != -1) {
-        //     console.log("Cha-ching!");
-        //     this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
-        //     this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
-        //     this.coin.physics.velocity.x = -.05;
-        //     this.coin.physics.velocity.y = -.05;
-        // }
-
-        if (this.kicker.hitbox) {
-            if ((this.kicker.collidesWith(this.coin) != -1 
-                || this.coin.collidesWith(this.kicker) != -1)) {
-                if (!this.kicking && !this.heading) {
-                    this.coin.bounceOffOf(this.kicker);
-                    this.coin.position = coinOldPosition;
-                    this.kicking = true;
-                }
-            }
-            else {
-                this.kicking = false;
-            }
-        }
-        else {
-            this.kicking = false;
+        if (this.mario.collidesWith(this.coin) != -1 || this.coin.collidesWith(this.mario) != -1) {
+            console.log("Cha-ching!");
+            this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
+            this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
+            this.coin.physics.velocity.x = -.05;
+            this.coin.physics.velocity.y = -.05;
         }
 
-        if (this.header.hitbox) {
-            if ((this.header.collidesWith(this.coin) != -1 
-                || this.coin.collidesWith(this.header) != -1)) {
-                if (!this.heading && !this.kicking) {
-                    this.coin.bounceOffOf(this.header);
-                    this.coin.position = coinOldPosition;
-                    this.heading = true;
-                }
-            }
-            else {
-                this.heading = false;
-            }
-        }
-        else {
-            this.heading = false;
-        }
-
-        // this.root.update(dt); // update children
         if(this.coin.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.coin)!=-1){
             this.root.removeChild(this.coin);
-            // this.coin.showHitbox=false;
+            this.coin.showHitbox=false;
             console.log("Score!");
             this.coinFadeOut();
 
         }
 
-        // this.root.update(dt); // update children
+        this.root.update(dt); // update children
     }
 
     draw(g){
