@@ -64,7 +64,7 @@ class PlatformGame extends Game {
         var marioHitboxHeight = 80;
         this.mario.hitbox = new Rectangle(marioHitboxTopLeft, marioHitboxWidth, marioHitboxHeight);
         this.mario.showHitbox = SHOW_HITBOXES;
-        this.mario.setPosition({x: 250.0, y: 150.0});
+        this.mario.setPosition({x: 250.0, y: 50.0});
         this.mario.setPivotPoint({x:32, y:44}); // center
 
         // mario's kicking foot node
@@ -113,35 +113,15 @@ class PlatformGame extends Game {
 
         this.platforms = [ground];
 
-        var leftWall = new Sprite("LeftWall", "Brickwall.jpg");
-        leftWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        leftWall.setRotation(-1 * Math.PI / 2.0);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        leftWall.setPosition({x: -250, y: 300});
-        leftWall.setPivotPoint({x: 476.5, y: 300});
+        var leftWall = new Sprite("LeftWall", "Platform.png");
+        leftWall.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
+        // leftWall.setRotation(-1 * Math.PI / 2.0);
+        leftWall.setRotation(-.5 * Math.PI / 2.0);
+        leftWall.setPosition({x: 200, y: 480});
+        leftWall.setPivotPoint({x: 168, y: 24});
         // leftWall.setScale({x:2, y:1});
         this.platforms.push(leftWall);
         leftWall.showHitbox = SHOW_HITBOXES;
-
-        var rightWall = new Sprite("RightWall", "Brickwall.jpg");
-        rightWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        rightWall.setRotation(1 * Math.PI / 2.0);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        rightWall.setPosition({x: 1250, y: 300});
-        rightWall.setPivotPoint({x: 476.5, y: 300});
-        // leftWall.setScale({x:2, y:1});
-        this.platforms.push(rightWall);
-        rightWall.showHitbox = SHOW_HITBOXES;
-
-        var ceiling = new Sprite("Ceiling", "Brickwall.jpg");
-        ceiling.hitbox =  new Rectangle({x:-476.5, y:-300}, 953, 600);
-        ceiling.setRotation(Math.PI);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        ceiling.setPosition({x: 500, y: -250});
-        ceiling.setPivotPoint({x: 476.5, y: 300});
-        // leftWall.setScale({x:2, y:1});
-        this.platforms.push(ceiling);
-        ceiling.showHitbox = SHOW_HITBOXES;
 
         // this.trashcan = new Sprite("Trashcan", "Trashcan.png");
         // this.trashcan.setPosition({x: 500, y: 450});
@@ -162,7 +142,7 @@ class PlatformGame extends Game {
         var hitboxHeight = 254;
         this.coin.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
         this.coin.showHitbox = SHOW_HITBOXES;
-        this.coin.setPosition({x:900,y:150});
+        this.coin.setPosition({x:900,y:80});
         this.coin.setPivotPoint({x:104,y:139});
         this.coin.setScale({x:0.4, y:0.26});
 
@@ -185,8 +165,6 @@ class PlatformGame extends Game {
         this.coin.physics = new Physics(coinMass);
 
         this.root.addChild(leftWall);
-        this.root.addChild(rightWall);
-        this.root.addChild(ceiling);
         this.root.addChild(ground);
         this.root.addChild(this.coin);
         // this.root.addChild(this.trashcan);
