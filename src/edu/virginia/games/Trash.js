@@ -14,7 +14,7 @@ var ALPHA_CHANGE = 0.01;
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600
 
-var SHOW_HITBOXES = false;
+var SHOW_HITBOXES = true;
 
 // common key codes
 var KEY_W = 87;
@@ -64,7 +64,7 @@ class PlatformGame extends Game {
         var marioHitboxHeight = 80;
         this.mario.hitbox = new Rectangle(marioHitboxTopLeft, marioHitboxWidth, marioHitboxHeight);
         this.mario.showHitbox = SHOW_HITBOXES;
-        this.mario.setPosition({x: 250.0, y: 350.0});
+        this.mario.setPosition({x: 250.0, y: 50.0});
         this.mario.setPivotPoint({x:32, y:44}); // center
 
         // mario's kicking foot node
@@ -76,7 +76,7 @@ class PlatformGame extends Game {
         this.kicker.hitbox = false;
         this.kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
         // this.kicker.hitbox = this.kickbox;
-        this.kicker.showHitbox = true;
+        this.kicker.showHitbox = SHOW_HITBOXES;
         this.kicker.normal = {x: 0.70711, y: 0.70711};
         this.mario.addChild(this.kicker);
 
@@ -88,7 +88,7 @@ class PlatformGame extends Game {
         this.header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
         this.header.hitbox = false;
         this.headbox = new Rectangle({x: -headerWidth/2.0, y: -headerHeight/2.0}, headerWidth, headerHeight);
-        this.header.showHitbox = true;
+        this.header.showHitbox = SHOW_HITBOXES;
         this.header.normal = {x: 0.70711, y: 0.70711};
         this.mario.addChild(this.header);
 
@@ -113,35 +113,15 @@ class PlatformGame extends Game {
 
         this.platforms = [ground];
 
-        var leftWall = new Sprite("LeftWall", "Brickwall.jpg");
-        leftWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        leftWall.setRotation(-1 * Math.PI / 2.0);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        leftWall.setPosition({x: -250, y: 300});
-        leftWall.setPivotPoint({x: 476.5, y: 300});
+        var leftWall = new Sprite("LeftWall", "Platform.png");
+        leftWall.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
+        // leftWall.setRotation(-1 * Math.PI / 2.0);
+        leftWall.setRotation(-.5 * Math.PI / 2.0);
+        leftWall.setPosition({x: 200, y: 480});
+        leftWall.setPivotPoint({x: 168, y: 24});
         // leftWall.setScale({x:2, y:1});
         this.platforms.push(leftWall);
         leftWall.showHitbox = SHOW_HITBOXES;
-
-        var rightWall = new Sprite("RightWall", "Brickwall.jpg");
-        rightWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        rightWall.setRotation(1 * Math.PI / 2.0);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        rightWall.setPosition({x: 1250, y: 300});
-        rightWall.setPivotPoint({x: 476.5, y: 300});
-        // leftWall.setScale({x:2, y:1});
-        this.platforms.push(rightWall);
-        rightWall.showHitbox = SHOW_HITBOXES;
-
-        var ceiling = new Sprite("Ceiling", "Brickwall.jpg");
-        ceiling.hitbox =  new Rectangle({x:-476.5, y:-300}, 953, 600);
-        ceiling.setRotation(Math.PI);
-        // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        ceiling.setPosition({x: 500, y: -250});
-        ceiling.setPivotPoint({x: 476.5, y: 300});
-        // leftWall.setScale({x:2, y:1});
-        this.platforms.push(ceiling);
-        ceiling.showHitbox = SHOW_HITBOXES;
 
         // this.trashcan = new Sprite("Trashcan", "Trashcan.png");
         // this.trashcan.setPosition({x: 500, y: 450});
@@ -156,33 +136,15 @@ class PlatformGame extends Game {
         // this.platforms.push(platformTwo);
 
         // coin for mario to get (208x278 sprite)
-        this.coin = new Sprite("Coin", "Ball.png");
-        this.trash = new Sprite("Trash", "Trash.png");
-        this.trash.setScale({x:2,y:2});
-        // this.root.addChild(this.coin);
-        // this.root.addChild(this.trash);
-        // var hitboxTopLeft = {x: -104, y: -139};
-        var hitboxWidth = this.coin.displayImage.width;
-        var hitboxHeight = this.coin.displayImage.height;
-        // this.coin = new Sprite("Coin", "Coin.png");
-        var hitboxTopLeft = {x: -95, y: -135};
-        var hitboxWidth = 140;
-        var hitboxHeight = 140;
+        this.coin = new Sprite("Coin", "Coin.png");
+        var hitboxTopLeft = {x: -95, y: -127};
+        var hitboxWidth = 190;
+        var hitboxHeight = 254;
         this.coin.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
-//  HEAD
         this.coin.showHitbox = SHOW_HITBOXES;
-// ===
-        this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3);
-        this.trash.showHitbox = SHOW_HITBOXES;
-        this.coin.setPosition({x:700,y:180});
-        this.trash.setPosition({x:800,y:460});
-// === master
+        this.coin.setPosition({x:900,y:80});
         this.coin.setPivotPoint({x:104,y:139});
-        this.coin.setScale({x:0.4, y:0.4});
-        // this.coin.showHitbox = true;
-        // this.trash.showHitbox = true;
-        // this.mario.showHitbox = true;
-        // this.coin.setScale({x:0.4, y:0.26});
+        this.coin.setScale({x:0.4, y:0.26});
 
         // the event dispatcher that will throw events for coiny things
         this.coin.eventDispatcher = new EventDispatcher();
@@ -203,11 +165,9 @@ class PlatformGame extends Game {
         this.coin.physics = new Physics(coinMass);
 
         this.root.addChild(leftWall);
-        this.root.addChild(rightWall);
-        this.root.addChild(ceiling);
         this.root.addChild(ground);
         this.root.addChild(this.coin);
-        this.root.addChild(this.trash);
+        // this.root.addChild(this.trashcan);
         this.root.addChild(this.mario);
 
 
@@ -397,15 +357,6 @@ class PlatformGame extends Game {
         }
         else {
             this.heading = false;
-        }
-
-        // this.root.update(dt); // update children
-        if(this.coin.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.coin)!=-1){
-            this.root.removeChild(this.coin);
-            // this.coin.showHitbox=false;
-            console.log("Score!");
-            this.coinFadeOut();
-
         }
 
         // this.root.update(dt); // update children
