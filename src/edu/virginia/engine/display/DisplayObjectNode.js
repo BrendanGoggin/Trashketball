@@ -269,7 +269,15 @@ class DisplayObjectNode extends DisplayObject {
         this.physics.velocity = v;
     }
 
-
+    /**
+     * kicker kicks o
+     */
+    // kick(kicker, o) {
+    //     var sign = dotProduct(kicker.normal, o.physics.velocity);
+    //     if (sign < 0) sign = -1;
+    //     else sign = 1;
+    //     o.physics.velocity = {x: sign * kickpower.x, y: sign * kickpower.y};
+    // }
 
 
     /**

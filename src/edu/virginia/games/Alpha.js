@@ -11,9 +11,10 @@ var FALL_SPEED = JUMP_SPEED;
 var ROTATION_CHANGE = 0.05;
 var SCALE_CHANGE = 0.1;
 var ALPHA_CHANGE = 0.01;
-var SHOW_HITBOXES = false;
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600
+
+var SHOW_HITBOXES = true;
 
 // common key codes
 var KEY_W = 87;
@@ -25,6 +26,8 @@ var KEY_LEFT = 37;
 var KEY_RIGHT = 39;
 var KEY_DOWN = 40;
 var KEY_SPACE = 32;
+var KEY_J = 74;
+var KEY_K = 75;
 // var KEY_P = 80;
 // var KEY_PLUS = 187;
 // var KEY_MINUS = 189; 
@@ -63,6 +66,31 @@ class PlatformGame extends Game {
         this.mario.showHitbox = SHOW_HITBOXES;
         this.mario.setPosition({x: 250.0, y: 50.0});
         this.mario.setPivotPoint({x:32, y:44}); // center
+
+        // mario's kicking foot node
+        this.kicker = new DisplayObjectNode("Kicker", "");
+        this.kicker.setPosition({x:0, y: 32});
+        var kickerWidth = 60;
+        var kickerHeight = 30;
+        this.kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
+        this.kicker.hitbox = false;
+        this.kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
+        // this.kicker.hitbox = this.kickbox;
+        this.kicker.showHitbox = SHOW_HITBOXES;
+        this.kicker.normal = {x: 0.70711, y: 0.70711};
+        this.mario.addChild(this.kicker);
+
+        // mario's heading foot node
+        this.header = new DisplayObjectNode("Header", "");
+        this.header.setPosition({x:0, y: -32});
+        var headerWidth = 60;
+        var headerHeight = 30;
+        this.header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
+        this.header.hitbox = false;
+        this.headbox = new Rectangle({x: -headerWidth/2.0, y: -headerHeight/2.0}, headerWidth, headerHeight);
+        this.header.showHitbox = SHOW_HITBOXES;
+        this.header.normal = {x: 0.70711, y: 0.70711};
+        this.mario.addChild(this.header);
 
         this.mario.setAlpha(1.0);
         var marioAlphaTween = new Tween(this.mario);
@@ -202,6 +230,25 @@ class PlatformGame extends Game {
                 newVelocity.y = FALL_SPEED;
             }
 
+            // Kick
+            if (pressedKeys.contains(KEY_J)) {
+                // debugger;
+                this.kicker.hitbox = this.kickbox;
+                // this.kicker.hitbox.showHitbox = SHOW_HITBOXES;
+                // console.log("kick");
+            }
+            else {
+                this.kicker.hitbox = false;
+            }
+
+            // Header
+            if (pressedKeys.contains(KEY_K)) {
+                this.header.hitbox = this.headbox;
+            }
+            else {
+                this.header.hitbox = false;
+            }
+
             // If not moving left or right, stop animation (animations are running or walking)
             if (! (pressedKeys.contains(KEY_D) || pressedKeys.contains(KEY_A)) ) {
                 if (!this.mario.stopped) this.mario.stopAnimation();
@@ -217,6 +264,8 @@ class PlatformGame extends Game {
         // No buttons pressed
         else {
             if (!this.mario.stopped) this.mario.stopAnimation();
+            this.kicker.hitbox = false;
+            this.header.hitbox = false;
         }
 
         this.mario.hitbox.color = "black";
@@ -268,12 +317,46 @@ class PlatformGame extends Game {
         }  
 
         // mario collides with coin: cha-ching sound, tween coin away
-        if (this.mario.collidesWith(this.coin) != -1 || this.coin.collidesWith(this.mario) != -1) {
-            console.log("Cha-ching!");
-            this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
-            this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
-            this.coin.physics.velocity.x = -.05;
-            this.coin.physics.velocity.y = -.05;
+        // if (this.mario.collidesWith(this.coin) != -1 || this.coin.collidesWith(this.mario) != -1) {
+        //     console.log("Cha-ching!");
+        //     this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
+        //     this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
+        //     this.coin.physics.velocity.x = -.05;
+        //     this.coin.physics.velocity.y = -.05;
+        // }
+
+        if (this.kicker.hitbox) {
+            if ((this.kicker.collidesWith(this.coin) != -1 
+                || this.coin.collidesWith(this.kicker) != -1)) {
+                if (!this.kicking && this.heading) {
+                    this.coin.bounceOffOf(this.kicker);
+                    this.coin.position = coinOldPosition;
+                    this.kicking = true;
+                }
+            }
+            else {
+                this.kicking = false;
+            }
+        }
+        else {
+            this.kicking = false;
+        }
+
+        if (this.header.hitbox) {
+            if ((this.header.collidesWith(this.coin) != -1 
+                || this.coin.collidesWith(this.header) != -1)) {
+                if (!this.heading && !this.kicking) {
+                    this.coin.bounceOffOf(this.header);
+                    this.coin.position = coinOldPosition;
+                    this.heading = true;
+                }
+            }
+            else {
+                this.heading = false;
+            }
+        }
+        else {
+            this.heading = false;
         }
 
         // this.root.update(dt); // update children
