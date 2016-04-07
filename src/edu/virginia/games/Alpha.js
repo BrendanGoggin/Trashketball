@@ -106,16 +106,23 @@ class PlatformGame extends Game {
         // this.platforms.push(platformTwo);
 
         // coin for mario to get (208x278 sprite)
-        this.coin = new Sprite("Coin", "Coin.png");
+        this.coin = new Sprite("Coin", "Ball.png");
+        this.trash = new Sprite("Trash", "Trash.png");
+        this.trash.setScale({x:2,y:2});
         this.root.addChild(this.coin);
-        var hitboxTopLeft = {x: -95, y: -127};
-        var hitboxWidth = 190;
-        var hitboxHeight = 254;
+        this.root.addChild(this.trash);
+        var hitboxTopLeft = {x: -104, y: -139};
+        var hitboxWidth = this.coin.displayImage.width;
+        var hitboxHeight = this.coin.displayImage.height;
         this.coin.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
-        this.coin.showHitbox = SHOW_HITBOXES;
+        this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3)
         this.coin.setPosition({x:900,y:80});
+        this.trash.setPosition({x:900,y:460});
         this.coin.setPivotPoint({x:104,y:139});
-        this.coin.setScale({x:0.5, y:0.3});
+        this.coin.setScale({x:0.4, y:0.4});
+        this.coin.showHitbox = true;
+        this.trash.showHitbox = true;
+        this.mario.showHitbox = true;
 
         // the event dispatcher that will throw events for coiny things
         this.coin.eventDispatcher = new EventDispatcher();
@@ -265,6 +272,14 @@ class PlatformGame extends Game {
             this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
             this.coin.physics.velocity.x = -.05;
             this.coin.physics.velocity.y = -.05;
+        }
+
+        if(this.coin.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.coin)!=-1){
+            this.root.removeChild(this.coin);
+            this.coin.showHitbox=false;
+            console.log("Score!");
+            this.coinFadeOut();
+
         }
 
         this.root.update(dt); // update children
