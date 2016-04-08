@@ -78,7 +78,7 @@ class DisplayObjectNode extends DisplayObject {
      * Rotates the normal vector and returns it in global space
      */
     rotateToGlobal(vector) {
-        rotate(vector, -this.rotation);
+        rotate(vector, this.rotation);
         if (this.hasParent()) this.parent.rotateToGlobal(vector);
         return;
     }
@@ -251,10 +251,10 @@ class DisplayObjectNode extends DisplayObject {
      * cRest is the coefficient of restitution (optional)
      */
     bounceOffOf(otherNode, cRest) {
-        //debugger;
+        // debugger;
         // velocity of this, normal of that
         var v = this.physics.velocity;
-        var n = otherNode.normal;
+        var n = {x:otherNode.normal.x, y:otherNode.normal.y};
         otherNode.rotateToGlobal(n);
 
         // coefficient of restitution (bounciness)
