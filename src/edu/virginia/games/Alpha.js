@@ -14,7 +14,7 @@ var ALPHA_CHANGE = 0.01;
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600
 
-var SHOW_HITBOXES = false;
+var SHOW_HITBOXES = true;
 
 // common key codes
 var KEY_W = 87;
@@ -56,16 +56,18 @@ class PlatformGame extends Game {
 
 
         // mario sprite
-        this.mario = new AnimatedSprite("Mario", "Mario.png");
+        // this.mario = new AnimatedSprite("Mario", "Mario.png");
+        this.mario = new AnimatedSprite("Player", "Player.png");
 
         // attach and display mario's hitbox
-        var marioHitboxTopLeft = {'x': -30, 'y': -35};
-        var marioHitboxWidth = 55;
-        var marioHitboxHeight = 80;
+        var marioHitboxWidth = 56;
+        var marioHitboxHeight = 110;
+        var marioHitboxTopLeft = {'x': -marioHitboxWidth/2.0, 'y': -marioHitboxHeight/2.0};
         this.mario.hitbox = new Rectangle(marioHitboxTopLeft, marioHitboxWidth, marioHitboxHeight);
         this.mario.showHitbox = SHOW_HITBOXES;
         this.mario.setPosition({x: 250.0, y: 350.0});
-        this.mario.setPivotPoint({x:32, y:44}); // center
+        this.mario.setPivotPoint({x:marioHitboxWidth/2.0, y:marioHitboxHeight/2.0}); // center
+        this.mario.setScale({x:1.5, y:1.5});
 
         // mario's kicking foot node
         this.kicker = new DisplayObjectNode("Kicker", "");
@@ -147,13 +149,6 @@ class PlatformGame extends Game {
         // this.trashcan.setPosition({x: 500, y: 450});
         // this.trashcan.setPivotPoint({x:49.5, y: 48});
         // this.trashcan.setScale({x: 1.4, y: 1.75});
-
-        // var platformTwo = new Sprite("PlatformTwo", "Platform.png");
-        // platformTwo.setPosition({x:750, y:150});
-        // platformTwo.setPivotPoint({x:168, y: 24});
-        // platformTwo.hitbox = new Rectangle({x:-170, y:-24}, 336, 48);
-        // this.root.addChild(platformTwo);
-        // this.platforms.push(platformTwo);
 
         // coin for mario to get (208x278 sprite)
         this.coin = new Sprite("Coin", "Ball.png");
@@ -239,13 +234,13 @@ class PlatformGame extends Game {
                 newVelocity.x = -WALK_SPEED;
                 if (newScale.x >= 0) newScale.x *= -1.0;
                 if (pressedKeys.contains(KEY_Y)) {
-                    this.mario.animate("run");
-                    this.mario.setSpeed(15);
+                    // this.mario.animate("run");
+                    // this.mario.setSpeed(15);
                     newVelocity.x = -RUN_SPEED;
                 }
                 else {
-                    this.mario.animate("walk");
-                    this.mario.setSpeed(20);
+                    // this.mario.animate("walk");
+                    // this.mario.setSpeed(20);
                 };
             }
 
@@ -254,13 +249,13 @@ class PlatformGame extends Game {
                 newVelocity.x = WALK_SPEED;
                 if (newScale.x < 0) newScale.x *= -1.0;
                 if (pressedKeys.contains(KEY_Y)) {
-                    this.mario.animate("run");
-                    this.mario.setSpeed(15);
+                    // this.mario.animate("run");
+                    // this.mario.setSpeed(15);
                     newVelocity.x = RUN_SPEED;
                 }
                 else {
-                    this.mario.animate("walk");
-                    this.mario.setSpeed(20);
+                    // this.mario.animate("walk");
+                    // this.mario.setSpeed(20);
                 };
                 
             }
@@ -322,9 +317,24 @@ class PlatformGame extends Game {
                 if (yDiff > 0) {
                     direction = 1;
                 }
-                this.mario.setPosition(oldPosition)
 
-                this.mario.physics.velocity = {x:0, y:direction*.01};
+                this.mario.setPosition(oldPosition);
+                this.mario.bounceOffOf(this.platforms[i], .1);
+                // this.mario.physics.velocity.y = .1;
+
+                // if (!this.mario.onGround) {
+                //     this.mario.onGround = true;
+                //     this.mario.setPosition(oldPosition);
+                //     this.mario.physics.gravity.y = 0;
+                //     this.mario.physics.velocity.y = 0;
+                // }
+
+                // else {
+                //     // if player is already on the ground...
+                // }
+                //var platformNormal = {x: this.platforms[i].normal.x, y: this.platforms[i].normal.y}
+                //this.platforms[i].rotateToGlobal(platformNormal);
+                //this.mario.physics.velocity = {x:.02 * -platformNormal.x, y:.02*platformNormal.y};
 
                 this.mario.hitbox.color = "red";
                 this.platforms[i].hitbox.color = "red";
@@ -340,30 +350,11 @@ class PlatformGame extends Game {
                 if (yDiff > 0) {
                     direction = 1;
                 }
-                // this.coin.setPosition(coinOldPosition)
-                // this.mario.setPosition({x:newPosition.x + 10*xDiff, y:newPosition.y + 10*yDiff});
-                // this.mario.setPosition({x:oldPosition.x + 10*xDiff, y:oldPosition.y +10*yDiff});
-                // this.mario.setPosition({x:oldPosition.x + 5*xDiff, y:oldPosition.y + 5000*yDiff});
-                // this.mario.setPosition({x: oldPosition.x, y: oldPosition.y - yDiff/2});
-                // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y:this.mario.physics.velocity.y * -1};
-                // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y: 0};
-                // this.coin.physics.velocity = {x:0, y:direction*.01};
-                // this.mario.physics.gravity = {x:0, y:0};
-                // console.log('here');
-                //this.mario.physics.velocity = {x:0, y:0};
+
                 this.coin.bounceOffOf(this.platforms[i]);
                 this.coin.position = coinOldPosition;
             }
         }  
-
-        // mario collides with coin: cha-ching sound, tween coin away
-        // if (this.mario.collidesWith(this.coin) != -1 || this.coin.collidesWith(this.mario) != -1) {
-        //     console.log("Cha-ching!");
-        //     this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
-        //     this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
-        //     this.coin.physics.velocity.x = -.05;
-        //     this.coin.physics.velocity.y = -.05;
-        // }
 
         if (this.kicker.hitbox) {
             if ((this.kicker.collidesWith(this.coin) != -1 
@@ -400,13 +391,13 @@ class PlatformGame extends Game {
         }
 
         // this.root.update(dt); // update children
-        if(this.coin.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.coin)!=-1){
-            this.root.removeChild(this.coin);
-            // this.coin.showHitbox=false;
-            console.log("Score!");
-            this.coinFadeOut();
-
-        }
+        // if(this.coin.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.coin)!=-1){
+        //     this.root.removeChild(this.coin);
+        //     // this.coin.showHitbox=false;
+        //     console.log("Score!");
+        //     this.coinFadeOut();
+            
+        // }
 
         // this.root.update(dt); // update children
     }
@@ -421,12 +412,12 @@ class PlatformGame extends Game {
      * Makes the coin fade out using a tween.
      * Called by this.questManager
      */
-    coinFadeOut() {
-        var easeInOutTransition = new EaseInOutTransition();
-        var coinAlphaTween = new Tween(this.coin, easeInOutTransition);
-        coinAlphaTween.animate(TweenableParam.ALPHA, 1.0, 0.0, 500);
-        this.tweenJuggler.add(coinAlphaTween);
-    }
+    // coinFadeOut() {
+    //     var easeInOutTransition = new EaseInOutTransition();
+    //     var coinAlphaTween = new Tween(this.coin, easeInOutTransition);
+    //     coinAlphaTween.animate(TweenableParam.ALPHA, 1.0, 0.0, 500);
+    //     this.tweenJuggler.add(coinAlphaTween);
+    // }
 }
 
 
