@@ -324,7 +324,7 @@ class PlatformGame extends Game {
                 }
                 this.mario.setPosition(oldPosition)
 
-                this.mario.physics.velocity = {x:0, y:direction*.01};
+                // this.mario.physics.velocity = {x:0, y:direction*.01};
 
                 this.mario.hitbox.color = "red";
                 this.platforms[i].hitbox.color = "red";
@@ -340,30 +340,11 @@ class PlatformGame extends Game {
                 if (yDiff > 0) {
                     direction = 1;
                 }
-                // this.coin.setPosition(coinOldPosition)
-                // this.mario.setPosition({x:newPosition.x + 10*xDiff, y:newPosition.y + 10*yDiff});
-                // this.mario.setPosition({x:oldPosition.x + 10*xDiff, y:oldPosition.y +10*yDiff});
-                // this.mario.setPosition({x:oldPosition.x + 5*xDiff, y:oldPosition.y + 5000*yDiff});
-                // this.mario.setPosition({x: oldPosition.x, y: oldPosition.y - yDiff/2});
-                // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y:this.mario.physics.velocity.y * -1};
-                // this.mario.physics.velocity = {x:this.mario.physics.velocity.x, y: 0};
-                // this.coin.physics.velocity = {x:0, y:direction*.01};
-                // this.mario.physics.gravity = {x:0, y:0};
-                // console.log('here');
-                //this.mario.physics.velocity = {x:0, y:0};
+
                 this.coin.bounceOffOf(this.platforms[i]);
                 this.coin.position = coinOldPosition;
             }
         }  
-
-        // mario collides with coin: cha-ching sound, tween coin away
-        // if (this.mario.collidesWith(this.coin) != -1 || this.coin.collidesWith(this.mario) != -1) {
-        //     console.log("Cha-ching!");
-        //     this.coin.position.x = this.coin.position.x - POSITION_CHANGE;
-        //     this.coin.position.y = this.coin.position.y - POSITION_CHANGE;
-        //     this.coin.physics.velocity.x = -.05;
-        //     this.coin.physics.velocity.y = -.05;
-        // }
 
         if (this.kicker.hitbox) {
             if ((this.kicker.collidesWith(this.coin) != -1 
@@ -405,7 +386,7 @@ class PlatformGame extends Game {
             // this.coin.showHitbox=false;
             console.log("Score!");
             this.coinFadeOut();
-
+            
         }
 
         // this.root.update(dt); // update children
