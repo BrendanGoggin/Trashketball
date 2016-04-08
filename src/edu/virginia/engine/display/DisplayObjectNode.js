@@ -248,8 +248,9 @@ class DisplayObjectNode extends DisplayObject {
     /**
      * Bounces this node off of the node passed in as a param
      * Assumes the param node is immovable, this node gets bounced
+     * cRest is the coefficient of restitution (optional)
      */
-    bounceOffOf(otherNode) {
+    bounceOffOf(otherNode, cRest) {
         //debugger;
         // velocity of this, normal of that
         var v = this.physics.velocity;
@@ -257,13 +258,16 @@ class DisplayObjectNode extends DisplayObject {
         otherNode.rotateToGlobal(n);
 
         // coefficient of restitution (bounciness)
-        var cRest = 2;
+
+        var bounce = cRest;
+        if (bounce == undefined) bounce = 1.0;
+        bounce = 1 + bounce;
 
         // component of v parallel to n
         var vPar = multiplyVectorByScalar(n, dotProduct(v, n));
 
         // change v for the "bounce": v - vPerp * cRest
-        v = vectorSubtract(v, multiplyVectorByScalar(vPar, cRest));
+        v = vectorSubtract(v, multiplyVectorByScalar(vPar, bounce));
 
         // set the new v
         this.physics.velocity = v;
