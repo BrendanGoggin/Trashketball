@@ -24,7 +24,7 @@ class AnimatedSprite extends Sprite {
      * dt: time since last call (ms)
      */
     update(dt) {
-        if (!this.stopped && !this.paused && this.imagesLoaded == (this.endIndex - this.startIndex)) {
+        if (!this.stopped && !this.paused) { // && this.imagesLoaded == (this.endIndex - this.startIndex)) {
             this.currentFrame++;
             var framesPerImage = Math.floor(this.speed / (this.endIndex - this.startIndex));
             if (this.currentFrame >= framesPerImage) {
