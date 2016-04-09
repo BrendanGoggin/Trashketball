@@ -78,6 +78,8 @@ class DisplayObjectNode extends DisplayObject {
      * Rotates the normal vector and returns it in global space
      */
     rotateToGlobal(vector) {
+        if (this.scale.x < 0) vector.x *= -1;
+        if (this.scale.y < 0) vector.y *= -1;
         rotate(vector, this.rotation);
         if (this.hasParent()) this.parent.rotateToGlobal(vector);
         return;
