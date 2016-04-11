@@ -4,7 +4,7 @@
 
 // change in position per frame
 var POSITION_CHANGE = 5;
-var WALK_SPEED = 0.25;
+var WALK_SPEED = 0.4;
 var RUN_SPEED = WALK_SPEED * 2.0;
 var JUMP_SPEED = 0.25;
 var FALL_SPEED = JUMP_SPEED;
@@ -15,6 +15,9 @@ var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600
 
 var SHOW_HITBOXES = true;
+
+// coefficient of restitution for ball-wall bounces. 0 = no bounce, 1 = completely elastic, >1 = gains speed
+var C_REST_WALL = .8;
 
 // common key codes
 var KEY_W = 87;
@@ -67,7 +70,7 @@ class PlatformGame extends Game {
 
         // player's kicking foot node
         this.kicker = new DisplayObjectNode("Kicker", "");
-        this.kicker.setPosition({x:0, y: 32});
+        this.kicker.setPosition({x:12, y: 36});
         var kickerWidth = 60;
         var kickerHeight = 30;
         this.kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
@@ -75,7 +78,7 @@ class PlatformGame extends Game {
         this.kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
         // this.kicker.hitbox = this.kickbox;
         this.kicker.showHitbox = true;
-        this.kicker.normal = {x: 0.70711, y: 0.70711};
+        //this.kicker.normal = {x: 0.70711, y: 0.70711};
         this.player.addChild(this.kicker);
 
         // player's heading foot node
@@ -146,61 +149,60 @@ class PlatformGame extends Game {
         // this.trashcan.setPivotPoint({x:49.5, y: 48});
         // this.trashcan.setScale({x: 1.4, y: 1.75});
 
-        // coin for player to get (208x278 sprite)
-        this.coin = new Sprite("Coin", "Ball.png");
+        // ball for player to get (208x278 sprite)
+        this.ball = new Sprite("Ball", "Ball.png");
         this.trash = new Sprite("Trash", "Trash.png");
         this.trash.setScale({x:2,y:2});
-        // this.root.addChild(this.coin);
+        // this.root.addChild(this.ball);
         // this.root.addChild(this.trash);
         // var hitboxTopLeft = {x: -104, y: -139};
-        var hitboxWidth = this.coin.displayImage.width;
-        var hitboxHeight = this.coin.displayImage.height;
-        // this.coin = new Sprite("Coin", "Coin.png");
+        var hitboxWidth = this.ball.displayImage.width;
+        var hitboxHeight = this.ball.displayImage.height;
         var hitboxTopLeft = {x: -95, y: -135};
         var hitboxWidth = 140;
         var hitboxHeight = 140;
-        this.coin.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
+        this.ball.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
 //  HEAD
-        this.coin.showHitbox = SHOW_HITBOXES;
+        this.ball.showHitbox = SHOW_HITBOXES;
 // ===
         this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3);
         this.trash.showHitbox = SHOW_HITBOXES;
-        this.coin.setPosition({x:700,y:180});
+        this.ball.setPosition({x:700,y:180});
         this.trash.setPosition({x:800,y:460});
 // === master
-        this.coin.setPivotPoint({x:104,y:139});
-        this.coin.setScale({x:0.4, y:0.4});
+        this.ball.setPivotPoint({x:104,y:139});
+        this.ball.setScale({x:0.4, y:0.4});
 
 
-        // this.coin.showHitbox = true;
+        // this.ball.showHitbox = true;
         // this.trash.showHitbox = true;
         // this.player.showHitbox = true;
-        // this.coin.setScale({x:0.4, y:0.26});
+        // this.ball.setScale({x:0.4, y:0.26});
 
-        // the event dispatcher that will throw events for coiny things
-        this.coin.eventDispatcher = new EventDispatcher();
+        // the event dispatcher that will throw events for bally things
+        this.ball.eventDispatcher = new EventDispatcher();
 
         // Quest Love's manager listens for events and outputs moral support
         this.questLoveManager = new QuestManager(this);
 
         // the event to throw when the sword is picked up
-        this.coinPickUpEvent = new Event("coinPickUp", this.coin.eventDispatcher);
+        this.ballPickUpEvent = new Event("ballPickUp", this.ball.eventDispatcher);
 
         // add the event listener to the dispatcher
-        this.coin.eventDispatcher.addEventListener(
+        this.ball.eventDispatcher.addEventListener(
             this.questLoveManager, 
-            this.coinPickUpEvent.eventType
+            this.ballPickUpEvent.eventType
         );
 
-        var coinMass = 50;
-        this.coin.physics = new Physics(coinMass);
-        this.coin.physics.velocity = {x:.5, y:.3};
+        var ballMass = 50;
+        this.ball.physics = new Physics(ballMass);
+        this.ball.physics.velocity = {x:.5, y:.3};
 
         this.root.addChild(leftWall);
         this.root.addChild(rightWall);
         this.root.addChild(ceiling);
         this.root.addChild(ground);
-        this.root.addChild(this.coin);
+        this.root.addChild(this.ball);
         this.root.addChild(this.trash);
         this.root.addChild(this.player);
 
@@ -215,8 +217,8 @@ class PlatformGame extends Game {
         var oldPosition = {x:newPosition.x, y:newPosition.y};
         var newVelocity = this.player.physics.velocity;
         // var oldVelocity = {x:newVelocity.x, y:newVelocity.y};
-        var coinNewPosition = this.coin.getPosition();
-        var coinOldPosition = {x:coinNewPosition.x, y:coinNewPosition.y};
+        var ballNewPosition = this.ball.getPosition();
+        var ballOldPosition = {x:ballNewPosition.x, y:ballNewPosition.y};
         var newScale = this.player.getScale();
         var newRotation = this.player.getRotation();
 
@@ -348,25 +350,25 @@ class PlatformGame extends Game {
             else {
                 this.platforms[i].hitbox.color = "black";
             }
-            if (this.coin.collidesWith(this.platforms[i]) != -1 || this.platforms[i].collidesWith(this.coin) != -1) {
-                var xDiff = coinOldPosition.x - coinNewPosition.x;
-                var yDiff = coinOldPosition.y - coinNewPosition.y;
+            if (this.ball.collidesWith(this.platforms[i]) != -1 || this.platforms[i].collidesWith(this.ball) != -1) {
+                var xDiff = ballOldPosition.x - ballNewPosition.x;
+                var yDiff = ballOldPosition.y - ballNewPosition.y;
                 var direction = -1;
                 if (yDiff > 0) {
                     direction = 1;
                 }
 
-                this.coin.bounceOffOf(this.platforms[i]);
-                this.coin.position = coinOldPosition;
+                this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
+                this.ball.position = ballOldPosition;
             }
         }  
 
         if (this.kicker.hitbox) {
-            if ((this.kicker.collidesWith(this.coin) != -1 
-                || this.coin.collidesWith(this.kicker) != -1)) {
+            if ((this.kicker.collidesWith(this.ball) != -1 
+                || this.ball.collidesWith(this.kicker) != -1)) {
                 if (!this.kicking && !this.heading) {
-                    this.coin.bounceOffOf(this.kicker);
-                    this.coin.position = coinOldPosition;
+                    this.ball.bounceOffOf(this.kicker);
+                    this.ball.position = ballOldPosition;
                     this.kicking = true;
                 }
             }
@@ -379,11 +381,11 @@ class PlatformGame extends Game {
         }
 
         if (this.header.hitbox) {
-            if ((this.header.collidesWith(this.coin) != -1 
-                || this.coin.collidesWith(this.header) != -1)) {
+            if ((this.header.collidesWith(this.ball) != -1 
+                || this.ball.collidesWith(this.header) != -1)) {
                 if (!this.heading && !this.kicking) {
-                    this.coin.bounceOffOf(this.header);
-                    this.coin.position = coinOldPosition;
+                    this.ball.bounceOffOf(this.header);
+                    this.ball.position = ballOldPosition;
                     this.heading = true;
                 }
             }
@@ -396,11 +398,11 @@ class PlatformGame extends Game {
         }
 
         // this.root.update(dt); // update children
-        // if(this.coin.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.coin)!=-1){
-        //     this.root.removeChild(this.coin);
-        //     // this.coin.showHitbox=false;
+        // if(this.ball.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.ball)!=-1){
+        //     this.root.removeChild(this.ball);
+        //     // this.ball.showHitbox=false;
         //     console.log("Score!");
-        //     this.coinFadeOut();
+        //     this.ballFadeOut();
             
         // }
 
@@ -414,14 +416,14 @@ class PlatformGame extends Game {
     }
 
     /**
-     * Makes the coin fade out using a tween.
+     * Makes the ball fade out using a tween.
      * Called by this.questManager
      */
-    // coinFadeOut() {
+    // ballFadeOut() {
     //     var easeInOutTransition = new EaseInOutTransition();
-    //     var coinAlphaTween = new Tween(this.coin, easeInOutTransition);
-    //     coinAlphaTween.animate(TweenableParam.ALPHA, 1.0, 0.0, 500);
-    //     this.tweenJuggler.add(coinAlphaTween);
+    //     var ballAlphaTween = new Tween(this.ball, easeInOutTransition);
+    //     ballAlphaTween.animate(TweenableParam.ALPHA, 1.0, 0.0, 500);
+    //     this.tweenJuggler.add(ballAlphaTween);
     // }
 }
 
