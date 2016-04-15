@@ -106,41 +106,41 @@ class PlatformGame extends Game {
         this.player.physics = new Physics(playerMass);
 
 
-        var ground = new Sprite("Ground", "Platform.png");
-        ground.setPosition({x: GAME_WIDTH/2, y: GAME_HEIGHT-20});
+        var ground = new Sprite("Ground", "ground.jpg");
+        ground.setPosition({x: 170, y: GAME_HEIGHT-36});
         ground.setPivotPoint({x: 168, y: 24});
-        ground.setScaleX(3);
+        //ground.setScaleX(3);
         ground.showHitbox = SHOW_HITBOXES;
-        ground.hitbox = new Rectangle({x:-170, y:-24}, 400, 48);
+        ground.hitbox = new Rectangle({x:-170, y:-24}, 1000, 60);
 
         this.platforms = [ground];
 
-        var leftWall = new Sprite("LeftWall", "Brickwall.jpg");
-        leftWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        leftWall.setRotation(-1 * Math.PI / 2.0);
+        var leftWall = new Sprite("LeftWall", "leftwall.jpg");
+        leftWall.hitbox = new Rectangle({x: 0, y: 0}, 50, 600);
+        //leftWall.setRotation(-1 * Math.PI / 2.0);
         // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        leftWall.setPosition({x: -250, y: 300});
-        leftWall.setPivotPoint({x: 476.5, y: 300});
+        leftWall.setPosition({x: 0, y: 0});
+        //leftWall.setPivotPoint({x: 25, y: 300});
         // leftWall.setScale({x:2, y:1});
         this.platforms.push(leftWall);
         leftWall.showHitbox = SHOW_HITBOXES;
 
-        var rightWall = new Sprite("RightWall", "Brickwall.jpg");
-        rightWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        rightWall.setRotation(1 * Math.PI / 2.0);
+        var rightWall = new Sprite("RightWall", "rightwall.jpg");
+        rightWall.hitbox = new Rectangle({x: 0, y: 0}, 50, 600);
+        //rightWall.setRotation(1 * Math.PI / 2.0);
         // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        rightWall.setPosition({x: 1250, y: 300});
-        rightWall.setPivotPoint({x: 476.5, y: 300});
+        rightWall.setPosition({x: GAME_WIDTH -50, y: 0});
+        //rightWall.setPivotPoint({x: 476.5, y: 300});
         // leftWall.setScale({x:2, y:1});
         this.platforms.push(rightWall);
         rightWall.showHitbox = SHOW_HITBOXES;
 
-        var ceiling = new Sprite("Ceiling", "Brickwall.jpg");
-        ceiling.hitbox =  new Rectangle({x:-476.5, y:-300}, 953, 600);
-        ceiling.setRotation(Math.PI);
+        var ceiling = new Sprite("Ceiling", "ceiling.jpg");
+        ceiling.hitbox =  new Rectangle({x: 0, y: 0}, 1000, 50);
+        //ceiling.setRotation(Math.PI);
         // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        ceiling.setPosition({x: 500, y: -250});
-        ceiling.setPivotPoint({x: 476.5, y: 300});
+        ceiling.setPosition({x: 0, y: 0});
+        //ceiling.setPivotPoint({x: 476.5, y: 300});
         // leftWall.setScale({x:2, y:1});
         this.platforms.push(ceiling);
         ceiling.showHitbox = SHOW_HITBOXES;
