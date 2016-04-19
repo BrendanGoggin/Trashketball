@@ -57,17 +57,17 @@ class PlatformGame extends Game {
 
 
         // Player sprite
-        this.player = new PlayerSprite("Player", "PlayerAnimations.png");
+        this.player = new PlayerSprite("Player", "KidAnimations.png");
 
         // attach and display player's hitbox
-        var playerHitboxWidth = 56;
-        var playerHitboxHeight = 108;
+        var playerHitboxWidth = 200;
+        var playerHitboxHeight = 400;
         var playerHitboxTopLeft = {'x': -playerHitboxWidth/2.0, 'y': -playerHitboxHeight/2.0};
         this.player.hitbox = new Rectangle(playerHitboxTopLeft, playerHitboxWidth, playerHitboxHeight);
         this.player.showHitbox = SHOW_HITBOXES;
         this.player.setPosition({x: 250.0, y: 350.0});
         this.player.setPivotPoint({x:64, y:56}); // center
-        this.player.setScale({x:1.5, y:1.5});
+        this.player.setScale({x:0.5, y:0.5});
 
         // player's kicking foot node
         this.kicker = new DisplayObjectNode("Kicker", "");
