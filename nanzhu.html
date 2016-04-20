@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+</head>
+
+<body style="background-color: #cccccc;">
+    <p style="font-family: Arial; font-size: 34px; padding-left: 100px;"> 
+        Trashketball
+    </p>
+    <p style="font-family: Arial; font-size: 24px; padding-left: 100px;"> 
+        WASD or Arrows to Move. Y to run. J to kick. K to head. Get the ball in the trash can!
+
+    <canvas id="game" width="1000" height="600" style="background: url('./resources/background.jpg')">
+    Your browser does not support the HTML5 canvas tag.</canvas>
+
+
+    <script type="text/javascript" src="src/edu/virginia/engine/util/ArrayList.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/util/Geometry.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/util/Rectangle.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/util/GameClock.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/physics/Physics.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/DisplayObject.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/DisplayObjectNode.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/Sprite.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/AnimatedSprite.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/PlayerSprite.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/TweenTransition.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/Tween.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/TweenJuggler.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/Game.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/events/Event.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/events/EventDispatcher.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/events/EventListener.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/lab6test/QuestManager.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/lab6test/TweenTransitions.js"></script>
+    <!-- <script type="text/javascript" src="src/edu/virginia/lab6test/QuestLove.js"></script> -->
+    <!-- <script type="text/javascript" src="src/edu/virginia/lab6test/TweenageWasteland.js"></script> -->
+    <script type="text/javascript" src="src/edu/virginia/games/Nanzhu.js"></script>
+
+    <p id="quest-console" style="font-family: Arial; font-size: 30px; padding-left: 100px; background-color: white;">
+        
+    </p>    
+
+    <p style="font-family: Arial; font-size: 16px; padding-left: 100px;">
+        Check the console for some info on Player's fields.
+    </p>
+
+    <script>
+        window.onkeydown = function(e) {
+          if (e.keyCode == 32 && e.target == document.body) {
+            e.preventDefault();
+          }
+        };
+    </script>
+
+</body>
+
+</html>
