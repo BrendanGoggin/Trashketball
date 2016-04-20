@@ -61,19 +61,19 @@ class PlatformGame extends Game {
 
         // attach and display player's hitbox
         var playerHitboxWidth = 200;
-        var playerHitboxHeight = 400;
+        var playerHitboxHeight = 350;
         var playerHitboxTopLeft = {'x': -playerHitboxWidth/2.0, 'y': -playerHitboxHeight/2.0};
         this.player.hitbox = new Rectangle(playerHitboxTopLeft, playerHitboxWidth, playerHitboxHeight);
         this.player.showHitbox = SHOW_HITBOXES;
         this.player.setPosition({x: 250.0, y: 350.0});
-        this.player.setPivotPoint({x:64, y:56}); // center
+        this.player.setPivotPoint({x:200, y:175}); // center
         this.player.setScale({x:0.5, y:0.5});
 
         // player's kicking foot node
         this.kicker = new DisplayObjectNode("Kicker", "");
-        this.kicker.setPosition({x:12, y: 36});
-        var kickerWidth = 60;
-        var kickerHeight = 30;
+        this.kicker.setPosition({x:12, y: 120});
+        var kickerWidth = 200;
+        var kickerHeight = 100;
         this.kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
         this.kicker.hitbox = false;
         this.kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
@@ -84,9 +84,9 @@ class PlatformGame extends Game {
 
         // player's heading foot node
         this.header = new DisplayObjectNode("Header", "");
-        this.header.setPosition({x:0, y: -32});
-        var headerWidth = 60;
-        var headerHeight = 30;
+        this.header.setPosition({x:0, y:-100});
+        var headerWidth = 200;
+        var headerHeight = 100;
         this.header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
         this.header.hitbox = false;
         this.headbox = new Rectangle({x: -headerWidth/2.0, y: -headerHeight/2.0}, headerWidth, headerHeight);
