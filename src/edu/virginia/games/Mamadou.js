@@ -60,23 +60,23 @@ class PlatformGame extends Game {
         var attempts = 3;
 
         // Player sprite
-        this.player = new PlayerSprite("Player", "KidAnimations.png");
+        this.player = new PlayerSprite("Player", "PlayerAnimations.png");
 
         // attach and display player's hitbox
-        var playerHitboxWidth = 200;
-        var playerHitboxHeight = 350;
+        var playerHitboxWidth = 56;
+        var playerHitboxHeight = 108;
         var playerHitboxTopLeft = {'x': -playerHitboxWidth/2.0, 'y': -playerHitboxHeight/2.0};
         this.player.hitbox = new Rectangle(playerHitboxTopLeft, playerHitboxWidth, playerHitboxHeight);
         this.player.showHitbox = SHOW_HITBOXES;
         this.player.setPosition({x: 250.0, y: 350.0});
-        this.player.setPivotPoint({x:200, y:175}); // center
-        this.player.setScale({x:0.5, y:0.5});
+        this.player.setPivotPoint({x:64, y:56}); // center
+        this.player.setScale({x:1.5, y:1.5});
 
         // player's kicking foot node
         this.kicker = new DisplayObjectNode("Kicker", "");
-        this.kicker.setPosition({x:12, y: 120});
-        var kickerWidth = 200;
-        var kickerHeight = 100;
+        this.kicker.setPosition({x:12, y: 36});
+        var kickerWidth = 60;
+        var kickerHeight = 30;
         this.kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
         this.kicker.hitbox = false;
         this.kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
@@ -87,9 +87,9 @@ class PlatformGame extends Game {
 
         // player's heading foot node
         this.header = new DisplayObjectNode("Header", "");
-        this.header.setPosition({x:0, y:-100});
-        var headerWidth = 200;
-        var headerHeight = 100;
+        this.header.setPosition({x:0, y: -32});
+        var headerWidth = 60;
+        var headerHeight = 30;
         this.header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
         this.header.hitbox = false;
         this.headbox = new Rectangle({x: -headerWidth/2.0, y: -headerHeight/2.0}, headerWidth, headerHeight);
@@ -242,8 +242,6 @@ class PlatformGame extends Game {
         var newScale = this.player.getScale();
         var newRotation = this.player.getRotation();
         //this.score+=multiplier;
-        this.ball.setRotation(this.ball.rotation+=0.01)
-        if(this.ball.rotation>=2*Math.PI) this.ball.rotation = -2*Math.PI;
 
 
         // use key codes to update position coordinates
@@ -349,12 +347,12 @@ class PlatformGame extends Game {
                     multiplier = 1;
                     this.ball.hitbox.color = "green";
                     this.platforms[i].hitbox.color = "green";
-                    //this.ball.setPosition({x:700,y:180});  <--------------- UNCOMMENT THIS
+                    this.ball.setPosition({x:700,y:180});
                     if(this.attempt_sprites.length!=0) {
                         //debugger
                         this.root.removeChild(this.attempt_sprites.pop().visible=false);
                         //this.ball.physics = new Physics(ballMass);
-                       // this.ball.physics.velocity = {x:.001, y:.001}; <--------------- UNCOMMENT THIS 
+                        this.ball.physics.velocity = {x:.001, y:.001};
                         //is this the best way to handle this
                     }
 
