@@ -69,7 +69,7 @@ class PlayerSprite extends Sprite {
      *  Is called in the draw(g) method.
      */
      drawSelfImage(g) {
-        debugger;
+        // debugger;
         g.drawImage(this.displayImage, 
             this.frameWidth * this.currentIndex, // sx
             0, //sy

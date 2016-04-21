@@ -314,61 +314,12 @@ class PlatformGame extends Game {
         this.root.update(dt);
 
 
-        for (var i = 0; i < this.platforms.length; i++) {
-
-            if (this.player.collidesWith(this.platforms[i]) != -1 || this.platforms[i].collidesWith(this.player) != -1) {
-
-                var xDiff = oldPosition.x - newPosition.x;
-                var yDiff = oldPosition.y - newPosition.y;
-                var direction = -1;
-                if (yDiff > 0) {
-                    direction = 1;
-                }
-
-                this.player.setPosition(oldPosition);
-                this.player.bounceOffOf(this.platforms[i], .1);
-                // this.player.physics.velocity.y = .1;
-
-                // if (!this.player.onGround) {
-                //     this.player.onGround = true;
-                //     this.player.setPosition(oldPosition);
-                //     this.player.physics.gravity.y = 0;
-                //     this.player.physics.velocity.y = 0;
-                // }
-
-                // else {
-                //     // if player is already on the ground...
-                // }
-                //var platformNormal = {x: this.platforms[i].normal.x, y: this.platforms[i].normal.y}
-                //this.platforms[i].rotateToGlobal(platformNormal);
-                //this.player.physics.velocity = {x:.02 * -platformNormal.x, y:.02*platformNormal.y};
-
-                this.player.hitbox.color = "red";
-                this.platforms[i].hitbox.color = "red";
-
-            }
-            else {
-                this.platforms[i].hitbox.color = "black";
-            }
-            if (this.ball.collidesWith(this.platforms[i]) != -1 || this.platforms[i].collidesWith(this.ball) != -1) {
-                var xDiff = ballOldPosition.x - ballNewPosition.x;
-                var yDiff = ballOldPosition.y - ballNewPosition.y;
-                var direction = -1;
-                if (yDiff > 0) {
-                    direction = 1;
-                }
-
-                this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
-                this.ball.position = ballOldPosition;
-            }
-        }  
 
         if (this.kicker.hitbox) {
-            if ((this.kicker.collidesWith(this.ball) != -1 
-                || this.ball.collidesWith(this.kicker) != -1)) {
+            if (this.ball.detectAndResolveCollisionWith(this.kicker)) {
                 if (!this.kicking && !this.heading) {
                     this.ball.bounceOffOf(this.kicker);
-                    this.ball.position = ballOldPosition;
+                    //this.ball.position = ballOldPosition;
                     this.kicking = true;
                 }
             }
@@ -381,11 +332,9 @@ class PlatformGame extends Game {
         }
 
         if (this.header.hitbox) {
-            if ((this.header.collidesWith(this.ball) != -1 
-                || this.ball.collidesWith(this.header) != -1)) {
+            if (this.ball.detectAndResolveCollisionWith(this.header)) {
                 if (!this.heading && !this.kicking) {
                     this.ball.bounceOffOf(this.header);
-                    this.ball.position = ballOldPosition;
                     this.heading = true;
                 }
             }
@@ -396,6 +345,29 @@ class PlatformGame extends Game {
         else {
             this.heading = false;
         }
+
+
+        for (var i = 0; i < this.platforms.length; i++) {
+
+            if (this.player.detectAndResolveCollisionWith(this.platforms[i])) {
+
+                this.player.bounceOffOf(this.platforms[i], 0);
+
+
+                this.player.hitbox.color = "red";
+                this.platforms[i].hitbox.color = "red";
+
+            }
+            else {
+                this.platforms[i].hitbox.color = "black";
+            }
+            if (this.ball.detectAndResolveCollisionWith(this.platforms[i])) {
+                
+                this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
+
+            }
+        }  
+
 
         // this.root.update(dt); // update children
         // if(this.ball.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.ball)!=-1){

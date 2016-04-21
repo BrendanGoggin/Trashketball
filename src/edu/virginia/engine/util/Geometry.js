@@ -68,3 +68,39 @@ function vectorSubtract(a, b) {
 function multiplyVectorByScalar(vector, scalar) {
     return {x: vector.x * scalar, y: vector.y * scalar};
 }
+
+/**
+ * Returns vector / scalar
+ */
+function divideVectorByScalar(vector, scalar) {
+    return {x: vector.x / scalar, y: vector.y / scalar};
+}
+
+/**
+ * Return the unit vector in the given vector's direction
+ */
+function normalize(vector) {
+    var mag = magnitude(vector);
+    return divideVectorByScalar(vector, mag);
+}
+
+/**
+ * Return the magnitude of the given vector
+ */
+function magnitude(vector) {
+    var a = vector.x,
+        b = vector.y;
+    return Math.sqrt(a*a + b*b);
+}
+
+/**
+ * Return the projection of vA onto vB. Note, vB must be a unit vector.
+ */
+function projection(vA, vB) {
+    // component of vA parallel to vB
+    var vProj = multiplyVectorByScalar(vB, dotProduct(vA, vB));
+    if (!vProj) debugger;
+    return vProj;
+}
+
+

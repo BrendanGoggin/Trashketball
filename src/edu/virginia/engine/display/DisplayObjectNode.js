@@ -85,6 +85,18 @@ class DisplayObjectNode extends DisplayObject {
         return;
     }
 
+    /**
+     * Rotates the vector from global to local orientation, doesn't translate it or scale it
+     */
+    rotateToLocal(vector) {
+        if (this.hasParent()) this.parent.rotateToGlobal(vector);
+        rotate(vector, this.rotation);
+        // if (this.scale.x < 0) vector.x *= -1;
+        // if (this.scale.y < 0) vector.y *= -1;
+        //scale(vector, {'x': 1/this.scale.x, 'y': 1/this.scale.y});
+        return;
+    }
+
 
     /**
      * Converts the point from local to global coordinates
@@ -256,7 +268,7 @@ class DisplayObjectNode extends DisplayObject {
         // debugger;
         // velocity of this, normal of that
         var v = this.physics.velocity;
-        var n = {x:otherNode.normal.x, y:otherNode.normal.y};
+        var n = normalize({x:otherNode.normal.x, y:otherNode.normal.y});
         otherNode.rotateToGlobal(n);
 
         // coefficient of restitution (bounciness)
@@ -273,6 +285,78 @@ class DisplayObjectNode extends DisplayObject {
 
         // set the new v
         this.physics.velocity = v;
+    }
+
+    /**
+     * collision detection and resolution between this and other object
+     * this object is moved if collision resolution is needed, other object stays in place
+     * returns true iff collision occurs
+     */
+    detectCollisionWith(other) {
+
+        var thisHitboxPolygon = this.hitbox.toPolygon();
+        var otherHitboxPolygon = other.hitbox.toPolygon();
+
+        //console.log("Player starting position: (" + this.player.position.x + ", " + this.player.position.y + ")");
+
+        for (var j = 0; j < 4; j++) {
+            this.convertPointFromLocalToGlobal(thisHitboxPolygon.points[j]);
+            other.convertPointFromLocalToGlobal(otherHitboxPolygon.points[j]);
+        }
+
+        var resolution = detectCollision(thisHitboxPolygon, otherHitboxPolygon);
+
+        if (resolution) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * collision detection and resolution between this and other object
+     * this object is moved if collision resolution is needed, other object stays in place
+     * returns true iff collision occurs
+     */
+    detectAndResolveCollisionWith(other) {
+
+        var thisHitboxPolygon = this.hitbox.toPolygon();
+        var otherHitboxPolygon = other.hitbox.toPolygon();
+
+        //console.log("Player starting position: (" + this.player.position.x + ", " + this.player.position.y + ")");
+
+        for (var j = 0; j < 4; j++) {
+            this.convertPointFromLocalToGlobal(thisHitboxPolygon.points[j]);
+            other.convertPointFromLocalToGlobal(otherHitboxPolygon.points[j]);
+        }
+
+        var resolution = detectCollision(thisHitboxPolygon, otherHitboxPolygon);
+
+        if (resolution) {
+            
+            var resolutionConverted = {x: resolution.x, y: resolution.y};
+            resolutionConverted = multiplyVectorByScalar(resolutionConverted, 1.1);
+            if (this.parent) this.parent.convertPointFromGlobalToLocal(resolutionConverted);
+            this.position = vectorSubtract(this.position, resolutionConverted);
+
+            // check again for collision, in case resolution was backwards...
+            thisHitboxPolygon = this.hitbox.toPolygon();
+            for (var j = 0; j < 4; j++) {
+                this.convertPointFromLocalToGlobal(thisHitboxPolygon.points[j]);
+            }
+
+            // if it was backwards, rectify it
+            if (detectCollision(thisHitboxPolygon, otherHitboxPolygon)) {
+                // debugger;
+                resolution = multiplyVectorByScalar(resolution, -2);
+                if (this.parent) this.parent.convertPointFromGlobalToLocal(resolution);
+                this.position = vectorSubtract(this.position, resolution);
+            }
+
+            return true;
+
+        }
+
+        return false;
     }
 
     /**

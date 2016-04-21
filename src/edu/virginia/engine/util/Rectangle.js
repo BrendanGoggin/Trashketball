@@ -13,6 +13,7 @@ class Rectangle {
         this.y = topLeftPoint.y;
         this.width = width;
         this.height = height;
+        this.shape = "Rectangle";
     }
 
 
@@ -26,6 +27,19 @@ class Rectangle {
         if (point.y > this.getMaxY()) return false;
         if (point.y < this.getMinY()) return false;
         return true;
+    }
+
+    /**
+     * Return this Rectangle as a polygon
+     */
+    toPolygon() {
+        var points = [];
+        points[0] = {x: this.x,              y: this.y};
+        points[1] = {x: this.x,              y: this.y + this.height};
+        points[2] = {x: this.x + this.width, y: this.y + this.height};
+        points[3] = {x: this.x + this.width, y: this.y};
+        var polygon = new Polygon(points, this.shape);
+        return polygon;
     }
 
     
