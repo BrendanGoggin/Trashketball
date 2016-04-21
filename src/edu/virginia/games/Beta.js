@@ -1,4 +1,5 @@
-// A basic platformer game
+// Nanzhu's WIP
+
 
 "use strict";
 
@@ -45,6 +46,8 @@ var KEY_X = 88;
 var KEY_Y = 89;
 var KEY_SHIFT = 16;
 var KEY_R = 82;
+var score = 0;
+var multiplier = 1;
 
 /**
  */
@@ -54,42 +57,45 @@ class PlatformGame extends Game {
 
         super("PlatformGame", GAME_WIDTH, GAME_HEIGHT, canvas);
 
+        this.score = 0;
+        var attempts = 3;
+
 
         // Player sprite
-        this.player = new PlayerSprite("Player", "PlayerAnimations.png");
+        this.player = new PlayerSprite("Player", "KidAnimations.png");
 
         // attach and display player's hitbox
-        var playerHitboxWidth = 56;
-        var playerHitboxHeight = 108;
+        var playerHitboxWidth = 200;
+        var playerHitboxHeight = 350;
         var playerHitboxTopLeft = {'x': -playerHitboxWidth/2.0, 'y': -playerHitboxHeight/2.0};
         this.player.hitbox = new Rectangle(playerHitboxTopLeft, playerHitboxWidth, playerHitboxHeight);
         this.player.showHitbox = SHOW_HITBOXES;
         this.player.setPosition({x: 250.0, y: 350.0});
-        this.player.setPivotPoint({x:64, y:56}); // center
-        this.player.setScale({x:1.5, y:1.5});
+        this.player.setPivotPoint({x:200, y:175}); // center
+        this.player.setScale({x:0.5, y:0.5});
 
         // player's kicking foot node
         this.kicker = new DisplayObjectNode("Kicker", "");
-        this.kicker.setPosition({x:12, y: 36});
-        var kickerWidth = 60;
-        var kickerHeight = 30;
+        this.kicker.setPosition({x:12, y: 120});
+        var kickerWidth = 200;
+        var kickerHeight = 100;
         this.kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
         this.kicker.hitbox = false;
         this.kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
         // this.kicker.hitbox = this.kickbox;
-        this.kicker.showHitbox = true;
+        this.kicker.showHitbox = SHOW_HITBOXES;
         //this.kicker.normal = {x: 0.70711, y: 0.70711};
         this.player.addChild(this.kicker);
 
         // player's heading foot node
         this.header = new DisplayObjectNode("Header", "");
-        this.header.setPosition({x:0, y: -32});
-        var headerWidth = 60;
-        var headerHeight = 30;
+        this.header.setPosition({x:0, y:-100});
+        var headerWidth = 200;
+        var headerHeight = 100;
         this.header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
         this.header.hitbox = false;
         this.headbox = new Rectangle({x: -headerWidth/2.0, y: -headerHeight/2.0}, headerWidth, headerHeight);
-        this.header.showHitbox = true;
+        this.header.showHitbox = SHOW_HITBOXES;
         this.header.normal = {x: 0.70711, y: 0.70711};
         this.player.addChild(this.header);
 
@@ -162,16 +168,31 @@ class PlatformGame extends Game {
         var hitboxWidth = 140;
         var hitboxHeight = 140;
         this.ball.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
-//  HEAD
+
         this.ball.showHitbox = SHOW_HITBOXES;
-// ===
+
         this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3);
         this.trash.showHitbox = SHOW_HITBOXES;
         this.ball.setPosition({x:700,y:180});
         this.trash.setPosition({x:800,y:460});
-// === master
+
         this.ball.setPivotPoint({x:104,y:139});
         this.ball.setScale({x:0.4, y:0.4});
+
+        var life = new Sprite("Life0", "Ball.png");
+        life.setScale({x:0.2, y:0.2});
+        life.setPosition({x: 60, y: 60});
+        this.attempt_sprites = [life];
+        this.root.addChild(life);
+        var xstart = 100;
+        for(var num = 1; num < attempts; num+=1){
+            var extra_life = new Sprite("Life"+num, "Ball.png");
+            extra_life.setScale({x:0.2, y:0.2});
+            extra_life.setPosition({x: xstart, y: 60});
+            this.attempt_sprites.push(extra_life);
+            xstart+=40;
+            this.root.addChild(extra_life);
+        }
 
 
         // this.ball.showHitbox = true;
@@ -315,59 +336,67 @@ class PlatformGame extends Game {
 
 
 
+        // Kicking
+        this.kicking = false;
         if (this.kicker.hitbox) {
-            if (this.ball.detectAndResolveCollisionWith(this.kicker)) {
-                if (!this.kicking && !this.heading) {
-                    this.ball.bounceOffOf(this.kicker);
-                    //this.ball.position = ballOldPosition;
-                    this.kicking = true;
-                }
+            if (this.ball.detectAndResolveCollisionWith(this.kicker) && !this.kicking && !this.heading) {
+                this.ball.bounceOffOf(this.kicker);
+                this.kicking = true;
             }
-            else {
-                this.kicking = false;
-            }
-        }
-        else {
-            this.kicking = false;
         }
 
+
+        // Heading
+        this.heading = false;
         if (this.header.hitbox) {
-            if (this.ball.detectAndResolveCollisionWith(this.header)) {
-                if (!this.heading && !this.kicking) {
-                    this.ball.bounceOffOf(this.header);
-                    this.heading = true;
-                }
+            if (this.ball.detectAndResolveCollisionWith(this.header) && !this.heading && !this.kicking) {
+                this.ball.bounceOffOf(this.header);
+                this.heading = true;
             }
-            else {
-                this.heading = false;
-            }
-        }
-        else {
-            this.heading = false;
         }
 
 
         for (var i = 0; i < this.platforms.length; i++) {
 
+            // player-wall collision handling
             if (this.player.detectAndResolveCollisionWith(this.platforms[i])) {
-
                 this.player.bounceOffOf(this.platforms[i], 0);
-
-
                 this.player.hitbox.color = "red";
                 this.platforms[i].hitbox.color = "red";
+                if (this.platforms[i].id == "Ground") {
+                    this.player.physics.velocity = {x:0, y:0};
+                }
+            }
+            else this.platforms[i].hitbox.color = "black";
 
-            }
-            else {
-                this.platforms[i].hitbox.color = "black";
-            }
+
+            // ball-wall collision handling
             if (this.ball.detectAndResolveCollisionWith(this.platforms[i])) {
-                
-                this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
+
+                if(this.platforms[i].id=="Ground")
+                {
+                    multiplier = 1;
+                    this.ball.hitbox.color = "green";
+                    this.platforms[i].hitbox.color = "green";
+                    this.ball.setPosition({x:700,y:180});
+                    this.ball.physics.velocity = {x:0, y:0};
+                    if(this.attempt_sprites.length!=0) {
+                        // debugger
+                        // this.root.removeChild(this.attempt_sprites.pop().visible=false);
+                        // this.ball.physics = new Physics(ballMass);
+                        
+                    }
+
+                    //PAUSE or END GAME IF NO LIVES LEFT
+                }
+                else{
+                    this.score+=(5*multiplier);
+                    multiplier+=1;
+                    this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
+                }
 
             }
         }  
-
 
         // this.root.update(dt); // update children
         // if(this.ball.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.ball)!=-1){
@@ -385,6 +414,10 @@ class PlatformGame extends Game {
         g.clearRect(0, 0, this.width, this.height);
         super.draw(g);
         this.root.draw(g);
+
+        var ctx = this.canvas.getContext("2d");
+        ctx.font = "36px Georgia";
+        ctx.fillText("Score: "+this.score, 750, 100);
     }
 
     /**

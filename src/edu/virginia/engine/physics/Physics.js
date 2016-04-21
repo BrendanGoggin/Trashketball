@@ -4,6 +4,9 @@
 
 var GRAVITY = 0.00002;
 
+/**
+ * Physics object to be attached to DisplayObjectNodes that have physics behavior.
+ */
 class Physics {
 
     constructor(mass) {
@@ -31,4 +34,15 @@ class Physics {
     }
 
 }
+
+/**
+ * Additional physics functions
+ */
+
+
+
+
+
+
+
 
