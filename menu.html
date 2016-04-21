@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+</head>
+
+<body style="background-color: #cccccc;">
+<p style="font-family: Arial; font-size: 34px; padding-left: 100px;">
+    Trashketball
+</p>
+<p style="font-family: Arial; font-size: 24px; padding-left: 100px;">
+    Click on a level to begin playing Trashketball!
+</p>
+
+    <img src="resources/menu.png" width="852" height="480" alt="Menu" usemap="#menumap">
+
+    <map name="menumap">
+        <area shape="rect" coords="582,286,823,332" alt="Level 1" href="index.html">
+        <area shape="rect" coords="582,342,823,380" alt="Level 2" href="index.html">
+        <area shape="rect" coords="575,390,824,432" alt="Level 3" href="index.html">
+    </map>
+
+
+
+
+<p id="quest-console" style="font-family: Arial; font-size: 30px; padding-left: 100px; background-color: white;">
+
+</p>
+
+
+<script>
+    window.onkeydown = function(e) {
+        if (e.keyCode == 32 && e.target == document.body) {
+            e.preventDefault();
+        }
+    };
+</script>
+
+</body>
+
+</html>

@@ -47,6 +47,7 @@ var KEY_Y = 89;
 var KEY_SHIFT = 16;
 var KEY_R = 82;
 var score = 0;
+var curr_score = 0;
 var multiplier = 1;
 
 /**
@@ -58,6 +59,7 @@ class PlatformGame extends Game {
         super("PlatformGame", GAME_WIDTH, GAME_HEIGHT, canvas);
 
         this.score = 0;
+        this.curr_score = 0;
         var attempts = 3;
 
 
@@ -243,6 +245,9 @@ class PlatformGame extends Game {
         var newScale = this.player.getScale();
         var newRotation = this.player.getRotation();
 
+        this.ball.setRotation(this.ball.rotation+=0.01)
+        if(this.ball.rotation>=2*Math.PI) this.ball.rotation = -2*Math.PI;
+
         // use key codes to update position coordinates
         if (pressedKeys.size() != 0) {
 
@@ -375,14 +380,18 @@ class PlatformGame extends Game {
 
                 if(this.platforms[i].id=="Ground")
                 {
+
                     multiplier = 1;
+                    score+=curr_score;
+                    curr_score = 0;
                     this.ball.hitbox.color = "green";
                     this.platforms[i].hitbox.color = "green";
                     this.ball.setPosition({x:700,y:180});
                     this.ball.physics.velocity = {x:0, y:0};
                     if(this.attempt_sprites.length!=0) {
                         // debugger
-                        // this.root.removeChild(this.attempt_sprites.pop().visible=false);
+                        this.root.removeChild(this.attempt_sprites.pop().visible=false);
+                        this.ball.physics.velocity = {x:.001, y:.001};
                         // this.ball.physics = new Physics(ballMass);
                         
                     }
@@ -390,7 +399,7 @@ class PlatformGame extends Game {
                     //PAUSE or END GAME IF NO LIVES LEFT
                 }
                 else{
-                    this.score+=(5*multiplier);
+                    this.curr_score+=(5*multiplier);
                     multiplier+=1;
                     this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
                 }
@@ -416,8 +425,10 @@ class PlatformGame extends Game {
         this.root.draw(g);
 
         var ctx = this.canvas.getContext("2d");
-        ctx.font = "36px Georgia";
-        ctx.fillText("Score: "+this.score, 750, 100);
+        ctx.font = "28px Georgia";
+        ctx.fillText("Attempt Score: "+this.curr_score, 650, 100);
+        ctx.font = "18px Georgia";
+        ctx.fillText("Total Score: "+this.score, 60, 105);
     }
 
     /**
