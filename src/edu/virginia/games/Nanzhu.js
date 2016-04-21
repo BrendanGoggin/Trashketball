@@ -1,4 +1,5 @@
-// A basic platformer game
+// Nanzhu's WIP
+
 
 "use strict";
 
@@ -45,38 +46,34 @@ var KEY_X = 88;
 var KEY_Y = 89;
 var KEY_SHIFT = 16;
 var KEY_R = 82;
-var score = 0;
-var multiplier = 1;
 
 /**
  */
 class PlatformGame extends Game {
-
+    
     constructor(canvas) {
 
         super("PlatformGame", GAME_WIDTH, GAME_HEIGHT, canvas);
 
-        this.score = 0;
-        var attempts = 3;
 
         // Player sprite
-        this.player = new PlayerSprite("Player", "PlayerAnimations.png");
+        this.player = new PlayerSprite("Player", "KidAnimations.png");
 
         // attach and display player's hitbox
-        var playerHitboxWidth = 56;
-        var playerHitboxHeight = 108;
+        var playerHitboxWidth = 200;
+        var playerHitboxHeight = 350;
         var playerHitboxTopLeft = {'x': -playerHitboxWidth/2.0, 'y': -playerHitboxHeight/2.0};
         this.player.hitbox = new Rectangle(playerHitboxTopLeft, playerHitboxWidth, playerHitboxHeight);
         this.player.showHitbox = SHOW_HITBOXES;
         this.player.setPosition({x: 250.0, y: 350.0});
-        this.player.setPivotPoint({x:64, y:56}); // center
-        this.player.setScale({x:1.5, y:1.5});
+        this.player.setPivotPoint({x:200, y:175}); // center
+        this.player.setScale({x:0.5, y:0.5});
 
         // player's kicking foot node
         this.kicker = new DisplayObjectNode("Kicker", "");
-        this.kicker.setPosition({x:12, y: 36});
-        var kickerWidth = 60;
-        var kickerHeight = 30;
+        this.kicker.setPosition({x:12, y: 120});
+        var kickerWidth = 200;
+        var kickerHeight = 100;
         this.kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
         this.kicker.hitbox = false;
         this.kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
@@ -87,9 +84,9 @@ class PlatformGame extends Game {
 
         // player's heading foot node
         this.header = new DisplayObjectNode("Header", "");
-        this.header.setPosition({x:0, y: -32});
-        var headerWidth = 60;
-        var headerHeight = 30;
+        this.header.setPosition({x:0, y:-100});
+        var headerWidth = 200;
+        var headerHeight = 100;
         this.header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
         this.header.hitbox = false;
         this.headbox = new Rectangle({x: -headerWidth/2.0, y: -headerHeight/2.0}, headerWidth, headerHeight);
@@ -109,57 +106,41 @@ class PlatformGame extends Game {
         this.player.physics = new Physics(playerMass);
 
 
-        var ground = new Sprite("Ground", "Platform.png");
-        ground.setPosition({x: GAME_WIDTH/2, y: GAME_HEIGHT-20});
+        var ground = new Sprite("Ground", "ground.jpg");
+        ground.setPosition({x: 170, y: GAME_HEIGHT-36});
         ground.setPivotPoint({x: 168, y: 24});
-        ground.setScaleX(3);
+        //ground.setScaleX(3);
         ground.showHitbox = SHOW_HITBOXES;
-        ground.hitbox = new Rectangle({x:-170, y:-24}, 400, 48);
+        ground.hitbox = new Rectangle({x:-170, y:-24}, 1000, 60);
 
         this.platforms = [ground];
 
-        var life = new Sprite("Life0", "Ball.png");
-        life.setScale({x:0.2, y:0.2});
-        life.setPosition({x: 60, y: 60});
-        this.attempt_sprites = [life];
-        this.root.addChild(life);
-        var xstart = 100;
-        for(var num = 1; num < attempts; num+=1){
-            var extra_life = new Sprite("Life"+num, "Ball.png");
-            extra_life.setScale({x:0.2, y:0.2});
-            extra_life.setPosition({x: xstart, y: 60});
-            this.attempt_sprites.push(extra_life);
-            xstart+=40;
-            this.root.addChild(extra_life);
-        }
-
-
-        var leftWall = new Sprite("LeftWall", "Brickwall.jpg");
-        leftWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        leftWall.setRotation(-1 * Math.PI / 2.0);
+        var leftWall = new Sprite("LeftWall", "leftwall.jpg");
+        leftWall.hitbox = new Rectangle({x: 0, y: 0}, 50, 600);
+        //leftWall.setRotation(-1 * Math.PI / 2.0);
         // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        leftWall.setPosition({x: -250, y: 300});
-        leftWall.setPivotPoint({x: 476.5, y: 300});
+        leftWall.setPosition({x: 0, y: 0});
+        //leftWall.setPivotPoint({x: 25, y: 300});
         // leftWall.setScale({x:2, y:1});
         this.platforms.push(leftWall);
         leftWall.showHitbox = SHOW_HITBOXES;
 
-        var rightWall = new Sprite("RightWall", "Brickwall.jpg");
-        rightWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
-        rightWall.setRotation(1 * Math.PI / 2.0);
+        var rightWall = new Sprite("RightWall", "rightwall.jpg");
+        rightWall.hitbox = new Rectangle({x: 0, y: 0}, 50, 600);
+        //rightWall.setRotation(1 * Math.PI / 2.0);
         // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        rightWall.setPosition({x: 1250, y: 300});
-        rightWall.setPivotPoint({x: 476.5, y: 300});
+        rightWall.setPosition({x: GAME_WIDTH -50, y: 0});
+        //rightWall.setPivotPoint({x: 476.5, y: 300});
         // leftWall.setScale({x:2, y:1});
         this.platforms.push(rightWall);
         rightWall.showHitbox = SHOW_HITBOXES;
 
-        var ceiling = new Sprite("Ceiling", "Brickwall.jpg");
-        ceiling.hitbox =  new Rectangle({x:-476.5, y:-300}, 953, 600);
-        ceiling.setRotation(Math.PI);
+        var ceiling = new Sprite("Ceiling", "ceiling.jpg");
+        ceiling.hitbox =  new Rectangle({x: 0, y: 0}, 1000, 50);
+        //ceiling.setRotation(Math.PI);
         // leftWall.setRotation(-.5 * Math.PI / 2.0);
-        ceiling.setPosition({x: 500, y: -250});
-        ceiling.setPivotPoint({x: 476.5, y: 300});
+        ceiling.setPosition({x: 0, y: 0});
+        //ceiling.setPivotPoint({x: 476.5, y: 300});
         // leftWall.setScale({x:2, y:1});
         this.platforms.push(ceiling);
         ceiling.showHitbox = SHOW_HITBOXES;
@@ -210,13 +191,13 @@ class PlatformGame extends Game {
 
         // add the event listener to the dispatcher
         this.ball.eventDispatcher.addEventListener(
-            this.questLoveManager,
+            this.questLoveManager, 
             this.ballPickUpEvent.eventType
         );
 
         var ballMass = 50;
         this.ball.physics = new Physics(ballMass);
-        this.ball.physics.velocity = {x:.001, y:.001};
+        this.ball.physics.velocity = {x:.5, y:.3};
 
         this.root.addChild(leftWall);
         this.root.addChild(rightWall);
@@ -232,7 +213,7 @@ class PlatformGame extends Game {
     update(pressedKeys, dt){
         this.tweenJuggler.update();
         super.update(pressedKeys, dt);
-
+        
         var newPosition = this.player.getPosition();
         var oldPosition = {x:newPosition.x, y:newPosition.y};
         var newVelocity = this.player.physics.velocity;
@@ -241,8 +222,6 @@ class PlatformGame extends Game {
         var ballOldPosition = {x:ballNewPosition.x, y:ballNewPosition.y};
         var newScale = this.player.getScale();
         var newRotation = this.player.getRotation();
-        //this.score+=multiplier;
-
 
         // use key codes to update position coordinates
         if (pressedKeys.size() != 0) {
@@ -280,7 +259,7 @@ class PlatformGame extends Game {
                     this.player.animate("walk");
                     this.player.setSpeed(20);
                 };
-
+                
             }
 
             // Down
@@ -311,9 +290,9 @@ class PlatformGame extends Game {
 
             // If not moving left or right, stop animation (animations are running or walking)
             if (!(
-                    pressedKeys.contains(KEY_D)
-                    || pressedKeys.contains(KEY_A)
-                    || pressedKeys.contains(KEY_J)
+                pressedKeys.contains(KEY_D) 
+                || pressedKeys.contains(KEY_A)
+                || pressedKeys.contains(KEY_J)
                 )) {
                 if (!this.player.stopped) this.player.stopAnimation();
             }
@@ -337,33 +316,6 @@ class PlatformGame extends Game {
 
 
         for (var i = 0; i < this.platforms.length; i++) {
-
-            this.ball.hitbox.color = "black";
-            this.platforms[i].hitbox.color = "black";
-
-            if(this.ball.collidesWith(this.platforms[i])!=-1 || this.platforms[i].collidesWith(this.ball)!=-1){
-                if(this.platforms[i].id=="Ground")
-                {
-                    multiplier = 1;
-                    this.ball.hitbox.color = "green";
-                    this.platforms[i].hitbox.color = "green";
-                    this.ball.setPosition({x:700,y:180});
-                    if(this.attempt_sprites.length!=0) {
-                        //debugger
-                        this.root.removeChild(this.attempt_sprites.pop().visible=false);
-                        //this.ball.physics = new Physics(ballMass);
-                        this.ball.physics.velocity = {x:.001, y:.001};
-                        //is this the best way to handle this
-                    }
-
-                    //PAUSE or END GAME IF NO LIVES LEFT
-                }
-                else{
-                    this.score+=(5*multiplier);
-                    multiplier+=1;
-                }
-            }
-
 
             if (this.player.collidesWith(this.platforms[i]) != -1 || this.platforms[i].collidesWith(this.player) != -1) {
 
@@ -410,11 +362,10 @@ class PlatformGame extends Game {
                 this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
                 this.ball.position = ballOldPosition;
             }
+        }  
 
-        }
-        
         if (this.kicker.hitbox) {
-            if ((this.kicker.collidesWith(this.ball) != -1
+            if ((this.kicker.collidesWith(this.ball) != -1 
                 || this.ball.collidesWith(this.kicker) != -1)) {
                 if (!this.kicking && !this.heading) {
                     this.ball.bounceOffOf(this.kicker);
@@ -431,7 +382,7 @@ class PlatformGame extends Game {
         }
 
         if (this.header.hitbox) {
-            if ((this.header.collidesWith(this.ball) != -1
+            if ((this.header.collidesWith(this.ball) != -1 
                 || this.ball.collidesWith(this.header) != -1)) {
                 if (!this.heading && !this.kicking) {
                     this.ball.bounceOffOf(this.header);
@@ -453,7 +404,7 @@ class PlatformGame extends Game {
         //     // this.ball.showHitbox=false;
         //     console.log("Score!");
         //     this.ballFadeOut();
-
+            
         // }
 
         // this.root.update(dt); // update children
@@ -463,10 +414,6 @@ class PlatformGame extends Game {
         g.clearRect(0, 0, this.width, this.height);
         super.draw(g);
         this.root.draw(g);
-
-        var ctx = this.canvas.getContext("2d");
-        ctx.font = "36px Georgia";
-        ctx.fillText("Score: "+this.score, 750, 100);
     }
 
     /**

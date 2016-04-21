@@ -18,8 +18,8 @@ class PlayerSprite extends Sprite {
         this.imagesLoaded = 0;
         this.stopped = true;
         this.animationName = "";
-        this.frameWidth = 128;
-        this.frameHeight = 128;
+        this.frameWidth = 400;
+        this.frameHeight = 400;
 
         // which frames in the spritesheet each action uses
         this.walkFrames = [4,5];
