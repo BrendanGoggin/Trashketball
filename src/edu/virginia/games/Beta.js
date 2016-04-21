@@ -175,7 +175,7 @@ class PlatformGame extends Game {
 
         this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3);
         this.trash.showHitbox = SHOW_HITBOXES;
-        this.ball.setPosition({x:700,y:180});
+        this.ball.setPosition({x:this.player.position.x,y:100});
         this.trash.setPosition({x:800,y:460});
 
         this.ball.setPivotPoint({x:104,y:139});
@@ -219,7 +219,8 @@ class PlatformGame extends Game {
 
         var ballMass = 50;
         this.ball.physics = new Physics(ballMass);
-        this.ball.physics.velocity = {x:.5, y:.3};
+       // this.ball.physics.velocity = {x:.5, y:.3};
+        this.ball.physics.velocity = {x:.001, y:.001};
 
         this.root.addChild(leftWall);
         this.root.addChild(rightWall);
@@ -235,6 +236,7 @@ class PlatformGame extends Game {
     update(pressedKeys, dt){
         this.tweenJuggler.update();
         super.update(pressedKeys, dt);
+
         
         var newPosition = this.player.getPosition();
         var oldPosition = {x:newPosition.x, y:newPosition.y};
@@ -347,6 +349,8 @@ class PlatformGame extends Game {
             if (this.ball.detectAndResolveCollisionWith(this.kicker) && !this.kicking && !this.heading) {
                 this.ball.bounceOffOf(this.kicker);
                 this.kicking = true;
+                this.curr_score+=(3*multiplier);
+                multiplier+=1;
             }
         }
 
@@ -357,6 +361,8 @@ class PlatformGame extends Game {
             if (this.ball.detectAndResolveCollisionWith(this.header) && !this.heading && !this.kicking) {
                 this.ball.bounceOffOf(this.header);
                 this.heading = true;
+                this.curr_score+=(2*multiplier);
+                multiplier+=1;
             }
         }
 
@@ -382,11 +388,11 @@ class PlatformGame extends Game {
                 {
 
                     multiplier = 1;
-                    score+=curr_score;
+                    this.score=this.score+curr_score;
                     curr_score = 0;
                     this.ball.hitbox.color = "green";
                     this.platforms[i].hitbox.color = "green";
-                    this.ball.setPosition({x:700,y:180});
+                    this.ball.setPosition({x:this.player.position.x,y:100});
                     this.ball.physics.velocity = {x:0, y:0};
                     if(this.attempt_sprites.length!=0) {
                         // debugger
@@ -404,6 +410,10 @@ class PlatformGame extends Game {
                     this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
                 }
 
+            }
+            if(this.attempt_sprites.length==0){
+                this.ball.visible=false;
+                this.pause();
             }
         }  
 
@@ -427,6 +437,7 @@ class PlatformGame extends Game {
         var ctx = this.canvas.getContext("2d");
         ctx.font = "28px Georgia";
         ctx.fillText("Attempt Score: "+this.curr_score, 650, 100);
+        var ctx = this.canvas.getContext("2d");
         ctx.font = "18px Georgia";
         ctx.fillText("Total Score: "+this.score, 60, 105);
     }
