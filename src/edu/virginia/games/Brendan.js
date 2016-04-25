@@ -173,12 +173,40 @@ class PlatformGame extends Game {
         this.ball.hitbox = new Circle({x:0, y:0}, 73);
 
         
+        // trash can
         this.trash = new Sprite("Trash", "Trash.png");
-        this.trash.setScale({x:2,y:2});
-
-        this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3);
+        this.trash.setPosition({x:790,y:493});
+        this.trash.setScale({x:4,y:3});
+        var trashWidth  = 32;
+        var trashHeight = 52;
+        this.trash.setPivotPoint({x: trashWidth/2.0, y: trashHeight/2.0});
+        this.trash.hitbox = new Rectangle({x: -0.5*trashWidth/2.0, y: 0}, 0.5*trashWidth, trashHeight/3);
         this.trash.showHitbox = SHOW_HITBOXES;
-        this.trash.setPosition({x:800,y:460});
+
+        // dimensions of walls of trash can
+        var trashWallWidth = 4;
+        var trashWallHeight = trashHeight;
+        var trashWallTopLeft = {x: -trashWallWidth / 2.0, y: -trashWallHeight / 2.0};
+
+
+        // left wall of trash can
+        this.trashLeftWall = new DisplayObjectNode("trashLeftWall", "");
+        this.trashLeftWall.setPosition({x: -.95*trashWidth / 2.0, y: .05*trashHeight});
+        this.trashLeftWall.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
+        this.trashLeftWall.hitbox = new Rectangle(trashWallTopLeft, trashWallWidth, .9*trashWallHeight);
+        this.trashLeftWall.showHitbox = SHOW_HITBOXES;
+        this.trash.addChild(this.trashLeftWall);
+
+        // right wall of trash can
+        this.trashRightWall = new DisplayObjectNode("trashRightWall", "");
+        this.trashRightWall.setPosition({x: .95*trashWidth / 2.0, y: .05*trashHeight});
+        this.trashRightWall.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
+        this.trashRightWall.hitbox = new Rectangle(trashWallTopLeft, trashWallWidth, .9*trashWallHeight);
+        this.trashRightWall.showHitbox = SHOW_HITBOXES;
+        this.trash.addChild(this.trashRightWall);
+
+        // the two walls in an array
+        this.trashWalls = [this.trashLeftWall, this.trashRightWall];
 
         var life = new Sprite("Life0", "Ball.png");
         life.setScale({x:0.2, y:0.2});
@@ -225,9 +253,9 @@ class PlatformGame extends Game {
         this.root.addChild(rightWall);
         this.root.addChild(ceiling);
         this.root.addChild(ground);
+        this.root.addChild(this.player);
         this.root.addChild(this.ball);
         this.root.addChild(this.trash);
-        this.root.addChild(this.player);
 
 
     }
@@ -357,7 +385,18 @@ class PlatformGame extends Game {
             }
         }
 
+        for (var i = 0; i < this.trashWalls.length; i++) {
+            if (this.ball.detectAndResolveCollisionWith(this.trashWalls[i])) {
+                this.ball.bounceOffOf(this.trashWalls[i], 0.5);
+                this.ball.hitbox.color = "red";
+                this.trashWalls[i].hitbox.color = "red";
+            }
+            else {
+                this.trashWalls[i].hitbox.color = "black";
+            }
+        }
 
+        this.ball.hitbox.color = "black";
         for (var i = 0; i < this.platforms.length; i++) {
 
             // player-wall collision handling
@@ -379,42 +418,18 @@ class PlatformGame extends Game {
 
             // ball-wall collision handling
             if (this.ball.detectAndResolveCollisionWith(this.platforms[i])) {
-
-                if(this.platforms[i].id=="Ground")
-                {
-                    multiplier = 1;
-                    this.ball.hitbox.color = "green";
-                    this.platforms[i].hitbox.color = "green";
-                    this.ball.setPosition({x:700,y:180});
-                    this.ball.physics.velocity = {x:0, y:0};
-                    if(this.attempt_sprites.length!=0) {
-                        // debugger
-                        // this.root.removeChild(this.attempt_sprites.pop().visible=false);
-                        // this.ball.physics = new Physics(ballMass);
-                        
-                    }
-
-                    //PAUSE or END GAME IF NO LIVES LEFT
-                }
-                else{
-                    this.score+=(5*multiplier);
-                    multiplier+=1;
-                    this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
-                }
-
+                this.ball.bounceOffOf(this.platforms[i], C_REST_WALL);
             }
         }  
 
-        // this.root.update(dt); // update children
-        // if(this.ball.collidesWith(this.trash)!=-1 || this.trash.collidesWith(this.ball)!=-1){
-        //     this.root.removeChild(this.ball);
-        //     // this.ball.showHitbox=false;
-        //     console.log("Score!");
-        //     this.ballFadeOut();
-            
-        // }
+        if (this.ball.detectCollisionWith(this.trash)) {
+            this.trash.hitbox.color = "green";
+        } 
+        else {
+            this.trash.hitbox.color = "black";
+        }
 
-        // this.root.update(dt); // update children
+        // this.ballFadeOut() is the tween to remove the ball
     }
 
     draw(g){
