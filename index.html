@@ -5,20 +5,20 @@
 </head>
 
 <body style="background-color: #cccccc;">
-    <p style="font-family: Arial; font-size: 34px; padding-left: 100px;"> 
+<!--     <p style="font-family: Arial; font-size: 34px; padding-left: 100px;"> 
         Trashketball
-    </p>
-    <p style="font-family: Arial; font-size: 24px; padding-left: 100px;"> 
-        WASD or Arrows to Move. Y to run. J to kick. K to head. Get the ball in the trash can!
-    </p>
+    </p> -->
+
     <canvas id="game" width="1000" height="600" style="background-color: #4fc5ff; margin-left: 75px;">
     <p>Your browser doesn't support canvas.</p>
     </canvas>
 
     <script type="text/javascript" src="src/edu/virginia/engine/util/ArrayList.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/util/Geometry.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/util/Hitbox.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/util/Polygon.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/util/Rectangle.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/util/Circle.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/util/GameClock.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/physics/Physics.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/DisplayObject.js"></script>
@@ -40,12 +40,18 @@
     <p id="quest-console" style="font-family: Arial; font-size: 30px; padding-left: 100px; background-color: white;">
         
     </p>    
+        <p style="font-family: Arial; font-size: 24px; padding-left: 100px;"> 
+        WASD or Arrows to Move. Y to run. J to kick. K to head. Get the ball in the trash can!
+    </p>
 
     <p style="font-family: Arial; font-size: 16px; padding-left: 100px;">
         Check the console for some info on Mario's fields.
     </p>
 
     <script>
+
+        document.getElementById("game").focus();
+
         window.onkeydown = function(e) {
           if (e.keyCode == 32 && e.target == document.body) {
             e.preventDefault();
