@@ -69,7 +69,15 @@ class DisplayObjectNode extends DisplayObject {
                 g.strokeStyle = "black";
             }
             g.lineWidth = 3;
-            g.strokeRect(this.hitbox.x, this.hitbox.y, this.hitbox.width, this.hitbox.height);
+
+            if (this.hitbox.shape == "Rectangle" && !this.points) {
+                g.strokeRect(this.hitbox.x, this.hitbox.y, this.hitbox.width, this.hitbox.height);
+            }
+            else if (this.hitbox.shape == "Circle") {
+                g.beginPath();
+                g.arc(this.hitbox.center.x, this.hitbox.center.y, this.hitbox.radius, 0, 2 * Math.PI, false);
+                g.stroke();
+            }
         }
      }
 
@@ -294,17 +302,46 @@ class DisplayObjectNode extends DisplayObject {
      */
     detectCollisionWith(other) {
 
-        var thisHitboxPolygon = this.hitbox.toPolygon();
-        var otherHitboxPolygon = other.hitbox.toPolygon();
+        var thisHitbox = this.hitbox;
+        var otherHitbox = other.hitbox;
 
-        //console.log("Player starting position: (" + this.player.position.x + ", " + this.player.position.y + ")");
 
-        for (var j = 0; j < 4; j++) {
-            this.convertPointFromLocalToGlobal(thisHitboxPolygon.points[j]);
-            other.convertPointFromLocalToGlobal(otherHitboxPolygon.points[j]);
+        // convert Rectangles to Polygons
+        if (this.hitbox.shape == "Rectangle" && !this.hitbox.points) {
+            thisHitbox = this.hitbox.toPolygon();
         }
 
-        var resolution = detectCollision(thisHitboxPolygon, otherHitboxPolygon);
+        if (other.hitbox.shape == "Rectangle" && !other.hitbox.points) {
+            var otherHitbox = other.hitbox.toPolygon();
+        }
+
+
+        // convert rectangle Polygons to global coordinates
+        if (this.hitbox.shape == "Rectangle") {
+            for (var j = 0; j < 4; j++) {
+                this.convertPointFromLocalToGlobal(thisHitbox.points[j]);
+            }
+        }
+        if (other.hitbox.shape == "Rectangle") {
+            for (var j = 0; j < 4; j++) {
+                other.convertPointFromLocalToGlobal(otherHitbox.points[j]);
+            }
+        }
+
+
+        // convert circles to global coordinates
+        if (this.hitbox.shape == "Circle") {
+            thisHitbox = thisHitbox.getCopy();
+            this.convertPointFromLocalToGlobal(thisHitbox.center);
+            thisHitbox.radius *= Math.abs(this.scale.x);
+        }
+        if (other.hitbox.shape == "Circle") {
+            otherHitbox = otherHitbox.getCopy();
+            other.convertPointFromLocalToGlobal(otherHitbox.center);
+            otherHitbox.radius *= Math.abs(other.scale.x);
+        }
+
+        var resolution = detectCollision(thisHitbox, otherHitbox);
 
         if (resolution) {
             return true;
@@ -319,17 +356,46 @@ class DisplayObjectNode extends DisplayObject {
      */
     detectAndResolveCollisionWith(other) {
 
-        var thisHitboxPolygon = this.hitbox.toPolygon();
-        var otherHitboxPolygon = other.hitbox.toPolygon();
+        var thisHitbox = this.hitbox;
+        var otherHitbox = other.hitbox;
 
-        //console.log("Player starting position: (" + this.player.position.x + ", " + this.player.position.y + ")");
 
-        for (var j = 0; j < 4; j++) {
-            this.convertPointFromLocalToGlobal(thisHitboxPolygon.points[j]);
-            other.convertPointFromLocalToGlobal(otherHitboxPolygon.points[j]);
+        // convert Rectangles to Polygons
+        if (this.hitbox.shape == "Rectangle" && !this.hitbox.points) {
+            thisHitbox = this.hitbox.toPolygon();
         }
 
-        var resolution = detectCollision(thisHitboxPolygon, otherHitboxPolygon);
+        if (other.hitbox.shape == "Rectangle" && !other.hitbox.points) {
+            var otherHitbox = other.hitbox.toPolygon();
+        }
+
+
+        // convert rectangle Polygons to global coordinates
+        if (this.hitbox.shape == "Rectangle") {
+            for (var j = 0; j < 4; j++) {
+                this.convertPointFromLocalToGlobal(thisHitbox.points[j]);
+            }
+        }
+        if (other.hitbox.shape == "Rectangle") {
+            for (var j = 0; j < 4; j++) {
+                other.convertPointFromLocalToGlobal(otherHitbox.points[j]);
+            }
+        }
+
+
+        // convert circles to global coordinates
+        if (this.hitbox.shape == "Circle") {
+            thisHitbox = thisHitbox.getCopy();
+            this.convertPointFromLocalToGlobal(thisHitbox.center);
+            thisHitbox.radius *= Math.abs(this.scale.x);
+        }
+        if (other.hitbox.shape == "Circle") {
+            otherHitbox = otherHitbox.getCopy();
+            other.convertPointFromLocalToGlobal(otherHitbox.center);
+            otherHitbox.radius *= Math.abs(other.scale.x);
+        }
+
+        var resolution = detectCollision(thisHitbox, otherHitbox);
 
         if (resolution) {
             
@@ -338,14 +404,9 @@ class DisplayObjectNode extends DisplayObject {
             if (this.parent) this.parent.convertPointFromGlobalToLocal(resolutionConverted);
             this.position = vectorSubtract(this.position, resolutionConverted);
 
-            // check again for collision, in case resolution was backwards...
-            thisHitboxPolygon = this.hitbox.toPolygon();
-            for (var j = 0; j < 4; j++) {
-                this.convertPointFromLocalToGlobal(thisHitboxPolygon.points[j]);
-            }
-
+            // check again for collision, in case resolution was backwards
             // if it was backwards, rectify it
-            if (detectCollision(thisHitboxPolygon, otherHitboxPolygon)) {
+            if (this.detectCollisionWith(other)) {
                 // debugger;
                 resolution = multiplyVectorByScalar(resolution, -2);
                 if (this.parent) this.parent.convertPointFromGlobalToLocal(resolution);

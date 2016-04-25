@@ -107,8 +107,8 @@ class PlatformGame extends Game {
         // for player's hitbox to light up red on collision
         this.player.hitbox.color = "black";
 
-        var playerMass = 50;
-        this.player.physics = new Physics(playerMass);
+        // var playerMass = 50;
+        this.player.physics = new Physics(this.player);
 
 
         var ground = new Sprite("Ground", "Platform.png");
@@ -157,27 +157,28 @@ class PlatformGame extends Game {
 
         // ball for player to get (208x278 sprite)
         this.ball = new Sprite("Ball", "Ball.png");
-        this.trash = new Sprite("Trash", "Trash.png");
-        this.trash.setScale({x:2,y:2});
         // this.root.addChild(this.ball);
         // this.root.addChild(this.trash);
-        // var hitboxTopLeft = {x: -104, y: -139};
-        var hitboxWidth = this.ball.displayImage.width;
-        var hitboxHeight = this.ball.displayImage.height;
-        var hitboxTopLeft = {x: -95, y: -135};
-        var hitboxWidth = 140;
-        var hitboxHeight = 140;
-        this.ball.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
 
+        // var hitboxWidth = this.ball.displayImage.width;
+        // var hitboxHeight = this.ball.displayImage.height;
+        // var hitboxTopLeft = {x: -95, y: -135};
+        // var hitboxWidth = 140;
+        // var hitboxHeight = 140;
+        // this.ball.hitbox = new Rectangle(hitboxTopLeft, hitboxWidth, hitboxHeight);
         this.ball.showHitbox = SHOW_HITBOXES;
+        this.ball.setPosition({x:700,y:180});
+        this.ball.setPivotPoint({x:75,y:70});
+        this.ball.setScale({x:.5, y:.5});
+        this.ball.hitbox = new Circle({x:0, y:0}, 73);
+
+        
+        this.trash = new Sprite("Trash", "Trash.png");
+        this.trash.setScale({x:2,y:2});
 
         this.trash.hitbox = new Rectangle({x: 0, y: 0},this.trash.displayImage.width,this.trash.displayImage.height/3);
         this.trash.showHitbox = SHOW_HITBOXES;
-        this.ball.setPosition({x:700,y:180});
         this.trash.setPosition({x:800,y:460});
-
-        this.ball.setPivotPoint({x:104,y:139});
-        this.ball.setScale({x:0.4, y:0.4});
 
         var life = new Sprite("Life0", "Ball.png");
         life.setScale({x:0.2, y:0.2});
@@ -215,9 +216,10 @@ class PlatformGame extends Game {
             this.ballPickUpEvent.eventType
         );
 
-        var ballMass = 50;
-        this.ball.physics = new Physics(ballMass);
-        this.ball.physics.velocity = {x:.5, y:.3};
+        // var ballMass = 50;
+        this.ball.physics = new Physics(this.ball);
+        this.ball.physics.angularVelocity = .001;
+        //this.ball.physics.velocity = {x:.5, y:.3};
 
         this.root.addChild(leftWall);
         this.root.addChild(rightWall);
@@ -363,11 +365,16 @@ class PlatformGame extends Game {
                 this.player.bounceOffOf(this.platforms[i], 0);
                 this.player.hitbox.color = "red";
                 this.platforms[i].hitbox.color = "red";
+
+
                 if (this.platforms[i].id == "Ground") {
                     this.player.physics.velocity = {x:0, y:0};
                 }
+
             }
-            else this.platforms[i].hitbox.color = "black";
+            else {
+                this.platforms[i].hitbox.color = "black";
+            }
 
 
             // ball-wall collision handling

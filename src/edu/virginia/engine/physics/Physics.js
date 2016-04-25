@@ -9,12 +9,17 @@ var GRAVITY = 0.00002;
  */
 class Physics {
 
-    constructor(mass) {
-        this.mass = mass;
+    /**
+     * obj is the object to which this Physics object applies
+     */
+    constructor(obj) {
+        this.obj = obj;
+        // this.mass = (mass) ? mass : 0;
         this.velocity = {'x': 0, 'y': 0};
         // this.forces = false;
         this.gravity = {'x': 0, 'y': GRAVITY};
         this.acceleration = {'x': 0, 'y': 0};
+        this.angularVelocity = 0;
     }
 
     /**
@@ -28,8 +33,12 @@ class Physics {
         this.velocity.x += this.acceleration.x * dt;
         this.velocity.y += this.acceleration.y * dt;
 
-        position.x += this.velocity.x * dt;
-        position.y += this.velocity.y * dt;
+        this.obj.position.x += this.velocity.x * dt;
+        this.obj.position.y += this.velocity.y * dt;
+
+        this.obj.rotation += this.angularVelocity * dt;
+        while (this.obj.rotation > 2 * Math.PI) this.obj.rotation -= 2 * Math.PI;
+        while (this.obj.rotation < -2 * Math.PI) this.obj.rotation += 2 * Math.PI;
 
     }
 

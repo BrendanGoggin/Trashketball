@@ -109,8 +109,8 @@ class PlatformGame extends Game {
         // for player's hitbox to light up red on collision
         this.player.hitbox.color = "black";
 
-        var playerMass = 50;
-        this.player.physics = new Physics(playerMass);
+        // var playerMass = 50;
+        this.player.physics = new Physics(this.player);
 
 
         var ground = new Sprite("Ground", "Platform.png");
@@ -217,10 +217,11 @@ class PlatformGame extends Game {
             this.ballPickUpEvent.eventType
         );
 
-        var ballMass = 50;
-        this.ball.physics = new Physics(ballMass);
+        // var ballMass = 50;
+        this.ball.physics = new Physics(this.ball);
        // this.ball.physics.velocity = {x:.5, y:.3};
         this.ball.physics.velocity = {x:.001, y:.001};
+        this.ball.physics.angularVelocity = 0.00001;
 
         this.root.addChild(leftWall);
         this.root.addChild(rightWall);
@@ -247,8 +248,8 @@ class PlatformGame extends Game {
         var newScale = this.player.getScale();
         var newRotation = this.player.getRotation();
 
-        this.ball.setRotation(this.ball.rotation+=0.01)
-        if(this.ball.rotation>=2*Math.PI) this.ball.rotation = -2*Math.PI;
+        // this.ball.setRotation(this.ball.rotation+=0.01)
+        // if(this.ball.rotation>=2*Math.PI) this.ball.rotation = -2*Math.PI;
 
         // use key codes to update position coordinates
         if (pressedKeys.size() != 0) {
@@ -396,7 +397,14 @@ class PlatformGame extends Game {
                     this.ball.physics.velocity = {x:0, y:0};
                     if(this.attempt_sprites.length!=0) {
                         // debugger
-                        this.root.removeChild(this.attempt_sprites.pop().visible=false);
+                        var removeLifeSprite = this.attempt_sprites.pop();
+                        if (removeLifeSprite) {
+                            removeLifeSprite.visible=false;
+                            this.root.removeChild(removeLifeSprite);
+                        }
+                        else {
+                            // no lives left to remove
+                        }
                         this.ball.physics.velocity = {x:.001, y:.001};
                         // this.ball.physics = new Physics(ballMass);
                         
