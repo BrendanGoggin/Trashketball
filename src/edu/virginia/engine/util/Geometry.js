@@ -51,9 +51,9 @@ function dotProduct(a, b) {
 // *
 //  *  Adds the two vectors, returns the result
  
-// function vectorAdd(a, b) {
-//     return { x: a.x + b.x, y: a.y + b.y };
-// }
+function vectorAdd(a, b) {
+    return { x: a.x + b.x, y: a.y + b.y };
+}
 
 /**
  * Returns a-b
