@@ -150,5 +150,29 @@ class PlayerSprite extends Sprite {
     setSpeed(speed) {
         this.speed = speed;
     }
+
+    /**
+     * Kicks the ball in the given direction (direction is unit vector)
+     */
+    kickBall(ball, direction, speed) {
+        if (!speed && speed !== 0) {
+            speed = 0.1;
+        }
+        // change in velocity
+        var deltaVel = multiplyVectorByScalar(direction, speed);
+        var ballOldVel = {x: ball.physics.velocity.x, y: ball.physics.velocity.y};
+        ball.physics.velocity = vectorAdd(ballOldVel, deltaVel);
+        return;
+    }
+
+    /**
+     * Heads the ball in the given direction (direction is a unit vector)
+     */
+    headBall(ball, direction, speed) {
+        this.kickBall(ball, direction, speed);
+        return;
+    }
+
+    
 }
 
