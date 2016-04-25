@@ -271,13 +271,21 @@ class DisplayObjectNode extends DisplayObject {
      * Bounces this node off of the node passed in as a param
      * Assumes the param node is immovable, this node gets bounced
      * cRest is the coefficient of restitution (optional)
+     * normal is the normal of the surface of otherNode (get it from detectCollision)
      */
-    bounceOffOf(otherNode, cRest) {
-        // debugger;
-        // velocity of this, normal of that
+    bounceOffOf(otherNode, cRest, normal) {
+
+        // velocity of this, normal of other node
         var v = this.physics.velocity;
-        var n = normalize({x:otherNode.normal.x, y:otherNode.normal.y});
-        otherNode.rotateToGlobal(n);
+        var n;
+
+        if (normal) {
+            n = normalize(normal);
+        }
+        else {
+            n = normalize({x:otherNode.normal.x, y:otherNode.normal.y});
+            otherNode.rotateToGlobal(n);
+        }
 
         // coefficient of restitution (bounciness)
 
@@ -352,7 +360,7 @@ class DisplayObjectNode extends DisplayObject {
     /**
      * collision detection and resolution between this and other object
      * this object is moved if collision resolution is needed, other object stays in place
-     * returns true iff collision occurs
+     * returns resolution vector iff collision occurs
      */
     detectAndResolveCollisionWith(other) {
 
@@ -408,13 +416,14 @@ class DisplayObjectNode extends DisplayObject {
             // if it was backwards, rectify it
             if (this.detectCollisionWith(other)) {
                 // debugger;
-                resolution = multiplyVectorByScalar(resolution, -2);
-                if (this.parent) this.parent.convertPointFromGlobalToLocal(resolution);
-                this.position = vectorSubtract(this.position, resolution);
+                var fixedResolution = multiplyVectorByScalar(resolution, -2);
+                if (this.parent) this.parent.convertPointFromGlobalToLocal(fixedResolution);
+                this.position = vectorSubtract(this.position, fixedResolution);
+                return multiplyVectorByScalar(fixedResolution, 0.5);
             }
-
-            return true;
-
+            else {
+                return resolution;
+            }
         }
 
         return false;

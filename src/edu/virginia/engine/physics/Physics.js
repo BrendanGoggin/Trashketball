@@ -20,6 +20,7 @@ class Physics {
         this.gravity = {'x': 0, 'y': GRAVITY};
         this.acceleration = {'x': 0, 'y': 0};
         this.angularVelocity = 0;
+        this.maxSpeed = false;
     }
 
     /**
@@ -32,6 +33,7 @@ class Physics {
 
         this.velocity.x += this.acceleration.x * dt;
         this.velocity.y += this.acceleration.y * dt;
+        this.clampSpeed();
 
         this.obj.position.x += this.velocity.x * dt;
         this.obj.position.y += this.velocity.y * dt;
@@ -40,6 +42,27 @@ class Physics {
         while (this.obj.rotation > 2 * Math.PI) this.obj.rotation -= 2 * Math.PI;
         while (this.obj.rotation < -2 * Math.PI) this.obj.rotation += 2 * Math.PI;
 
+    }
+
+    /**
+     * Sets a maxSpeed to which velocity will always be clamped.
+     */
+    limitMaxSpeed(maxSpeed) {
+        this.maxSpeed = maxSpeed;
+        this.clampSpeed();
+    }
+
+    /**
+     * Executes the clamping for the max speed
+     */
+    clampSpeed() {
+        if (this.maxSpeed && this.maxSpeed !== 0) {
+            var currentSpeed = magnitude(this.velocity);
+            if (currentSpeed > this.maxSpeed) {
+                var normalizedVelocity = normalize(this.velocity);
+                this.velocity = multiplyVectorByScalar(normalizedVelocity, this.maxSpeed);
+            }
+        }
     }
 
 }
