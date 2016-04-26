@@ -97,11 +97,29 @@ class DisplayObjectNode extends DisplayObject {
      * Rotates the vector from global to local orientation, doesn't translate it or scale it
      */
     rotateToLocal(vector) {
-        if (this.hasParent()) this.parent.rotateToGlobal(vector);
+        if (this.hasParent()) this.parent.rotateToLocal(vector);
         rotate(vector, this.rotation);
         // if (this.scale.x < 0) vector.x *= -1;
         // if (this.scale.y < 0) vector.y *= -1;
         //scale(vector, {'x': 1/this.scale.x, 'y': 1/this.scale.y});
+        return;
+    }
+
+    /**
+     * Scales the vector to global and returns it in global scale
+     */
+    scaleToGlobal(vector) {
+        scale(vector, this.scale);
+        if (this.hasParent()) this.parent.scaleToGlobal(vector);
+        return;
+    }
+
+    /**
+     * Scales the vector to local and returns it in local scale
+     */
+    scaleToLocal(vector) {
+        if (this.hasParent()) this.parent.scaleToLocal(vector);
+        scale(vector, {x:1.0/this.scale.x, y:1.0/this.scale.y});
         return;
     }
 
@@ -341,12 +359,16 @@ class DisplayObjectNode extends DisplayObject {
         if (this.hitbox.shape == "Circle") {
             thisHitbox = thisHitbox.getCopy();
             this.convertPointFromLocalToGlobal(thisHitbox.center);
-            thisHitbox.radius *= Math.abs(this.scale.x);
+            var scaler = {x:1, y:0};
+            this.scaleToGlobal(scaler);
+            thisHitbox.radius *= Math.abs(scaler.x);
         }
         if (other.hitbox.shape == "Circle") {
             otherHitbox = otherHitbox.getCopy();
             other.convertPointFromLocalToGlobal(otherHitbox.center);
-            otherHitbox.radius *= Math.abs(other.scale.x);
+            var scaler = {x:1, y:0};
+            other.scaleToGlobal(scaler);
+            otherHitbox.radius *= Math.abs(scaler.x);
         }
 
         var resolution = detectCollision(thisHitbox, otherHitbox);
@@ -395,12 +417,16 @@ class DisplayObjectNode extends DisplayObject {
         if (this.hitbox.shape == "Circle") {
             thisHitbox = thisHitbox.getCopy();
             this.convertPointFromLocalToGlobal(thisHitbox.center);
-            thisHitbox.radius *= Math.abs(this.scale.x);
+            var scaler = {x:1, y:0};
+            this.scaleToGlobal(scaler);
+            thisHitbox.radius *= Math.abs(scaler.x);
         }
         if (other.hitbox.shape == "Circle") {
             otherHitbox = otherHitbox.getCopy();
             other.convertPointFromLocalToGlobal(otherHitbox.center);
-            otherHitbox.radius *= Math.abs(other.scale.x);
+            var scaler = {x:1, y:0};
+            other.scaleToGlobal(scaler);
+            otherHitbox.radius *= Math.abs(scaler.x);
         }
 
         var resolution = detectCollision(thisHitbox, otherHitbox);

@@ -17,7 +17,7 @@ class Game {
 
 		this.pressedKeys = new ArrayList();
 		this.lastTime = this.now(); // time in ms
-		this.root = new DisplayObjectNode("Root");
+		this.root = new DisplayObjectNode("Root", "");
 
 		this.tweenJuggler = new TweenJuggler(); // calls update on the tweens
 

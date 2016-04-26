@@ -2,7 +2,7 @@
 
 // A basic set of physics fields/behavior for objects in the game
 
-var GRAVITY = 0.00002;
+var GRAVITY = 0.000025;
 
 /**
  * Physics object to be attached to DisplayObjectNodes that have physics behavior.

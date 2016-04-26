@@ -16,7 +16,7 @@ class DisplayObject {
 		this.visible = true;
 		this.position = { x : 0.0, y : 0.0 };
 		this.pivotPoint = { x : 0.0, y : 0.0 }; // the object's origin, defaults to top-left
-		this.scale = { x : 1.0, y : 1.0}
+		this.scale = { x : 1.0, y : 1.0};
 		this.rotation = 0.0; // rotation in radians, counterclockwise
 		this.alpha = 1.0; // transparency: opaque = 1, clear = 0;
 		this.parent; // the parent node of this DO
