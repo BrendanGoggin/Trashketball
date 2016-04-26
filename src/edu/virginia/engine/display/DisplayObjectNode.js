@@ -24,19 +24,19 @@ class DisplayObjectNode extends DisplayObject {
      * Invoked every frame
      * dt: time since last call (ms)
      */
-    update(dt) {
+    update(pressedKeys, dt) {
         // update each child node
         if (this.physics) this.physics.update(this.position, dt);
-        this.updateChildren(dt);
+        this.updateChildren(pressedKeys, dt);
     }
 
     /**
      * calls update on the node's children
      *
      */
-    updateChildren(dt) {
+    updateChildren(pressedKeys, dt) {
         this.children.forEach(function(child) {
-            child.update(dt);
+            child.update(pressedKeys, dt);
         });
     }
 
@@ -155,43 +155,6 @@ class DisplayObjectNode extends DisplayObject {
     }
 
     /**
-     * Checks if this is colliding with the passed in object.
-     * returns point number if yes, -1 otherwise (including an object not having hitbox)
-     */
-    collidesWith(o) {
-        if (!this.hitbox || !o.hitbox) return false;
-
-        var p0 = {'x': o.hitbox.getMinX(), 'y': o.hitbox.getMinY()};
-        var p1 = {'x': o.hitbox.getMinX(), 'y': o.hitbox.getMaxY()};
-        var p2 = {'x': o.hitbox.getMaxX(), 'y': o.hitbox.getMaxY()};
-        var p3 = {'x': o.hitbox.getMaxX(), 'y': o.hitbox.getMinY()};
-
-        o.convertPointFromLocalToGlobal(p0);
-        o.convertPointFromLocalToGlobal(p1);
-        o.convertPointFromLocalToGlobal(p2);
-        o.convertPointFromLocalToGlobal(p3);
-
-        this.convertPointFromGlobalToLocal(p0);
-        this.convertPointFromGlobalToLocal(p1);
-        this.convertPointFromGlobalToLocal(p2);
-        this.convertPointFromGlobalToLocal(p3);
-
-        if (this.hitbox.containsPoint(p0)) {
-            return 0;
-        }
-        if (this.hitbox.containsPoint(p1)) {
-            return 1;
-        }
-        if (this.hitbox.containsPoint(p2)) {
-            return 2;
-        }
-        if (this.hitbox.containsPoint(p3))  {
-            return 3;
-        }
-        return -1;
-    }
-
-    /**
      * Appends child to end of children array
      */
     addChild(child) {
@@ -291,10 +254,10 @@ class DisplayObjectNode extends DisplayObject {
      * cRest is the coefficient of restitution (optional)
      * normal is the normal of the surface of otherNode (get it from detectCollision)
      */
-    bounceOffOf(otherNode, cRest, normal) {
+    bounceOffOf(otherNode, normal, cRest, cFriction) {
 
         // velocity of this, normal of other node
-        var v = this.physics.velocity;
+        var v = {x: this.physics.velocity.x, y: this.physics.velocity.y};
         var n;
 
         if (normal) {
@@ -306,13 +269,19 @@ class DisplayObjectNode extends DisplayObject {
         }
 
         // coefficient of restitution (bounciness)
-
         var bounce = cRest;
+
         if (bounce == undefined) bounce = 1.0;
         bounce = 1 + bounce;
 
-        // component of v parallel to n
-        var vPar = multiplyVectorByScalar(n, dotProduct(v, n));
+        // components of v parallel/perpendicular to n
+        var vPar  = multiplyVectorByScalar(n, dotProduct(v, n));
+        var vPerp = vectorSubtract(v, vPar);
+
+        // adjust for friction
+        if (cFriction) {
+            v = vectorSubtract(v, multiplyVectorByScalar(vPerp, cFriction));
+        }
 
         // change v for the "bounce": v - vPerp * cRest
         v = vectorSubtract(v, multiplyVectorByScalar(vPar, bounce));
