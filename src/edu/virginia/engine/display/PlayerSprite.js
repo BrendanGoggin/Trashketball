@@ -156,7 +156,7 @@ class PlayerSprite extends Sprite {
      */
     kickBall(ball, direction, speed) {
         if (!speed && speed !== 0) {
-            speed = 0.1;
+            speed = 1;
         }
         // change in velocity
         var deltaVel = multiplyVectorByScalar(direction, speed);
@@ -169,6 +169,9 @@ class PlayerSprite extends Sprite {
      * Heads the ball in the given direction (direction is a unit vector)
      */
     headBall(ball, direction, speed) {
+        if (!speed) {
+            speed = 0.5;
+        }
         this.kickBall(ball, direction, speed);
         return;
     }

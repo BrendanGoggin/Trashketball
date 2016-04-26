@@ -54,6 +54,11 @@ class Trashketball extends Game {
 
         super("Trashketball", GAME_WIDTH, GAME_HEIGHT, canvas);
 
+        this.song = new Audio();
+        this.song.src = 'resources/sounds/ChibiNinja.mp3';
+        this.song.loop = true;
+        this.song.play();
+
         this.score = 0;
         var attempts = 3;
 
@@ -193,10 +198,10 @@ class Trashketball extends Game {
                 if (!this.kicking) {
                     var direction = normalize({x: 1, y: -2});
                     var directionFlip = (this.player.scale.x > 0) ? 1 : -1;
-                    var speed = 1;
+                    // var speed = 1;
                     direction.x *= directionFlip;
                     this.kicking = true;
-                    this.player.kickBall(this.ball, direction, speed);
+                    this.player.kickBall(this.ball, direction);
                 }
             }
             // else {
@@ -213,9 +218,9 @@ class Trashketball extends Game {
             if (this.ball.detectCollisionWith(this.player.header) && !this.heading) {
                 var direction = normalize({x: 1, y: -3});
                 var directionFlip = (this.player.scale.x > 0) ? 1 : -1;
-                var speed = .5;
+                // var speed = .5;
                 direction.x *= directionFlip;
-                this.player.kickBall(this.ball, direction, speed);
+                this.player.headBall(this.ball, direction);
                 this.heading = true;
             }
         }
@@ -223,10 +228,13 @@ class Trashketball extends Game {
             this.heading = false;
         }
 
+
+
         for (var i = 0; i < this.trashWalls.length; i++) {
+            // debugger;
             var ballTrashWallResolution = this.ball.detectAndResolveCollisionWith(this.trashWalls[i]);
             if (ballTrashWallResolution) {
-                this.ball.bounceOffOf(this.trashWalls[i], 0.6, ballTrashWallResolution);
+                this.ball.bounceOffOf(this.trashWalls[i], 0.5, ballTrashWallResolution);
                 this.ball.hitbox.color = "red";
                 this.trashWalls[i].hitbox.color = "red";
             }
