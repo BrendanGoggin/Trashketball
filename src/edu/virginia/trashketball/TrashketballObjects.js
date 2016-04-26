@@ -62,9 +62,6 @@ function makePlayer() {
     // for player's hitbox to light up red on collision
     player.hitbox.color = "black";
 
-    // var playerMass = 50;
-    player.physics = new Physics(player);
-
     return player;
 }
 
