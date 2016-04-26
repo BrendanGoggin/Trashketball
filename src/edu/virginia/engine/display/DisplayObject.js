@@ -43,7 +43,7 @@ class DisplayObject {
 	 * Invoked every frame, manually for now, but later automatically if this DO is in DisplayTree
 	 * dt: time since last call (ms)
 	 */
-	update(dt){
+	update(pressedKeys, dt){
 		
 	}
 

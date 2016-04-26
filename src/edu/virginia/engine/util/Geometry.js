@@ -81,6 +81,7 @@ function divideVectorByScalar(vector, scalar) {
  */
 function normalize(vector) {
     var mag = magnitude(vector);
+    if (mag == 0) return {x:0, y:0};
     return divideVectorByScalar(vector, mag);
 }
 

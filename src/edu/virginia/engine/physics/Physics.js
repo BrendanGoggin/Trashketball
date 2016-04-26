@@ -2,7 +2,7 @@
 
 // A basic set of physics fields/behavior for objects in the game
 
-var GRAVITY = 0.000025;
+var GRAVITY = 0.0003;
 
 /**
  * Physics object to be attached to DisplayObjectNodes that have physics behavior.
@@ -28,11 +28,8 @@ class Physics {
      */
     update(position, dt) {
 
-        this.acceleration.x = this.gravity.x * dt;
-        this.acceleration.y = this.gravity.y * dt;
-
-        this.velocity.x += this.acceleration.x * dt;
-        this.velocity.y += this.acceleration.y * dt;
+        this.velocity.x += (this.acceleration.x + this.gravity.x) * dt;
+        this.velocity.y += (this.acceleration.y + this.gravity.y) * dt;
         this.clampSpeed();
 
         this.obj.position.x += this.velocity.x * dt;

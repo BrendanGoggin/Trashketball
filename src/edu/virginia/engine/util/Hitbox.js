@@ -47,7 +47,6 @@ function detectCollision(bodyA, bodyB) {
 
     // note: KEEP CIRCLES PROPORTIONALLY SCALED, ovals don't work for collisions
     if (bodyA.shape == "Circle" && bodyB.shape == "Circle") {
-        debugger;
         var circleA = bodyA,
             circleB = bodyB;
         var direction = vectorSubtract(circleB.center, circleA.center);

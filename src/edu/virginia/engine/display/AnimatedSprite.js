@@ -23,7 +23,7 @@ class AnimatedSprite extends Sprite {
      * Invoked every frame, manually for now, but later automatically if this DO is in DisplayTree
      * dt: time since last call (ms)
      */
-    update(dt) {
+    update(pressedKeys, dt) {
         if (!this.stopped && !this.paused) { // && this.imagesLoaded == (this.endIndex - this.startIndex)) {
             this.currentFrame++;
             var framesPerImage = Math.floor(this.speed / (this.endIndex - this.startIndex));
@@ -34,7 +34,7 @@ class AnimatedSprite extends Sprite {
                 this.displayImage = this.images[this.currentIndex];
             }
         }
-        super.update(dt);
+        super.update(pressedKeys, dt);
     }
 
     /**
