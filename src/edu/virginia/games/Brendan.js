@@ -17,7 +17,7 @@ class Trashketball extends Game {
         this.song = new Audio();
         this.song.src = 'resources/sounds/ChibiNinja.mp3';
         this.song.loop = true;
-        this.song.play();
+        //this.song.play();
 
         this.score = 0;
         var attempts = 3;
@@ -179,6 +179,7 @@ class Trashketball extends Game {
 function tick(){
     game.nextFrame();
 }
+
 
 /* Get the drawing canvas off of the document */
 var drawingCanvas = document.getElementById('game');
