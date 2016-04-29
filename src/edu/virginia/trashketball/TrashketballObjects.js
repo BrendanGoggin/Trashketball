@@ -6,7 +6,7 @@
 
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600;
-var SHOW_HITBOXES = false;
+var SHOW_HITBOXES = true;
 
 
 /**
