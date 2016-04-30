@@ -6,7 +6,7 @@
 
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600;
-var SHOW_HITBOXES = false;
+var SHOW_HITBOXES = true;
 
 
 /**
@@ -115,7 +115,7 @@ function makeTrash() {
 
     // circular hitbox on top of left wall
     var trashLeftTop = new DisplayObjectNode("trashLeftTop", "");
-    trashLeftTop.setPosition({x: -.9*trashWidth / 2.0, y: -0.9 * trashHeight / 2.0});
+    trashLeftTop.setPosition({x: -.9*trashWidth / 2.0, y: -0.85 * trashHeight / 2.0});
     trashLeftTop.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
     trashLeftTop.hitbox = new Circle({x:0, y:0}, 1.1*trashWallWidth/2.0);
     trashLeftTop.showHitbox = SHOW_HITBOXES;
@@ -131,7 +131,7 @@ function makeTrash() {
 
     // circular hitbox on top of right wall
     var trashRightTop = new DisplayObjectNode("trashRightTop", "");
-    trashRightTop.setPosition({x: .9*trashWidth / 2.0, y: -0.9 * trashHeight / 2.0});
+    trashRightTop.setPosition({x: .9*trashWidth / 2.0, y: -0.85 * trashHeight / 2.0});
     trashRightTop.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
     trashRightTop.hitbox = new Circle({x:0, y:0}, 1.1*trashWallWidth/2.0);
     trashRightTop.showHitbox = SHOW_HITBOXES;
