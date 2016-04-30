@@ -88,12 +88,12 @@ function makeBall() {
 function makeTrash() {
 
     // trash can
-    var trash = new Sprite("Trash", "Trash.png");
-    var trashWidth  = 32;
-    var trashHeight = 52;
+    var trash = new Sprite("Trash", "wood.png");
+    var trashWidth  = 100;
+    var trashHeight = 175;
 
-    trash.setPosition({x:700,y:493});
-    trash.setScale({x:3.5,y:3.5});
+    trash.setPosition({x:700,y:480});
+    //trash.setScale({x:3.5,y:3.5});
     trash.setPivotPoint({x: trashWidth/2.0, y: trashHeight/2.0});
     
     trash.hitbox = new Rectangle({x: -0.5*trashWidth/2.0, y: 0}, 0.5*trashWidth, trashHeight/3);
@@ -101,8 +101,8 @@ function makeTrash() {
 
 
     // dimensions of walls of trash can
-    var trashWallWidth = 7;
-    var trashWallHeight = 0.75 * trashHeight;
+    var trashWallWidth = 15;
+    var trashWallHeight = trashHeight;
     var trashWallTopLeft = {x: -trashWallWidth / 2.0, y: -trashWallHeight / 2.0};
 
     // left wall of trash can
@@ -115,7 +115,7 @@ function makeTrash() {
 
     // circular hitbox on top of left wall
     var trashLeftTop = new DisplayObjectNode("trashLeftTop", "");
-    trashLeftTop.setPosition({x: -.9*trashWidth / 2.0, y: -.65 * trashHeight / 2.0});
+    trashLeftTop.setPosition({x: -.9*trashWidth / 2.0, y: -0.9 * trashHeight / 2.0});
     trashLeftTop.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
     trashLeftTop.hitbox = new Circle({x:0, y:0}, 1.1*trashWallWidth/2.0);
     trashLeftTop.showHitbox = SHOW_HITBOXES;
@@ -131,7 +131,7 @@ function makeTrash() {
 
     // circular hitbox on top of right wall
     var trashRightTop = new DisplayObjectNode("trashRightTop", "");
-    trashRightTop.setPosition({x: .9*trashWidth / 2.0, y: -.65 * trashHeight / 2.0});
+    trashRightTop.setPosition({x: .9*trashWidth / 2.0, y: -0.9 * trashHeight / 2.0});
     trashRightTop.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
     trashRightTop.hitbox = new Circle({x:0, y:0}, 1.1*trashWallWidth/2.0);
     trashRightTop.showHitbox = SHOW_HITBOXES;
