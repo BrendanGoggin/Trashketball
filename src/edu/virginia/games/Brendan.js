@@ -17,7 +17,8 @@ class Trashketball extends Game {
         this.song = new Audio();
         this.song.src = 'resources/sounds/ChibiNinja.mp3';
         this.song.loop = true;
-        //this.song.play();
+        this.song.volume = 0.3;
+        this.song.play();
 
         this.score = 0;
         var attempts = 3;
@@ -103,11 +104,28 @@ class Trashketball extends Game {
             // debugger;
             var ballTrashWallResolution = this.ball.detectAndResolveCollisionWith(this.trashWalls[i]);
             if (ballTrashWallResolution) {
-                var cRest = 0.5;
-                var cFriction = 0;
-                this.ball.bounceOffOf(this.trashWalls[i], ballTrashWallResolution, cRest, cFriction);
-                this.ball.hitbox.color = "red";
-                this.trashWalls[i].hitbox.color = "red";
+
+                var bounce = true;
+                
+                // if ball hits top side of can side-wall, ignore the bounce because there are
+                // circles on top of the side-walls for it to hit
+                if (this.trashWalls[i].hitbox.shape == "Rectangle") {
+                    var resCopy = copyPoints([ballTrashWallResolution])[0];
+                    resCopy = normalize(resCopy);
+                    this.trashWalls[i].parent.rotateToLocal(resCopy);
+                    if (Math.abs(resCopy.x) < 0.01 && Math.abs(resCopy.y - 1) < 0.01) {
+                        bounce = false;
+                        this.ball.position = vectorAdd(this.ball.position, ballTrashWallResolution);
+                    }
+                }
+
+                if (bounce) {
+                    var cRest = 0.5;
+                    var cFriction = 0;
+                    this.ball.bounceOffOf(this.trashWalls[i], ballTrashWallResolution, cRest, cFriction);
+                    this.ball.hitbox.color = "red";
+                    this.trashWalls[i].hitbox.color = "red";
+                }
             }
             else {
                 this.trashWalls[i].hitbox.color = "black";
