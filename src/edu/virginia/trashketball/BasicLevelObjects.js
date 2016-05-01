@@ -5,7 +5,7 @@
 
 "use strict";
 
-class BasicLevel {
+class BasicLevel extends Level {
 
     /**
      * Creates and returns parent node of all walls
