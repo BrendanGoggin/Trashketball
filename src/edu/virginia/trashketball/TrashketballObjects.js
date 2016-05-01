@@ -6,7 +6,7 @@
 
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600;
-var SHOW_HITBOXES = true;
+var SHOW_HITBOXES = false;
 
 
 /**
@@ -77,8 +77,9 @@ function makeBall() {
     ball.setScale({x:.45, y:.45});
     ball.hitbox = new Circle({x:0, y:0}, 72);
     ball.physics = new Physics(ball);
-    ball.physics.angularVelocity = .001;
+    ball.physics.makeAngularProportionalToTranslational();
     ball.physics.limitMaxSpeed(1);
+    ball.physics.limitMaxAngularSpeed();
     return ball;
 }
 

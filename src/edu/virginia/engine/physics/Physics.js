@@ -4,6 +4,11 @@
 
 var GRAVITY = 0.0009;
 
+
+// defualt values for angular velocity behavior
+var ANGULAR_COEFF = 0.015;
+var MAX_ANGULAR_SPEED = 0.005;
+
 /**
  * Physics object to be attached to DisplayObjectNodes that have physics behavior.
  */
@@ -21,6 +26,10 @@ class Physics {
         this.acceleration = {'x': 0, 'y': 0};
         this.angularVelocity = 0;
         this.maxSpeed = false;
+
+        this.angularProportionalToTranslational = false;
+        this.angularCoefficient = ANGULAR_COEFF;
+        this.maxAngularSpeed = false;
     }
 
     /**
@@ -34,6 +43,12 @@ class Physics {
 
         this.obj.position.x += this.velocity.x * dt;
         this.obj.position.y += this.velocity.y * dt;
+
+        // update angular vel to be proportional to translational vel
+        if (this.angularProportionalToTranslational) {
+            this.angularVelocity = this.angularCoefficient * -this.velocity.x;
+        }
+        this.clampAngularSpeed();
 
         this.obj.rotation += this.angularVelocity * dt;
         while (this.obj.rotation > 2 * Math.PI) this.obj.rotation -= 2 * Math.PI;
@@ -50,6 +65,15 @@ class Physics {
     }
 
     /**
+     * Sets a maxAngularSpeed to which angular velocity will always be clamped.
+     */
+    limitMaxAngularSpeed(maxAngularSpeed) {
+        if (!maxAngularSpeed) maxAngularSpeed = MAX_ANGULAR_SPEED;
+        this.maxAngularSpeed = maxAngularSpeed;
+        this.clampSpeed();
+    }
+
+    /**
      * Executes the clamping for the max speed
      */
     clampSpeed() {
@@ -60,6 +84,28 @@ class Physics {
                 this.velocity = multiplyVectorByScalar(normalizedVelocity, this.maxSpeed);
             }
         }
+    }
+
+    /**
+     * Executes the clamping for the max angular speed
+     */
+    clampAngularSpeed() {
+        if (this.maxAngularSpeed && this.maxAngularSpeed !== 0) {
+            var currentAngularSpeed = this.angularVelocity;
+            if (Math.abs(currentAngularSpeed) > this.maxAngularSpeed) {
+                this.angularVelocity = this.maxAngularSpeed;
+                this.angularVelocity *= (currentAngularSpeed < 0) ? -1 : 1;
+            }
+        }
+    }
+
+    /** 
+     * Makes angular velocity proportional to velocity
+     */
+    makeAngularProportionalToTranslational(coefficient) {
+        if (!coefficient) coefficient = ANGULAR_COEFF;
+        this.angularCoefficient = coefficient;
+        this.angularProportionalToTranslational = true;
     }
 
 }

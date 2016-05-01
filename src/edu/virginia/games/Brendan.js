@@ -19,6 +19,7 @@ class Trashketball extends Game {
         this.song.loop = true;
         this.song.volume = 0.3;
         this.song.play();
+        this.sounds = [this.song];
 
         this.score = 0;
         var attempts = 3;
@@ -185,6 +186,17 @@ class Trashketball extends Game {
         var ctx = this.canvas.getContext("2d");
         ctx.font = "36px Georgia";
         ctx.fillText("Score: "+this.score, 750, 100);
+    }
+
+
+    /**
+     * Called by the volume slider on the webpage
+     */
+    setVolume(value) {
+        for (var i = 0; i < this.sounds.length; i++) {
+            this.sounds[i].volume = (value/100.0);
+        }
+        document.getElementById("volume-range").value = value;
     }
 
 }

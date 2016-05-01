@@ -1,0 +1,40 @@
+.volume-div {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 250px;
+    white-space: nowrap;
+}
+
+#volume-range {
+    width: 95%;
+    padding-top: 2px;
+}
+
+.volume-off-div {
+    padding-right: 6px !important;
+    margin: 0px 20px 0px 0px !important;
+    white-space: nowrap;
+}
+
+.volume-range-div {
+    padding: 4px 0 0 0 !important;
+    margin: 0px auto !important;
+    white-space: nowrap;
+}
+
+.volume-up-div {
+    padding: 0px !important;
+    margin: 0px !important;
+    white-space: nowrap;
+}
+
+.glyphicon-volume-up, .glyphicon-volume-off {
+    width: 100%;
+    font-size: 24px;
+}
+
+.glyphicon-volume-up:hover, .glyphicon-volume-off:hover {
+    color: #777777;
+}
