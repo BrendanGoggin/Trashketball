@@ -1,11 +1,15 @@
 "use strict";
 
-var JUMP_SPEED = 0.3;
+var JUMP_SPEED = 0.4;
 var WALK_SPEED = 0.4;
 var RUN_SPEED = WALK_SPEED * 1.5;
 
 // pressing down increases downward acceleration in the air
 var FALL_ACCELERATION; // = 1 * (new Physics().gravity.y);
+
+// how hard he kicks and heads the ball
+var KICK_SPEED = 1;
+var HEAD_SPEED = .5 * KICK_SPEED;
 
 // key codes
 var KEY_SPACE = 32;
@@ -54,13 +58,21 @@ class PlayerSprite extends Sprite {
 
         // set the FALL_ACCELERATION based on gravity
         this.defaultGravity = this.physics.gravity;
-        FALL_ACCELERATION = 3 * this.defaultGravity.y;
+        FALL_ACCELERATION = 1 * this.defaultGravity.y;
         this.downPressedGravity = {x: this.defaultGravity.x, y: this.defaultGravity.y + FALL_ACCELERATION};
 
         this.kicker = false;
         this.kickbox = false;
         this.header = false;
         this.headbox = false;
+
+        // sounds
+        this.kickSound = new Audio();
+        this.kickSound.src = 'resources/sounds/ball_kick.wav';
+        this.sounds = [this.kickSound];
+        this.headSound = new Audio();
+        this.headSound.src = 'resources/sounds/ball_head.wav';
+        this.sounds.push(this.headSound);
 
         // which frames in the spritesheet each action uses
         this.walkFrames = [5, 4];
@@ -219,27 +231,77 @@ class PlayerSprite extends Sprite {
     }
 
     /**
+     * Returns the direction in which to kick/head the ball, based on which keys are pressed down
+     */
+    getKickDirection() {
+        var x = 0;
+        var y = 0;
+        var neutral = true;
+        if (this.upPressed) {
+            y -= 1;
+            neutral = false;
+        }
+        if (this.downPressed) {
+            y += 1;
+            neutral = false;
+        }
+        if (this.rightPressed) {
+            x += 1;
+            neutral = false;
+        }
+        if (this.leftPressed) {
+            x -= 1;
+            neutral = false;
+        }
+
+        var direction; 
+        if (!neutral) {
+            direction = normalize({x:x, y:y});
+        }
+        else {
+            x = (this.scale.x > 0) ? 1 : -1;
+            direction = normalize({x:x, y:-3});
+        }
+        return direction;
+    }
+
+    /**
      * Kicks the ball in the given direction (direction is unit vector)
      */
-    kickBall(ball, direction, speed) {
+    kickBall(ball, speed) {
         if (!speed && speed !== 0) {
             speed = 1;
         }
-        // change in velocity
-        var deltaVel = multiplyVectorByScalar(direction, speed);
-        var ballOldVel = {x: ball.physics.velocity.x, y: ball.physics.velocity.y};
-        ball.physics.velocity = vectorAdd(ballOldVel, deltaVel);
+        speed *= KICK_SPEED;
+        var direction = this.getKickDirection();
+        this.exertImpulseOnBall(ball, direction, speed);
+        this.kickSound.play();
         return;
     }
 
     /**
      * Heads the ball in the given direction (direction is a unit vector)
      */
-    headBall(ball, direction, speed) {
+    headBall(ball, speed) {
         if (!speed) {
-            speed = 0.5;
+            speed = 1;
         }
-        this.kickBall(ball, direction, speed);
+        speed *= HEAD_SPEED;
+        var direction = this.getKickDirection();
+        this.exertImpulseOnBall(ball, direction, speed);
+        this.headSound.play();
+        return;
+    }
+
+    /**
+     * puts an impulse onto the ball
+     * to be called by kickBall() and headBall()
+     */
+    exertImpulseOnBall(ball, direction, speed) {
+        var deltaVel = multiplyVectorByScalar(direction, speed);
+        // var ballOldVel = {x: ball.physics.velocity.x, y: ball.physics.velocity.y};
+        // ball.physics.velocity = vectorAdd(ballOldVel, deltaVel);
+        ball.physics.velocity = deltaVel;
         return;
     }
 
@@ -279,14 +341,13 @@ class PlayerSprite extends Sprite {
      * Poll for and handle key presses
      */
     pollPressedKeys(pressedKeys) {
-        if (pressedKeys.contains(RIGHT_KEY) && pressedKeys.contains(DOWN_KEY) && pressedKeys.contains(SPRINT_KEY))
-            debugger;
         this.pressedKeys = pressedKeys;
         this.pollSprint();
         this.pollDown();
         this.pollJump();
         this.pollLeft();
         this.pollRight();
+        this.pollUp();
         this.pollKick();
         this.pollHeader();
         
@@ -327,7 +388,10 @@ class PlayerSprite extends Sprite {
         // Walk left
         if (this.pressedKeys.contains(LEFT_KEY)) {
             this.leftPressed = true;
-            if (this.scale.x >= 0) this.scale.x *= -1.0;
+            if (this.scale.x >= 0)  {
+                this.scale.x *= -1.0;
+                this.position.x += 25;
+            }
             if (this.sprintPressed) {
                 this.animate("run");
                 this.setSpeed(15); // animation speed
@@ -364,7 +428,10 @@ class PlayerSprite extends Sprite {
         // Walk right
         if (this.pressedKeys.contains(RIGHT_KEY)) {
             this.rightPressed = true;
-            if (this.scale.x < 0) this.scale.x *= -1.0;
+            if (this.scale.x < 0) {
+                this.scale.x *= -1.0;
+                this.position.x -= 25;
+            }
             if (this.sprintPressed) {
                 this.animate("run");
                 this.setSpeed(15); // animation speed
@@ -410,6 +477,19 @@ class PlayerSprite extends Sprite {
             if (this.downPressed) {
                 this.physics.acceleration.y = this.downPressedGravity.y;
             }
+        }
+    }
+
+    /**
+     * Polls for and handles Up
+     */
+    pollUp() {
+        // Up
+        if (this.pressedKeys.contains(UP_KEY)) {
+            this.upPressed = true;
+        }
+        else {
+            this.upPressed = false;
         }
     }
 

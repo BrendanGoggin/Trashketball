@@ -6,7 +6,7 @@
 
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600;
-var SHOW_HITBOXES = false;
+var SHOW_HITBOXES = true;
 
 
 /**
@@ -29,9 +29,9 @@ function makePlayer() {
 
     // player's kicking foot node
     var kicker = new DisplayObjectNode("Kicker", "");
-    kicker.setPosition({x:12, y: 120});
-    var kickerWidth = 200;
-    var kickerHeight = 100;
+    kicker.setPosition({x:50, y: 120});
+    var kickerWidth = 130;
+    var kickerHeight = 50;
     kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
     kicker.hitbox = false;
     kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
@@ -43,7 +43,7 @@ function makePlayer() {
     // player's heading foot node
     var header = new DisplayObjectNode("Header", "");
     header.setPosition({x:0, y:-100});
-    var headerWidth = 200;
+    var headerWidth = 150;
     var headerHeight = 100;
     header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
     header.hitbox = false;
@@ -78,7 +78,7 @@ function makeBall() {
     ball.hitbox = new Circle({x:0, y:0}, 72);
     ball.physics = new Physics(ball);
     ball.physics.makeAngularProportionalToTranslational();
-    ball.physics.limitMaxSpeed(1);
+    ball.physics.limitMaxSpeed(1.5);
     ball.physics.limitMaxAngularSpeed();
     return ball;
 }
