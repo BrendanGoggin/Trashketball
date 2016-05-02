@@ -527,7 +527,7 @@ class PlayerSprite extends Sprite {
             this.setSpeed(15);
         }
         else {
-            this.headerPressed;
+            this.headerPressed = false;
             this.header.hitbox = false;
         }
     }
