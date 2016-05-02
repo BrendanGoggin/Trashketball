@@ -35,6 +35,7 @@ function makePlayer() {
     kicker.setPivotPoint({x: kickerWidth / 2.0, y: kickerHeight / 2.0});
     kicker.hitbox = false;
     kickbox = new Rectangle({x: -kickerWidth / 2.0, y: -kickerHeight / 2.0}, kickerWidth, kickerHeight);
+    // kickbox = new Circle({x: 0, y: 0}, kickerWidth / 2.0);
     kicker.showHitbox = SHOW_HITBOXES;
     player.addChild(kicker);
     player.kicker = kicker;
@@ -139,6 +140,17 @@ function makeTrash() {
     trash.addChild(trashRightTop);
 
     return trash;
+}
+
+/**
+ * Returns a DisplayObjectNode which shows all pause screen stuff
+ */
+function makePauseLayer() {
+    var pauseNode = new DisplayObjectNode("PauseNode", "BlackRectangle.jpg");
+    pauseNode.position = {x:0, y:0};
+    pauseNode.scale = {x:1, y:1.5};
+    pauseNode.alpha = 0.5;
+    return pauseNode;
 }
 
 

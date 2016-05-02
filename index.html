@@ -51,7 +51,7 @@
     <!-- <script type="text/javascript" src="src/edu/virginia/lab6test/TweenageWasteland.js"></script> -->
     <script type="text/javascript" src="src/edu/virginia/trashketball/TrashketballObjects.js"></script>
     <script type="text/javascript" src="src/edu/virginia/trashketball/Level.js"></script>
-    <script type="text/javascript" src="src/edu/virginia/trashketball/BasicLevelObjects.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/trashketball/LevelOne.js"></script>
     <script type="text/javascript" src="src/edu/virginia/games/Brendan.js"></script>
 
     <br>
@@ -61,7 +61,7 @@
             <span class="glyphicon glyphicon-volume-off" aria-hidden="true" onclick="game.setVolume(0);"></span>
         </div>
         <div class="col-sm-9 volume-range-div">
-        <input type="range" id="volume-range" min="0" max="100" step="1"
+        <input type="range" id="volume-range" min="0" max="100" step="1" value="0"
             oninput="game.setVolume(this.value);" onchange="game.setVolume(this.value);">
         </div>
         <div class="col-sm-1 volume-up-div">

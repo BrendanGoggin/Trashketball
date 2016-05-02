@@ -174,7 +174,10 @@ class DisplayObjectNode extends DisplayObject {
      * Removes the given child (checks by id)
      */
     removeChild(child) {
-        var index = this.getIndexOfChild(child);
+        var index = -1; 
+        for (var i = 0; i < this.children.length; i++) {
+            if (this.children[i].id == child.id) index = i;
+        }
         if (index != -1) {
             this.children.splice(index, 1);
         }
