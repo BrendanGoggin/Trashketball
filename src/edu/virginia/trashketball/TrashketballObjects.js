@@ -15,7 +15,7 @@ var SHOW_HITBOXES = true;
 function makePlayer() {
 
     // Player sprite
-    var player = new PlayerSprite("Player", "KidAnimations.png");
+    var player = new PlayerSprite("Player", "KidAnimations2.png");
 
     // attach and display player's hitbox
     var playerHitboxWidth = 200;

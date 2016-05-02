@@ -76,7 +76,8 @@ class PlayerSprite extends Sprite {
 
         // which frames in the spritesheet each action uses
         this.walkFrames = [5, 4];
-        this.kickFrames = [0,1];
+        this.kickFrames = [0];
+        this.jumpFrames = [1];
         this.runFrames = [2,3];
         this.restFrames = [4];
         this.frameList = this.restFrames;
@@ -174,6 +175,9 @@ class PlayerSprite extends Sprite {
         } 
         else if (animation == "kick") {
             this.frameList = this.kickFrames;
+        }
+        else if (animation == "jump") {
+            this.frameList = this.jumpFrames;
         }
         else {
             this.frameList = this.restFrames;
@@ -353,7 +357,7 @@ class PlayerSprite extends Sprite {
         this.pollHeader();
         
         // stop animation if no relevant keys pressed
-        if (!(this.leftPressed || this.rightPressed || this.kickPressed)) {
+        if (!(this.leftPressed || this.rightPressed || this.kickPressed )) {
             this.stopAnimation();
         }
 
@@ -519,6 +523,8 @@ class PlayerSprite extends Sprite {
         if (this.pressedKeys.contains(HEADER_KEY)) {
             this.headerPressed = true;
             this.header.hitbox = this.headbox;
+            this.animate("jump");
+            this.setSpeed(15);
         }
         else {
             this.headerPressed;
