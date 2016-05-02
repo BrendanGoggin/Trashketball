@@ -521,7 +521,7 @@ class PlayerSprite extends Sprite {
             this.header.hitbox = this.headbox;
         }
         else {
-            this.headerPressed;
+            this.headerPressed = false;
             this.header.hitbox = false;
         }
     }
