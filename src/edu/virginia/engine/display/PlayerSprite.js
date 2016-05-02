@@ -302,6 +302,7 @@ class PlayerSprite extends Sprite {
         // var ballOldVel = {x: ball.physics.velocity.x, y: ball.physics.velocity.y};
         // ball.physics.velocity = vectorAdd(ballOldVel, deltaVel);
         ball.physics.velocity = deltaVel;
+        ball.position = vectorAdd(ball.position, direction);
         return;
     }
 
