@@ -14,12 +14,6 @@ class Trashketball extends Game {
 
         super("Trashketball", GAME_WIDTH, GAME_HEIGHT, canvas);
 
-        this.song = new Audio();
-        this.song.src = 'resources/sounds/ChibiNinja.mp3';
-        this.song.loop = true;
-        this.song.volume = 0.3;
-        this.song.play();
-        this.sounds = [this.song];
 
         this.score = 0;
         var attempts = 3;
@@ -45,6 +39,21 @@ class Trashketball extends Game {
         this.root.addChild(this.ball);
         this.root.addChild(this.trash);
 
+
+        // sounds
+        this.song = new Audio();
+        this.song.src = 'resources/sounds/ChibiNinja.mp3';
+        this.song.loop = true;
+        this.volume = 0.3;
+        this.song.volume = this.volume;
+        this.song.play();
+        this.sounds = [this.song];
+
+        for (var i = 0; i < this.player.sounds.length; i++) {
+            this.player.sounds[i].volume = this.volume;
+            this.sounds.push(this.player.sounds[i]);
+        }
+
     }
 
     update(pressedKeys, dt){
@@ -67,12 +76,8 @@ class Trashketball extends Game {
             if (this.ball.detectCollisionWith(this.player.kicker) && !this.kicking && !this.heading) {
                 // this.ball.bounceOffOf(this.player.kicker);
                 if (!this.kicking) {
-                    var direction = normalize({x: 1, y: -2});
-                    var directionFlip = (this.player.scale.x > 0) ? 1 : -1;
-                    // var speed = 1;
-                    direction.x *= directionFlip;
                     this.kicking = true;
-                    this.player.kickBall(this.ball, direction);
+                    this.player.kickBall(this.ball);
                 }
             }
             // else {
@@ -87,11 +92,7 @@ class Trashketball extends Game {
         // Heading
         if (this.player.header.hitbox) {
             if (this.ball.detectCollisionWith(this.player.header) && !this.heading) {
-                var direction = normalize({x: 1, y: -3});
-                var directionFlip = (this.player.scale.x > 0) ? 1 : -1;
-                // var speed = .5;
-                direction.x *= directionFlip;
-                this.player.headBall(this.ball, direction);
+                this.player.headBall(this.ball);
                 this.heading = true;
             }
         }
