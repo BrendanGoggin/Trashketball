@@ -31,6 +31,8 @@ class MoonLevel extends Level {
         gameInstance.timeLeft = 60000;
         gameInstance.addRock = 10000;
         gameInstance.timer = this.makeTimer();
+        gameInstance.scoreNode = this.makeScoreNode();
+        gameInstance.moonRockMaker = this.makeMoonRockMaker(gameInstance);
 
 
         gameInstance.root.addChild(background);
@@ -38,6 +40,7 @@ class MoonLevel extends Level {
         gameInstance.root.addChild(player);
         gameInstance.root.addChild(ball);
         gameInstance.root.addChild(trash);
+        gameInstance.root.addChild(gameInstance.moonRockMaker);
 
 
         var life = new Sprite("RockCount", "Rock.png");
@@ -45,6 +48,7 @@ class MoonLevel extends Level {
         life.setPosition({x: 50, y: 60});
         gameInstance.root.addChild(life);
         gameInstance.root.addChild(gameInstance.timer);
+        gameInstance.root.addChild(gameInstance.scoreNode);
     }
 
 
@@ -53,10 +57,38 @@ class MoonLevel extends Level {
      */
     static makeTimer() {
         var timer = new TimerNode("Timer", "");
-        timer.timeLeft = 60 * 1000;
+        var startTime = 60 * 1000;
+        var timeStep = 10 * 1000;
+        timer.setToStart(startTime, timeStep);
         timer.position = {x:50, y:50};
         timer.fontColor = "white";
         return timer;
+    }
+
+
+    /**
+     * Create and return the score node
+     */
+    static makeScoreNode() {
+        var score = new TextNode("Score", "x 0");
+        score.position = {x:100, y:95};
+        score.fontColor = "white";
+        return score;
+    }
+
+
+
+    /**
+     * Creates and returns the object used to make new moon rocks every 10 seconds
+     */
+    static makeMoonRockMaker(gameInstance) {
+        var moonRockMaker = new MoonRockMaker("MoonRockMaker", "");
+        moonRockMaker.timer = gameInstance.timer;
+        moonRockMaker.timeUntilNextRock = gameInstance.timer.timeStep;
+        moonRockMaker.gameRoot = gameInstance.root;
+        moonRockMaker.gameRocks = gameInstance.balls;
+        moonRockMaker.gameTrash = gameInstance.trash;
+        return moonRockMaker;
     }
 
     /**

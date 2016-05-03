@@ -84,9 +84,10 @@ class MoonRockSprite extends BallSprite {
         // handle colliding with the 'success' area of the trash can
         if (this.detectCollisionWith(trash)) {
             trash.hitbox.color = "green";
-            gameInstance.score += 1;
             this.setPosition({x: 300, y: 180});
             gameInstance.timer.timeLeft += 10000;
+            gameInstance.score += 1;
+            gameInstance.scoreNode.text = "x " + gameInstance.score;
         }
         else {
             trash.hitbox.color = "black";
