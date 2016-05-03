@@ -11,7 +11,7 @@
     <p style="font-family: Arial; font-size: 24px; padding-left: 100px;"> 
         WASD or Arrows to Move. Y to run. J to kick. K to head. Get the ball in the trash can!
     </p>
-    <canvas id="game" width="1000" height="600" style="background: url('resources/EmptyBleachers.png')">
+    <canvas id="game" width="1000" height="600" style="background-color: #f0f0f0;">
     <p>Your browser doesn't support canvas.</p>
     </canvas>
 
@@ -25,9 +25,11 @@
     <script type="text/javascript" src="src/edu/virginia/engine/physics/Physics.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/DisplayObject.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/DisplayObjectNode.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/TextNode.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/Sprite.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/AnimatedSprite.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/PlayerSprite.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/BallSprite.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/TweenTransition.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/Tween.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/TweenJuggler.js"></script>
@@ -40,8 +42,11 @@
     <!-- <script type="text/javascript" src="src/edu/virginia/lab6test/QuestLove.js"></script> -->
     <!-- <script type="text/javascript" src="src/edu/virginia/lab6test/TweenageWasteland.js"></script> -->
     <script type="text/javascript" src="src/edu/virginia/trashketball/TrashketballObjects.js"></script>
-    <script type="text/javascript" src="src/edu/virginia/trashketball/BasicLevelObjects.js"></script>
-    <script type="text/javascript" src="src/edu/virginia/games/Brendan.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/trashketball/Level.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/trashketball/LevelOne.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/trashketball/Menu.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/games/Test.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/games/MenuGame.js"></script>
 
     <p id="quest-console" style="font-family: Arial; font-size: 30px; padding-left: 100px; background-color: white;">
         
@@ -53,7 +58,8 @@
 
     <script>
         window.onkeydown = function(e) {
-          if (e.keyCode == 32 && e.target == document.body) {
+          if ((e.keyCode == 32 || e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40)
+                 && e.target == document.body) {
             e.preventDefault();
           }
         };
