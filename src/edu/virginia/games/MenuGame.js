@@ -33,6 +33,7 @@ class MenuGame extends Game {
      * Loads menu
      */
     loadMenu() {
+        this.root.children = [];
         this.menu = Menu.makeMenuLayer();
         this.root.addChild(this.menu);
 
