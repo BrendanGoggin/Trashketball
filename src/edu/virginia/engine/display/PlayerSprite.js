@@ -357,7 +357,7 @@ class PlayerSprite extends Sprite {
         this.pollHeader();
         
         // stop animation if no relevant keys pressed
-        if (!(this.leftPressed || this.rightPressed || this.kickPressed )) {
+        if (!(this.leftPressed || this.rightPressed || this.kickPressed || this.headerPressed)) {
             this.stopAnimation();
         }
 

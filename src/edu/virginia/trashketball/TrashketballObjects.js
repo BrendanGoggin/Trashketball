@@ -6,7 +6,7 @@
 
 var GAME_WIDTH = 1000;
 var GAME_HEIGHT = 600;
-var SHOW_HITBOXES = true;
+var SHOW_HITBOXES = false;
 
 
 /**
@@ -90,7 +90,7 @@ function makeBall() {
 function makeTrash() {
 
     // trash can
-    var trash = new Sprite("Trash", "wood.png");
+    var trash = new Sprite("Trash", "wood2.png");
     var trashWidth  = 100;
     var trashHeight = 175;
 
