@@ -4,28 +4,32 @@
 
 "use strict";
 
-var KEY_W = 87;
-var KEY_A = 65;
-var KEY_S = 83;
-var KEY_D = 68;
-var KEY_UP_ARROW = 38;
-var KEY_LEFT_ARROW = 37;
-var KEY_DOWN_ARROW = 40;
-var KEY_RIGHT_ARROW = 39;
-var KEY_ENTER = 13;
+// var KEY_W = 87;
+// var KEY_A = 65;
+// var KEY_S = 83;
+// var KEY_D = 68;
+// var KEY_UP_ARROW = 38;
+// var KEY_LEFT_ARROW = 37;
+// var KEY_DOWN_ARROW = 40;
+// var KEY_RIGHT_ARROW = 39;
+// var KEY_ENTER = 13;
 
-var MENU_FONT_HEIGHT = 60;
-var MENU_FONT = "" + MENU_FONT_HEIGHT + "px Comic Sans MS";
-var TEXT_COLOR = "";
+// var FONT_HEIGHT = 60;
+// var MENU_FONT = "" + FONT_HEIGHT + "px Comic Sans MS";
+// var TEXT_COLOR = "";
 
-class Menu extends DisplayObjectNode {
+var PAUSE_MENU_SPACING = 10;
+var PAUSE_MENU_PADDING = 15;
+var PAUSE_MENU_POSITION_X = 70;
+
+class PauseMenu extends DisplayObjectNode {
 
 
     constructor(id, filename) {
         super(id, ""); // has no image, just a parent node
 
         // levels (nodes of level names for player to select)
-        this.levels = [];
+        this.options = [];
         // this.levelSelected = 0;
         this.background = false; // a background sprite (to be set)
         this.selected = -1;
@@ -34,9 +38,14 @@ class Menu extends DisplayObjectNode {
         this.upPressed = false;
         this.downPressed = false;
 
-        this.loadNewLevel = -1;
+        this.resumeGame = false;
+        this.backToMainMenu = false;
 
         this.sounds = [];
+
+        this.pauseSound = new Audio();
+        this.pauseSound.src = 'resources/sounds/pause.wav';
+        this.sounds.push(this.pauseSound);
 
         this.cursorUpSound = new Audio();
         this.cursorUpSound.src = 'resources/sounds/menu_select_2_trimmed.wav';
@@ -90,28 +99,29 @@ class Menu extends DisplayObjectNode {
 
         // Enter
         if (pressedKeys.contains(KEY_ENTER)) {
-            if (!this.enterPressed) {
-                if (this.selected != -1) {
-                    this.choose(this.selected);
-                }
+            if (this.selected != -1) {
+                this.choose(this.selected);
             }
-            this.enterPressed = true;
-                
         }
-        else {
-            this.enterPressed = false;
-        }
-
     }
 
     /**
      * "Chooses" the level specified. AKA hitting enter on the level
      *  specified, or clicking on it.
      */
-    choose(levelNumber) {
+    choose(optionNumber) {
         this.chooseSound.play();
-        if (levelNumber < 0 || levelNumber > this.levels.length - 1) return;
-        this.loadNewLevel = levelNumber;
+        if (optionNumber < 0 || optionNumber > this.options.length - 1) return;
+        switch (optionNumber) {
+            
+            // resume game
+            case 0:
+                this.resumeGame = true;
+                break;
+            case 1:
+                this.backToMainMenu = true;
+
+        }
     }
 
 
@@ -119,10 +129,10 @@ class Menu extends DisplayObjectNode {
      * Selects the level with the specified number, but doesn't 'click' it
      * Unselects the level which was previously selected, if there was one
      */
-    select(levelNumber) {
-        if (this.selected != -1) this.levels[this.selected].unselect(this.cursor);
-        this.selected = levelNumber;
-        this.levels[levelNumber].select(this.cursor);
+    select(optionNumber) {
+        if (this.selected != -1) this.options[this.selected].unselect(this.cursor);
+        this.selected = optionNumber;
+        this.options[optionNumber].select(this.cursor);
     }
 
 
@@ -137,7 +147,7 @@ class Menu extends DisplayObjectNode {
             return;
         }
         var selected = this.selected - 1;
-        if (selected < 0) selected = this.levels.length - 1;
+        if (selected < 0) selected = this.options.length - 1;
         this.select(selected);
     }
 
@@ -152,32 +162,31 @@ class Menu extends DisplayObjectNode {
             this.select(selected);
             return;
         }
-        var selected = (this.selected + 1) % this.levels.length;
+        var selected = (this.selected + 1) % this.options.length;
         this.select(selected);
     }
 
     /**
      * Returns the parent node of the level's walls
      */
-    static makeMenuLayer() {
+    static makePauseMenuLayer() {
 
-
-        var layer = new Menu("Menu", "");
-        layer.background = new DisplayObjectNode("MenuBackground", "MenuBackground.jpg");
+        var layer = new PauseMenu("PauseMenu", "");
+        layer.background = makePauseLayer();
         layer.addChild(layer.background);
 
         layer.cursor = this.makeCursor();
 
-        // var levelHeight = 100;
-        // var levelWidth = 200;
+        var optionCount = 2;
+        var optionResume = this.makeResumeGame(0, 2);
+        var optionBack = this.makeBackToMainMenu(1, 2);
 
-        var levelCount = 5;
+        layer.options.push(optionResume);
+        layer.addChild(optionResume);
 
-        for (var i = 0; i < levelCount; i++) {
-            var levelNode = this.makeLevel(i, levelCount);
-            layer.levels.push(levelNode);
-            layer.addChild(levelNode);
-        }
+        layer.options.push(optionBack);
+        layer.addChild(optionBack);
+
 
         layer.select(0);
         return layer;
@@ -187,19 +196,43 @@ class Menu extends DisplayObjectNode {
     /**
      * Makes the level title nodes for the player to select from
      */
-    static makeLevel(levelNumber, levelCount) {
-        var levelNumberText = this.levelNumberToText(levelNumber + 1);
-        var levelNode = new TextNode("Level"+levelNumber+1, "Level " + levelNumberText);
-        levelNode.font = MENU_FONT;
-        var spacing = 10;
-        var paddingTop = 15;
-        var paddingBottom = 15;
-        var levelPositionX = 70;
-        var levelPositionY = (((600.0 - paddingTop - paddingBottom) / levelCount) * levelNumber);
-        levelPositionY += spacing + MENU_FONT_HEIGHT + paddingTop;
-        levelNode.position = ({x:levelPositionX, y: levelPositionY});
+    static makeResumeGame(optionNumber, optionCount) {
+        var optionText = "Resume Game";
+        var optionNode = new TextNode("ResumeGame", optionText);
+        optionNode.font = MENU_FONT;
+        var optionPositionX = PAUSE_MENU_POSITION_X;
+        var optionPositionY = this.generateYCoordinate(optionNumber, optionCount);
+        optionNode.position = ({x: optionPositionX, y: optionPositionY});
 
-        return levelNode;
+        return optionNode;
+    }
+
+
+    /**
+     * Makes the "Back to Main Menu" option TextNode
+     */
+    static makeBackToMainMenu(optionNumber, optionCount) {
+        var optionText = "Back to Main Menu";
+        var optionNode = new TextNode("BackToMainMenu", optionText);
+        optionNode.font = MENU_FONT;
+        var optionPositionX = PAUSE_MENU_POSITION_X;
+        var optionPositionY = this.generateYCoordinate(optionNumber, optionCount);
+        optionNode.position = ({x: optionPositionX, y: optionPositionY});
+
+        return optionNode;
+    }
+
+
+    /**
+     * Generates the Y coordinate of the option TextNode
+     */
+    static generateYCoordinate(optionNumber, optionCount) {
+        var paddingTop = PAUSE_MENU_PADDING;
+        var paddingBottom = PAUSE_MENU_PADDING;
+        var spacing = PAUSE_MENU_SPACING;
+        var yCoord = (((600.0 - paddingTop - paddingBottom) / optionCount) * optionNumber);
+        yCoord += spacing + MENU_FONT_HEIGHT + paddingTop;
+        return yCoord;
     }
 
     /**
@@ -217,34 +250,5 @@ class Menu extends DisplayObjectNode {
 
         return cursorNode;
     }
-
-
-    /**
-     * Converts level numbers to text numbers (1 becomes "One")
-     * Only does 1-8, but could easily be extended to more numbers
-     */
-    static levelNumberToText(levelNumber) {
-        switch (levelNumber) {
-            case 1:
-                return "One";
-            case 2:
-                return "Two";
-            case 3:
-                return "Three";
-            case 4:
-                return "Four";
-            case 5:
-                return "Five";
-            case 6:
-                return "Six";
-            case 7:
-                return "Seven";
-            case 8:
-                return "Eight";
-            default:
-                return;
-        }
-    }
-
 
 }

@@ -25,9 +25,9 @@ class LevelOne extends Level {
         gameInstance.player = player;
 
         gameInstance.root.addChild(background);
+        gameInstance.root.addChild(wallNode);
         gameInstance.root.addChild(player);
         gameInstance.root.addChild(ball);
-        gameInstance.root.addChild(wallNode);
         gameInstance.root.addChild(trash);
     }
 
@@ -66,6 +66,7 @@ class LevelOne extends Level {
      */
     static makeGround() {
 
+        // var ground = new Sprite("Ground", "ground.png");
         var ground = new Sprite("Ground", "ground.png");
 
         ground.setPosition({x: 0, y: 550});
