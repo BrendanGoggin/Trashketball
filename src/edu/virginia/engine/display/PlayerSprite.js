@@ -8,7 +8,7 @@ var RUN_SPEED = WALK_SPEED * 1.5;
 var FALL_ACCELERATION; // = 1 * (new Physics().gravity.y);
 
 // how hard he kicks and heads the ball
-var KICK_SPEED = 1;
+var KICK_SPEED = .5;
 var HEAD_SPEED = .5 * KICK_SPEED;
 
 // key codes
@@ -35,10 +35,10 @@ var HEADER_KEY  = KEY_K;
 
 /**
  * A very basic Sprite. For now, does not do anything.
- * 
+ *
  * */
 class PlayerSprite extends Sprite {
-    
+
     constructor(id, filename){
         super(id, filename);
         this.speed = 15; // how many frames the whole animation should take at 60fps
@@ -76,7 +76,8 @@ class PlayerSprite extends Sprite {
 
         // which frames in the spritesheet each action uses
         this.walkFrames = [5, 4];
-        this.kickFrames = [0,1];
+        this.kickFrames = [0];
+        this.jumpFrames = [1];
         this.runFrames = [2,3];
         this.restFrames = [4];
         this.frameList = this.restFrames;
@@ -146,7 +147,7 @@ class PlayerSprite extends Sprite {
      *  Is called in the draw(g) method.
      */
     drawSelfImage(g) {
-        g.drawImage(this.displayImage, 
+        g.drawImage(this.displayImage,
             this.frameWidth * this.frameList[this.currentIndex], // sx
             0, //sy
             this.frameWidth, //sw
@@ -158,8 +159,8 @@ class PlayerSprite extends Sprite {
     }
 
     /**
-    * Begins the animation
-    */
+     * Begins the animation
+     */
     animate(animation) {
         if (this.animationName === animation) return;
         this.animationName = animation;
@@ -168,12 +169,15 @@ class PlayerSprite extends Sprite {
 
         if (animation == "walk") {
             this.frameList = this.walkFrames;
-        } 
+        }
         else if (animation == "run") {
             this.frameList = this.runFrames;
-        } 
+        }
         else if (animation == "kick") {
             this.frameList = this.kickFrames;
+        }
+        else if (animation == "jump") {
+            this.frameList = this.jumpFrames;
         }
         else {
             this.frameList = this.restFrames;
@@ -188,8 +192,8 @@ class PlayerSprite extends Sprite {
     }
 
     /**
-    * Stops the animation on its default image
-    */
+     * Stops the animation on its default image
+     */
     stopAnimation() {
         if (!this.stopped) {
             // this.loadImage(this.filename);
@@ -203,29 +207,29 @@ class PlayerSprite extends Sprite {
     }
 
     /**
-    * Pauses the animation on its current frame
-    */
+     * Pauses the animation on its current frame
+     */
     pause() {
         this.paused = true;
     }
 
     /**
-    * unpauses the animation
-    */
+     * unpauses the animation
+     */
     unPause() {
         this.paused = false;
     }
 
     /**
-    * toggles pause status
-    */
+     * toggles pause status
+     */
     togglePause() {
         this.paused = !this.paused;
     }
 
     /**
-    *  Sets the animation speed in frames per loop
-    */
+     *  Sets the animation speed in frames per loop
+     */
     setSpeed(speed) {
         this.speed = speed;
     }
@@ -254,7 +258,7 @@ class PlayerSprite extends Sprite {
             neutral = false;
         }
 
-        var direction; 
+        var direction;
         if (!neutral) {
             direction = normalize({x:x, y:y});
         }
@@ -351,9 +355,9 @@ class PlayerSprite extends Sprite {
         this.pollUp();
         this.pollKick();
         this.pollHeader();
-        
+
         // stop animation if no relevant keys pressed
-        if (!(this.leftPressed || this.rightPressed || this.kickPressed)) {
+        if (!(this.leftPressed || this.rightPressed || this.kickPressed || this.headerPressed)) {
             this.stopAnimation();
         }
 
@@ -410,12 +414,12 @@ class PlayerSprite extends Sprite {
                 if (this.onGround) {
                     this.physics.velocity.x = -WALK_SPEED;
                     this.physics.acceleration.x = 0;
-                } 
+                }
                 else {
                     this.physics.acceleration.x = -WALK_SPEED / 1000.0;
                 }
             };
-        } 
+        }
         else {
             this.leftPressed = false;
             if (this.physics.acceleration.x < 0) this.physics.acceleration.x = 0;
@@ -519,12 +523,13 @@ class PlayerSprite extends Sprite {
         if (this.pressedKeys.contains(HEADER_KEY)) {
             this.headerPressed = true;
             this.header.hitbox = this.headbox;
+            this.animate("jump");
+            this.setSpeed(15);
         }
         else {
-            this.headerPressed;
+            this.headerPressed = false;
             this.header.hitbox = false;
         }
     }
 }
-
 
