@@ -71,7 +71,7 @@ function makePlayer() {
  * Create and return the ball
  */
 function makeBall() {
-    var ball = new Sprite("Ball", "Ball.png");
+    var ball = new BallSprite("Ball", "Ball.png");
     ball.showHitbox = SHOW_HITBOXES;
     ball.setPosition({x:300,y:180});
     ball.setPivotPoint({x:75,y:70});
@@ -107,12 +107,16 @@ function makeTrash() {
     var trashWallHeight = trashHeight;
     var trashWallTopLeft = {x: -trashWallWidth / 2.0, y: -trashWallHeight / 2.0};
 
+    // array of the walls of the trash can
+    trash.trashWalls = [];
+
     // left wall of trash can
     var trashLeftWall = new DisplayObjectNode("trashLeftWall", "");
     trashLeftWall.setPosition({x: -.9*trashWidth / 2.0, y: .1*trashHeight});
     trashLeftWall.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
     trashLeftWall.hitbox = new Rectangle(trashWallTopLeft, trashWallWidth, .9*trashWallHeight);
     trashLeftWall.showHitbox = SHOW_HITBOXES;
+    trash.trashWalls.push(trashLeftWall);
     trash.addChild(trashLeftWall);
 
     // circular hitbox on top of left wall
@@ -121,6 +125,7 @@ function makeTrash() {
     trashLeftTop.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
     trashLeftTop.hitbox = new Circle({x:0, y:0}, 1.1*trashWallWidth/2.0);
     trashLeftTop.showHitbox = SHOW_HITBOXES;
+    trash.trashWalls.push(trashLeftTop);
     trash.addChild(trashLeftTop);
 
     // right wall of trash can
@@ -129,6 +134,7 @@ function makeTrash() {
     trashRightWall.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
     trashRightWall.hitbox = new Rectangle(trashWallTopLeft, trashWallWidth, .9*trashWallHeight);
     trashRightWall.showHitbox = SHOW_HITBOXES;
+    trash.trashWalls.push(trashRightWall);
     trash.addChild(trashRightWall);
 
     // circular hitbox on top of right wall
@@ -137,6 +143,7 @@ function makeTrash() {
     trashRightTop.setPivotPoint({x: trashWallWidth/2.0, y: trashWallHeight/2.0});
     trashRightTop.hitbox = new Circle({x:0, y:0}, 1.1*trashWallWidth/2.0);
     trashRightTop.showHitbox = SHOW_HITBOXES;
+    trash.trashWalls.push(trashRightTop);
     trash.addChild(trashRightTop);
 
     return trash;

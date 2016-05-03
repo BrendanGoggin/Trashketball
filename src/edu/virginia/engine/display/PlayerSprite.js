@@ -61,10 +61,12 @@ class PlayerSprite extends Sprite {
         FALL_ACCELERATION = 1 * this.defaultGravity.y;
         this.downPressedGravity = {x: this.defaultGravity.x, y: this.defaultGravity.y + FALL_ACCELERATION};
 
-        this.kicker = false;
+        this.kicker  = false;
         this.kickbox = false;
-        this.header = false;
+        this.kicking = false;
+        this.header  = false;
         this.headbox = false;
+        this.heading = false;
 
         // sounds
         this.kickSound = new Audio();
@@ -531,6 +533,69 @@ class PlayerSprite extends Sprite {
             this.header.hitbox = false;
         }
     }
-}
 
+
+    /**
+     * Detects and responds to collision with the ball
+     * gameInstance is the game object which calls the method
+     */
+    handleCollisionWithBall(ball, gameInstance) {
+
+        // Kicking
+        if (this.kicker.hitbox) {
+            if (ball.detectCollisionWith(this.kicker) && !this.kicking && !this.heading) {
+                if (!this.kicking) {
+                    this.kicking = true;
+                    this.kickBall(ball);
+                }
+            }
+        }
+        else {
+            this.kicking = false;
+        }
+
+        // Heading
+        if (this.header.hitbox) {
+            if (ball.detectCollisionWith(this.header) && !this.heading) {
+                this.headBall(ball);
+                this.heading = true;
+            }
+        }
+        else {
+            this.heading = false;
+        }
+
+    }
+
+
+    /**
+     * Detects and response to collision with the wall
+     * gameInstance is the game object which calls the method
+     */
+    handleCollisionWithWall(wall, gameInstance) {
+
+        // player-wall collision handling
+        var resolution = this.detectAndResolveCollisionWith(wall);
+        if (resolution) {
+            this.hitbox.color = "red";
+            wall.hitbox.color = "red";
+            var normal = resolution;
+            var cRest = 0;
+            var cFriction = 0;
+
+            if (wall.id == "Ground") {
+                cFriction = 0.2;
+                this.bounceOffOf(wall, normal, cRest, cFriction);
+                this.physics.velocity.y = 0;
+                this.hitGround();
+            }
+            else {
+                this.bounceOffOf(wall, normal, cRest, cFriction);
+            }
+        }
+        else {
+            wall.hitbox.color = "black";
+        }
+    }
+}
 

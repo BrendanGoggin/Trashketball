@@ -8,6 +8,30 @@
 class LevelOne extends Level {
 
     /**
+     * Loads this level onto the gameInstance
+     * gameInstance is the object calling this method
+     */
+    static load(gameInstance) {
+        var wallNode = this.makeWallLayer();
+        var ball = makeBall();
+        var trash = makeTrash();
+        var player = makePlayer();
+        var background = this.makeBackground();
+
+        gameInstance.background = background;
+        gameInstance.walls  = wallNode.children;
+        gameInstance.trash  = trash;
+        gameInstance.balls  = [ball];
+        gameInstance.player = player;
+
+        gameInstance.root.addChild(background);
+        gameInstance.root.addChild(player);
+        gameInstance.root.addChild(ball);
+        gameInstance.root.addChild(wallNode);
+        gameInstance.root.addChild(trash);
+    }
+
+    /**
      * Creates and returns parent node of all walls
      * wallLayer is just an empty parent node, with walls as its children
      */
@@ -105,6 +129,20 @@ class LevelOne extends Level {
         ceiling.showHitbox = SHOW_HITBOXES;
 
         return ceiling;
+    }
+
+
+    /**
+     * Creates and returns the background
+     */
+    static makeBackground() {
+
+        var background = new DisplayObjectNode("Background", "EmptyBleachers.png");
+
+        background.setPosition({x: 0, y: 0});
+        background.setPivotPoint({x: 0, y: 0});
+
+        return background;
     }
 
 }
