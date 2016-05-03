@@ -7,9 +7,15 @@
 class Level {
 
 
+    /** 
+     * Loads this level into a game
+     */
+    static load(gameInstance) {}
+
+
     /**
      * Returns the parent node of the level's walls
      */
-     static makeWallLayer() {};
+     static makeWallLayer() {}
 
 }
