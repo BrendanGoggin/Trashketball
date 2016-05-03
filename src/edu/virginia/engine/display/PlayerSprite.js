@@ -8,7 +8,8 @@ var RUN_SPEED = WALK_SPEED * 1.5;
 var FALL_ACCELERATION; // = 1 * (new Physics().gravity.y);
 
 // how hard he kicks and heads the ball
-var KICK_SPEED = .5;
+var KICK_SPEED = 1;
+//var KICK_SPEED = .5; -> Mamadou
 var HEAD_SPEED = .5 * KICK_SPEED;
 
 // key codes
@@ -61,10 +62,12 @@ class PlayerSprite extends Sprite {
         FALL_ACCELERATION = 1 * this.defaultGravity.y;
         this.downPressedGravity = {x: this.defaultGravity.x, y: this.defaultGravity.y + FALL_ACCELERATION};
 
-        this.kicker = false;
+        this.kicker  = false;
         this.kickbox = false;
-        this.header = false;
+        this.kicking = false;
+        this.header  = false;
         this.headbox = false;
+        this.heading = false;
 
         // sounds
         this.kickSound = new Audio();
@@ -147,7 +150,7 @@ class PlayerSprite extends Sprite {
      *  Is called in the draw(g) method.
      */
     drawSelfImage(g) {
-        g.drawImage(this.displayImage,
+        g.drawImage(this.displayImage, 
             this.frameWidth * this.frameList[this.currentIndex], // sx
             0, //sy
             this.frameWidth, //sw
@@ -159,8 +162,8 @@ class PlayerSprite extends Sprite {
     }
 
     /**
-     * Begins the animation
-     */
+    * Begins the animation
+    */
     animate(animation) {
         if (this.animationName === animation) return;
         this.animationName = animation;
@@ -169,10 +172,10 @@ class PlayerSprite extends Sprite {
 
         if (animation == "walk") {
             this.frameList = this.walkFrames;
-        }
+        } 
         else if (animation == "run") {
             this.frameList = this.runFrames;
-        }
+        } 
         else if (animation == "kick") {
             this.frameList = this.kickFrames;
         }
@@ -192,8 +195,8 @@ class PlayerSprite extends Sprite {
     }
 
     /**
-     * Stops the animation on its default image
-     */
+    * Stops the animation on its default image
+    */
     stopAnimation() {
         if (!this.stopped) {
             // this.loadImage(this.filename);
@@ -207,29 +210,29 @@ class PlayerSprite extends Sprite {
     }
 
     /**
-     * Pauses the animation on its current frame
-     */
+    * Pauses the animation on its current frame
+    */
     pause() {
         this.paused = true;
     }
 
     /**
-     * unpauses the animation
-     */
+    * unpauses the animation
+    */
     unPause() {
         this.paused = false;
     }
 
     /**
-     * toggles pause status
-     */
+    * toggles pause status
+    */
     togglePause() {
         this.paused = !this.paused;
     }
 
     /**
-     *  Sets the animation speed in frames per loop
-     */
+    *  Sets the animation speed in frames per loop
+    */
     setSpeed(speed) {
         this.speed = speed;
     }
@@ -258,7 +261,7 @@ class PlayerSprite extends Sprite {
             neutral = false;
         }
 
-        var direction;
+        var direction; 
         if (!neutral) {
             direction = normalize({x:x, y:y});
         }
@@ -355,7 +358,7 @@ class PlayerSprite extends Sprite {
         this.pollUp();
         this.pollKick();
         this.pollHeader();
-
+        
         // stop animation if no relevant keys pressed
         if (!(this.leftPressed || this.rightPressed || this.kickPressed || this.headerPressed)) {
             this.stopAnimation();
@@ -529,6 +532,70 @@ class PlayerSprite extends Sprite {
         else {
             this.headerPressed = false;
             this.header.hitbox = false;
+        }
+    }
+
+
+    /**
+     * Detects and responds to collision with the ball
+     * gameInstance is the game object which calls the method
+     */
+    handleCollisionWithBall(ball, gameInstance) {
+
+        // Kicking
+        if (this.kicker.hitbox) {
+            if (ball.detectCollisionWith(this.kicker) && !this.kicking && !this.heading) {
+                if (!this.kicking) {
+                    this.kicking = true;
+                    this.kickBall(ball);
+                }
+            }
+        }
+        else {
+            this.kicking = false;
+        }
+
+        // Heading
+        if (this.header.hitbox) {
+            if (ball.detectCollisionWith(this.header) && !this.heading) {
+                this.headBall(ball);
+                this.heading = true;
+            }
+        }
+        else {
+            this.heading = false;
+        }
+
+    }
+
+
+    /**
+     * Detects and response to collision with the wall
+     * gameInstance is the game object which calls the method
+     */
+    handleCollisionWithWall(wall, gameInstance) {
+
+        // player-wall collision handling
+        var resolution = this.detectAndResolveCollisionWith(wall);
+        if (resolution) {
+            this.hitbox.color = "red";
+            wall.hitbox.color = "red";
+            var normal = resolution;
+            var cRest = 0;
+            var cFriction = 0;
+
+            if (wall.id == "Ground") {
+                cFriction = 0.2;
+                this.bounceOffOf(wall, normal, cRest, cFriction);
+                this.physics.velocity.y = 0;
+                this.hitGround();
+            }
+            else {
+                this.bounceOffOf(wall, normal, cRest, cFriction);
+            }
+        }
+        else {
+            wall.hitbox.color = "black";
         }
     }
 }

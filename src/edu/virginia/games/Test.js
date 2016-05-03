@@ -254,11 +254,3 @@ class Trashketball extends Game {
 function tick(){
     game.nextFrame();
 }
-
-
-/* Get the drawing canvas off of the document */
-var drawingCanvas = document.getElementById('game');
-if(drawingCanvas.getContext) {
-    var game = new Trashketball(drawingCanvas);
-    game.start();
-}
