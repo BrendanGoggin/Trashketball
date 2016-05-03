@@ -66,14 +66,14 @@ class LevelOne extends Level {
      */
     static makeGround() {
 
-        var ground = new Sprite("Ground", "Platform.png");
+        var ground = new Sprite("Ground", "ground.png");
 
-        ground.setPosition({x: GAME_WIDTH/2, y: GAME_HEIGHT-20});
-        ground.setPivotPoint({x: 168, y: 24});
-        ground.setScaleX(3);
+        ground.setPosition({x: 0, y: 550});
+        //ground.setPivotPoint({x: 168, y: 24});
+        //ground.setScaleX(3);
 
         ground.showHitbox = SHOW_HITBOXES;
-        ground.hitbox = new Rectangle({x:-170, y:-24}, 400, 48);
+        ground.hitbox = new Rectangle({x: 0, y: 10}, 1000, 50);
 
         return ground;
     }
@@ -83,13 +83,13 @@ class LevelOne extends Level {
      */
     static makeLeftWall() {
 
-        var leftWall = new Sprite("LeftWall", "Brickwall.jpg");
+        var leftWall = new Sprite("LeftWall", "woodwallleftb.jpg");
 
-        leftWall.setRotation(-1 * Math.PI / 2.0);
-        leftWall.setPosition({x: -250, y: 300});
-        leftWall.setPivotPoint({x: 476.5, y: 300});
+        //leftWall.setRotation(-1 * Math.PI / 2.0);
+        leftWall.setPosition({x: 0, y: 50});
+        //leftWall.setPivotPoint({x: 25, y: 300});
 
-        leftWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
+        leftWall.hitbox = new Rectangle({x:0, y:0}, 50, 600);
         leftWall.showHitbox = SHOW_HITBOXES;
 
         return leftWall;
@@ -102,13 +102,13 @@ class LevelOne extends Level {
      */
     static makeRightWall() {
 
-        var rightWall = new Sprite("RightWall", "Brickwall.jpg");
+        var rightWall = new Sprite("RightWall", "woodwallrightb.jpg");
 
-        rightWall.setRotation(1 * Math.PI / 2.0);
-        rightWall.setPosition({x: 1250, y: 300});
-        rightWall.setPivotPoint({x: 476.5, y: 300});
+        //rightWall.setRotation(1 * Math.PI / 2.0);
+        rightWall.setPosition({x: 950, y: 50});
+        //rightWall.setPivotPoint({x: 476.5, y: 300});
 
-        rightWall.hitbox = new Rectangle({x:-476.5, y:-300}, 953, 600);
+        rightWall.hitbox = new Rectangle({x:0, y:0}, 50, 600);
         rightWall.showHitbox = SHOW_HITBOXES;
 
         return rightWall;
@@ -119,13 +119,13 @@ class LevelOne extends Level {
      */
     static makeCeiling() {
 
-        var ceiling = new Sprite("Ceiling", "Brickwall.jpg");
+        var ceiling = new Sprite("Ceiling", "woodceiling2.jpg");
 
-        ceiling.setRotation(Math.PI);
-        ceiling.setPosition({x: 500, y: -250});
-        ceiling.setPivotPoint({x: 476.5, y: 300});
+        //ceiling.setRotation(Math.PI);
+        ceiling.setPosition({x: 0, y: 0});
+        //ceiling.setPivotPoint({x: 476.5, y: 300});
 
-        ceiling.hitbox =  new Rectangle({x:-476.5, y:-300}, 953, 600);
+        ceiling.hitbox =  new Rectangle({x:0, y:0}, 1000, 50);
         ceiling.showHitbox = SHOW_HITBOXES;
 
         return ceiling;
