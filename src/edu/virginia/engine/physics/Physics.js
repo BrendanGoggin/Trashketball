@@ -2,7 +2,7 @@
 
 // A basic set of physics fields/behavior for objects in the game
 
-var GRAVITY = 0.0002;
+var GRAVITY = 0.0009;
 
 
 // defualt values for angular velocity behavior

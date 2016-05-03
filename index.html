@@ -35,9 +35,13 @@
     <script type="text/javascript" src="src/edu/virginia/engine/physics/Physics.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/DisplayObject.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/DisplayObjectNode.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/TextNode.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/TimerNode.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/Sprite.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/AnimatedSprite.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/PlayerSprite.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/BallSprite.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/engine/display/MoonRockSprite.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/TweenTransition.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/Tween.js"></script>
     <script type="text/javascript" src="src/edu/virginia/engine/display/TweenJuggler.js"></script>
@@ -52,8 +56,10 @@
     <script type="text/javascript" src="src/edu/virginia/trashketball/TrashketballObjects.js"></script>
     <script type="text/javascript" src="src/edu/virginia/trashketball/Level.js"></script>
     <script type="text/javascript" src="src/edu/virginia/trashketball/LevelOne.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/trashketball/MoonLevel.js"></script>
     <script type="text/javascript" src="src/edu/virginia/trashketball/Menu.js"></script>
-    <script type="text/javascript" src="src/edu/virginia/games/Brendan.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/trashketball/PauseMenu.js"></script>
+    <script type="text/javascript" src="src/edu/virginia/games/MenuGame.js"></script>
 
     <br>
     <div class="volume-div">
@@ -62,7 +68,7 @@
             <span class="glyphicon glyphicon-volume-off" aria-hidden="true" onclick="game.setVolume(0);"></span>
         </div>
         <div class="col-sm-9 volume-range-div">
-        <input type="range" id="volume-range" min="0" max="100" step="1" value="0"
+        <input type="range" id="volume-range" min="0" max="100" step="1" value="75"
             oninput="game.setVolume(this.value);" onchange="game.setVolume(this.value);">
         </div>
         <div class="col-sm-1 volume-up-div">
@@ -87,7 +93,8 @@
         document.getElementById("game").focus();
 
         window.onkeydown = function(e) {
-          if (e.keyCode == 32 && e.target == document.body) {
+          if ((e.keyCode == 32 || e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40)
+                 && e.target == document.body) {
             e.preventDefault();
           }
         };

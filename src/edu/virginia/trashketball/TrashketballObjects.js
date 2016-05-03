@@ -43,9 +43,9 @@ function makePlayer() {
 
     // player's heading foot node
     var header = new DisplayObjectNode("Header", "");
-    header.setPosition({x:0, y:-100});
-    var headerWidth = 150;
-    var headerHeight = 100;
+    header.setPosition({x:20, y:-100});
+    var headerWidth = 120;
+    var headerHeight = 60;
     header.setPivotPoint({x: -headerWidth / 2.0, y: -headerHeight / 2.0});
     header.hitbox = false;
     headbox = new Rectangle({x: -headerWidth/2.0, y: -headerHeight/2.0}, headerWidth, headerHeight);
@@ -94,7 +94,7 @@ function makeTrash() {
     var trashWidth  = 100;
     var trashHeight = 175;
 
-    trash.setPosition({x:700,y:480});
+    trash.setPosition({x:600,y:480});
     //trash.setScale({x:3.5,y:3.5});
     trash.setPivotPoint({x: trashWidth/2.0, y: trashHeight/2.0});
     

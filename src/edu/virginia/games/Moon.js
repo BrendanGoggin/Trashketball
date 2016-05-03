@@ -24,7 +24,6 @@ class Trashketball extends Game {
         this.pauseLayer = makePauseLayer();
 
         this.score = 0;
-        var attempts = 3;
         this.timeLeft = 60000;
         this.addRock = 10000;
 

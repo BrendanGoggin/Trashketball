@@ -9,7 +9,6 @@ var FALL_ACCELERATION; // = 1 * (new Physics().gravity.y);
 
 // how hard he kicks and heads the ball
 var KICK_SPEED = 1;
-//var KICK_SPEED = .5; -> Mamadou
 var HEAD_SPEED = .5 * KICK_SPEED;
 
 // key codes
@@ -101,6 +100,12 @@ class PlayerSprite extends Sprite {
         // how many jumps player can do, how many remaining
         this.jumpsTotal = 2;
         this.jumpsRemaining = 1;
+
+        this.jumpSpeed = JUMP_SPEED;
+        this.walkSpeed = WALK_SPEED;
+        this.runSpeed = RUN_SPEED;
+        this.kickSpeed = KICK_SPEED;
+        this.headSpeed = HEAD_SPEED;
 
     }
 
@@ -279,7 +284,7 @@ class PlayerSprite extends Sprite {
         if (!speed && speed !== 0) {
             speed = 1;
         }
-        speed *= KICK_SPEED;
+        speed *= this.kickSpeed;
         var direction = this.getKickDirection();
         this.exertImpulseOnBall(ball, direction, speed);
         this.kickSound.play();
@@ -293,7 +298,7 @@ class PlayerSprite extends Sprite {
         if (!speed) {
             speed = 1;
         }
-        speed *= HEAD_SPEED;
+        speed *= this.headSpeed;
         var direction = this.getKickDirection();
         this.exertImpulseOnBall(ball, direction, speed);
         this.headSound.play();
@@ -317,7 +322,7 @@ class PlayerSprite extends Sprite {
      * executes a jump
      */
     jump() {
-        this.physics.velocity.y = -JUMP_SPEED;
+        this.physics.velocity.y = -this.jumpSpeed;
         this.onGround = false;
     }
 
@@ -405,21 +410,21 @@ class PlayerSprite extends Sprite {
                 this.setSpeed(15); // animation speed
 
                 if (this.onGround) {
-                    this.physics.velocity.x = -RUN_SPEED;
+                    this.physics.velocity.x = -this.runSpeed;
                     this.physics.acceleration.x = 0;
                 } else {
-                    this.physics.acceleration.x = -RUN_SPEED / 1000.0;
+                    this.physics.acceleration.x = -this.runSpeed / 1000.0;
                 }
             }
             else {
                 this.animate("walk");
                 this.setSpeed(20); // animation speed
                 if (this.onGround) {
-                    this.physics.velocity.x = -WALK_SPEED;
+                    this.physics.velocity.x = -this.walkSpeed;
                     this.physics.acceleration.x = 0;
                 }
                 else {
-                    this.physics.acceleration.x = -WALK_SPEED / 1000.0;
+                    this.physics.acceleration.x = -this.walkSpeed / 1000.0;
                 }
             };
         }
@@ -445,21 +450,21 @@ class PlayerSprite extends Sprite {
                 this.setSpeed(15); // animation speed
 
                 if (this.onGround) {
-                    this.physics.velocity.x = RUN_SPEED;
+                    this.physics.velocity.x = this.runSpeed;
                     this.physics.acceleration.x = 0;
                 } else {
-                    this.physics.acceleration.x = RUN_SPEED / 1000;
+                    this.physics.acceleration.x = this.runSpeed / 1000;
                 }
             }
             else {
                 this.animate("walk");
                 this.setSpeed(20); // animation speed
                 if(this.onGround) {
-                    this.physics.velocity.x = WALK_SPEED;
+                    this.physics.velocity.x = this.walkSpeed;
                     this.physics.acceleration.x = 0;
                 }
                 else {
-                    this.physics.acceleration.x = WALK_SPEED / 1000;
+                    this.physics.acceleration.x = this.walkSpeed / 1000;
                 }
             };
         }

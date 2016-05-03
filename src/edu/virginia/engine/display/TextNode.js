@@ -1,8 +1,8 @@
 "use strict";
 
-var DEFAULT_FONT = "36px Georgia";
+var DEFAULT_FONT = "36px Comic Sans MS";
 var FONT_COLOR = "black";
-var FONT_COLOR_SELECTED = "#ccc472";
+var FONT_COLOR_SELECTED = "#b9d5b7";
 var FONT_COLOR_DISABLED = "#555555";
 
 /**
