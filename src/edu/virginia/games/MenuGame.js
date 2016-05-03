@@ -47,7 +47,7 @@ class MenuGame extends Game {
         this.trash = false;
         this.walls = [];
 
-        this.levels = [LevelOne, LevelOne, MoonLevel, LevelOne, LevelOne];
+        this.levels = [LevelOne, LevelTwo, MoonLevel, LevelOne, LevelOne];
 
         // this.enterPressed = false;
     }
