@@ -23,6 +23,8 @@ class MenuGame extends Game {
 
         this.volume = 75;
 
+        this.levels = [LevelOne, LevelOne, MoonLevel, LevelOne, LevelOne];
+
         this.loadMenu();
         this.loadMenuSounds();
 
@@ -48,7 +50,6 @@ class MenuGame extends Game {
         this.trash = false;
         this.walls = [];
 
-        this.levels = [LevelOne, LevelOne, MoonLevel, LevelOne, LevelOne];
 
         // this.enterPressed = false;
     }
@@ -135,11 +136,30 @@ class MenuGame extends Game {
             return;
         }
 
+        // if game over
+        else if (this.gameOver) {
+            this.gameOverLayer.update(pressedKeys, dt);
+            if(this.gameOverLayer.restartGame) {
+                this.root.removeChild(this.menu);
+                this.levels[this.currentLevel].load(this);
+                this.loadLevelSounds();
+                this.menu = false;
+                this.root.updateChildren(pressedKeys, dt);
+                return;
+            }
+            if (this.gameOverLayer.backToMainMenu) {
+                this.unpause();
+                this.loadMenu();
+                this.loadMenuSounds();
+                this.menu.enterPressed = true;
+                return;
+            }
+        }
+
         // if not paused
         else {
 
             if (dt > 100) dt = 100;
-
             this.root.updateChildren(pressedKeys, dt);
 
 
@@ -203,6 +223,16 @@ class MenuGame extends Game {
         this.pauseLayer.pauseSound.play();
         this.pauseLayer = false;
         this.sounds = this.loadLevelSounds();
+    }
+    endGame(success) {
+        this.gameOver = true;
+        this.gameOverLayer = GameOverMenu.makeGameOverMenuLayer(success);
+        this.sounds = [];
+        for (var i = 0; i < this.gameOverLayer.sounds; i++) {
+            this.pauseLayer.sounds[i].volume = this.volume/100.0;
+            this.sounds.push(this.pauseLayer.sounds[i]);
+        }
+        this.root.addChild(this.gameOverLayer);
     }
 
 

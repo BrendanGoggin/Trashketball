@@ -34,6 +34,8 @@ class MoonLevel extends Level {
         gameInstance.scoreNode = this.makeScoreNode();
         gameInstance.moonRockMaker = this.makeMoonRockMaker(gameInstance);
 
+        gameInstance.currentLevel = 2;
+
 
         gameInstance.root.addChild(background);
         gameInstance.root.addChild(wallNode);

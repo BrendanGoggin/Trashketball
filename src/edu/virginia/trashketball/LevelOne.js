@@ -18,6 +18,8 @@ class LevelOne extends Level {
         var player = makePlayer();
         var background = this.makeBackground();
 
+        gameInstance.currentLevel = 0;
+
         gameInstance.background = background;
         gameInstance.walls  = wallNode.children;
         gameInstance.trash  = trash;
