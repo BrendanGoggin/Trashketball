@@ -9,6 +9,7 @@ var FALL_ACCELERATION; // = 1 * (new Physics().gravity.y);
 
 // how hard he kicks and heads the ball
 var KICK_SPEED = 1;
+//var KICK_SPEED = .5; -> Mamadou
 var HEAD_SPEED = .5 * KICK_SPEED;
 
 // key codes
@@ -35,10 +36,10 @@ var HEADER_KEY  = KEY_K;
 
 /**
  * A very basic Sprite. For now, does not do anything.
- * 
+ *
  * */
 class PlayerSprite extends Sprite {
-    
+
     constructor(id, filename){
         super(id, filename);
         this.speed = 15; // how many frames the whole animation should take at 60fps
@@ -416,12 +417,12 @@ class PlayerSprite extends Sprite {
                 if (this.onGround) {
                     this.physics.velocity.x = -WALK_SPEED;
                     this.physics.acceleration.x = 0;
-                } 
+                }
                 else {
                     this.physics.acceleration.x = -WALK_SPEED / 1000.0;
                 }
             };
-        } 
+        }
         else {
             this.leftPressed = false;
             if (this.physics.acceleration.x < 0) this.physics.acceleration.x = 0;
