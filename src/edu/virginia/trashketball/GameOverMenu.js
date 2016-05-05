@@ -22,7 +22,7 @@ var PAUSE_MENU_SPACING = 10;
 var PAUSE_MENU_PADDING = 15;
 var PAUSE_MENU_POSITION_X = 70;
 
-class GameMenu extends DisplayObjectNode {
+class GameOverMenu extends DisplayObjectNode {
 
 
     constructor(id, filename) {
@@ -112,7 +112,7 @@ class GameMenu extends DisplayObjectNode {
             
             // resume game
             case 0:
-                this.resumeGame = true;
+                this.restartGame = true;
                 break;
             case 1:
                 this.backToMainMenu = true;
@@ -166,9 +166,9 @@ class GameMenu extends DisplayObjectNode {
      * Returns the parent node of the level's walls
      * success is a boolean
      */
-    static makeGameOverMenuLayer(success) {
+    static makeGameOverMenuLayer(score) {
 
-        var layer = new PauseMenu("GameOverMenu", "");
+        var layer = new GameOverMenu("GameOverMenu", "");
         layer.background = makePauseLayer();
         layer.addChild(layer.background);
 
@@ -177,6 +177,9 @@ class GameMenu extends DisplayObjectNode {
         var optionCount = 2;
         var optionRestart = this.makeRestartGame(0, 2);
         var optionBack = this.makeBackToMainMenu(1, 2);
+
+        var gameOverMessageNode = this.makeGameOverMessage(score);
+        layer.addChild(gameOverMessageNode);
 
         layer.options.push(optionRestart);
         layer.addChild(optionRestart);
@@ -188,6 +191,23 @@ class GameMenu extends DisplayObjectNode {
         layer.select(0);
         return layer;
     };
+
+
+
+    /**
+     * Makes the level title nodes for the player to select from
+     */
+    static makeGameOverMessage(score) {
+        var gameOverMessage = "Your score: " + score;
+        var gameOverMessageNode = new TextNode("GameOverMessage", gameOverMessage);
+        gameOverMessageNode.font = MENU_FONT_SMALL;
+        gameOverMessageNode.fontColor = (score > 0) ? "green" : "red";
+        var gameOverMessagePositionX = 620;
+        var gameOverMessagePositionY = 200;
+        gameOverMessageNode.position = ({x: gameOverMessagePositionX, y: gameOverMessagePositionY});
+
+        return gameOverMessageNode;
+    }
 
 
     /**
@@ -224,7 +244,7 @@ class GameMenu extends DisplayObjectNode {
      * Generates the Y coordinate of the option TextNode
      */
     static generateYCoordinate(optionNumber, optionCount) {
-        var paddingTop = PAUSE_MENU_PADDING;
+        var paddingTop = PAUSE_MENU_PADDING*8;
         var paddingBottom = PAUSE_MENU_PADDING;
         var spacing = PAUSE_MENU_SPACING;
         var yCoord = (((600.0 - paddingTop - paddingBottom) / optionCount) * optionNumber);
