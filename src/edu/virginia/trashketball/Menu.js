@@ -16,6 +16,7 @@ var KEY_ENTER = 13;
 
 var MENU_FONT_HEIGHT = 60;
 var MENU_FONT = "" + MENU_FONT_HEIGHT + "px Comic Sans MS";
+var MENU_FONT_SMALL = "36px Comic Sans MS";
 var TEXT_COLOR = "";
 
 class Menu extends DisplayObjectNode {
@@ -164,14 +165,29 @@ class Menu extends DisplayObjectNode {
 
         var layer = new Menu("Menu", "");
         layer.background = new DisplayObjectNode("MenuBackground", "MenuBackground.jpg");
+        layer.background.scale.x = -1;
+        layer.background.position.x = 1000;
         layer.addChild(layer.background);
+
+        var levelPrompt = new TextNode("LevelPromt", "");
+        levelPrompt.text = "Pick a Level:";
+        levelPrompt.font = MENU_FONT;
+        var spacing = 10;
+        var paddingTop = 15;
+        // var paddingBottom = 15;
+        var levelPositionX = 60;
+        var levelPositionY = paddingTop;
+        levelPositionY += spacing + MENU_FONT_HEIGHT + paddingTop;
+        levelPrompt.position = ({x:levelPositionX, y: levelPositionY});
+
+        layer.addChild(levelPrompt);
 
         layer.cursor = this.makeCursor();
 
         // var levelHeight = 100;
         // var levelWidth = 200;
 
-        var levelCount = 5;
+        var levelCount = 4;
 
         for (var i = 0; i < levelCount; i++) {
             var levelNode = this.makeLevel(i, levelCount);
@@ -189,12 +205,12 @@ class Menu extends DisplayObjectNode {
      */
     static makeLevel(levelNumber, levelCount) {
         var levelNumberText = this.levelNumberToText(levelNumber + 1);
-        var levelNode = new TextNode("Level"+levelNumber+1, "Level " + levelNumberText);
+        var levelNode = new TextNode("Level"+levelNumber+1, levelNumberText);
         levelNode.font = MENU_FONT;
         var spacing = 10;
-        var paddingTop = 15;
+        var paddingTop = 125;
         var paddingBottom = 15;
-        var levelPositionX = 70;
+        var levelPositionX = 90;
         var levelPositionY = (((600.0 - paddingTop - paddingBottom) / levelCount) * levelNumber);
         levelPositionY += spacing + MENU_FONT_HEIGHT + paddingTop;
         levelNode.position = ({x:levelPositionX, y: levelPositionY});
@@ -226,21 +242,21 @@ class Menu extends DisplayObjectNode {
     static levelNumberToText(levelNumber) {
         switch (levelNumber) {
             case 1:
-                return "One";
+                return "Free Play";
             case 2:
-                return "Two";
+                return "Park";
             case 3:
-                return "Three";
+                return "Sidewalk";
             case 4:
-                return "Four";
+                return "Moon";
             case 5:
-                return "Five";
+                return "Level Four";
             case 6:
-                return "Six";
+                return "Level Five";
             case 7:
-                return "Seven";
+                return "Level Six";
             case 8:
-                return "Eight";
+                return "Level Seven";
             default:
                 return;
         }

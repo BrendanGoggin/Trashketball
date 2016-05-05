@@ -23,6 +23,8 @@ class MenuGame extends Game {
 
         this.volume = 75;
 
+        this.levels = [FreePlayLevel, LevelOne, LevelTwo, MoonLevel];
+
         this.loadMenu();
         this.loadMenuSounds();
 
@@ -39,6 +41,7 @@ class MenuGame extends Game {
 
         this.paused = false;
         this.pausePressed = false;
+        this.gameOver = false;
 
         // make the pause screen
         this.pauseLayer = makePauseLayer();
@@ -47,8 +50,6 @@ class MenuGame extends Game {
         this.balls = [];
         this.trash = false;
         this.walls = [];
-
-        this.levels = [LevelOne, LevelTwo, MoonLevel, LevelOne, LevelOne];
 
         // this.enterPressed = false;
     }
@@ -135,13 +136,38 @@ class MenuGame extends Game {
             return;
         }
 
+        // if game over
+        else if (this.gameOver) {
+            this.gameOverLayer.update(pressedKeys, dt);
+            if(this.gameOverLayer.restartGame) {
+                this.root.children = [];
+                this.currentLevel.load(this);
+                this.loadLevelSounds();
+                this.menu = false;
+                this.gameOver = false;
+                this.root.updateChildren(pressedKeys, dt);
+                return;
+            }
+            if (this.gameOverLayer.backToMainMenu) {
+                this.loadMenu();
+                this.loadMenuSounds();
+                this.menu.enterPressed = true;
+                return;
+            }
+        }
+
         // if not paused
         else {
 
             if (dt > 100) dt = 100;
-
             this.root.updateChildren(pressedKeys, dt);
 
+            // check if time ran out
+            if (this.timer) {
+                if (this.timer.timeLeft <= 0) {
+                    this.endGame(this.score);
+                }
+            }
 
             // detect and handle all ball collisions
             for (var i = 0; i < this.balls.length; i++) {
@@ -203,6 +229,16 @@ class MenuGame extends Game {
         this.pauseLayer.pauseSound.play();
         this.pauseLayer = false;
         this.sounds = this.loadLevelSounds();
+    }
+    endGame(score) {
+        this.gameOver = true;
+        this.gameOverLayer = GameOverMenu.makeGameOverMenuLayer(score);
+        this.sounds = [];
+        for (var i = 0; i < this.gameOverLayer.sounds; i++) {
+            this.pauseLayer.sounds[i].volume = this.volume/100.0;
+            this.sounds.push(this.pauseLayer.sounds[i]);
+        }
+        this.root.addChild(this.gameOverLayer);
     }
 
 

@@ -30,9 +30,11 @@ class MoonLevel extends Level {
         gameInstance.score = 0;
         gameInstance.timeLeft = 60000;
         gameInstance.addRock = 10000;
-        gameInstance.timer = this.makeTimer();
+        gameInstance.timer = this.makeTimer(gameInstance.timeLeft);
         gameInstance.scoreNode = this.makeScoreNode();
         gameInstance.moonRockMaker = this.makeMoonRockMaker(gameInstance);
+
+        gameInstance.currentLevel = MoonLevel;
 
 
         gameInstance.root.addChild(background);
@@ -55,9 +57,8 @@ class MoonLevel extends Level {
     /**
      * Create and return the timer
      */
-    static makeTimer() {
+    static makeTimer(startTime) {
         var timer = new TimerNode("Timer", "");
-        var startTime = 60 * 1000;
         var timeStep = 10 * 1000;
         timer.setToStart(startTime, timeStep);
         timer.position = {x:50, y:50};

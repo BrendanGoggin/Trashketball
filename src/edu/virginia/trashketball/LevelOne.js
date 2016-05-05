@@ -18,18 +18,61 @@ class LevelOne extends Level {
         var player = makePlayer();
         var background = this.makeBackground();
 
+        gameInstance.currentLevel = LevelOne;
+
         gameInstance.background = background;
         gameInstance.walls  = wallNode.children;
         gameInstance.trash  = trash;
         gameInstance.balls  = [ball];
+        gameInstance.balls[0].startingPosition = false;
         gameInstance.player = player;
+
 
         gameInstance.root.addChild(background);
         gameInstance.root.addChild(wallNode);
         gameInstance.root.addChild(player);
         gameInstance.root.addChild(ball);
         gameInstance.root.addChild(trash);
+        
+        gameInstance.score = 0;
+        gameInstance.timeLeft = 60000;
+        gameInstance.addRock = 10000;
+        gameInstance.timer = this.makeTimer(gameInstance.timeLeft);
+        gameInstance.scoreNode = this.makeScoreNode();
+
+        var life = new Sprite("RockCount", "Ball.png");
+        life.setScale({x:0.3, y:0.3});
+        life.setPosition({x: 50, y: 60});
+        gameInstance.root.addChild(life);
+        gameInstance.root.addChild(gameInstance.timer);
+        gameInstance.root.addChild(gameInstance.scoreNode);
     }
+
+
+
+    /**
+     * Create and return the timer
+     */
+    static makeTimer(startTime) {
+        var timer = new TimerNode("Timer", "");
+        var startTime = startTime;
+        var timeStep = 10 * 1000;
+        timer.setToStart(startTime, timeStep);
+        timer.position = {x:50, y:50};
+        timer.fontColor = "white";
+        return timer;
+    }
+
+
+    /**
+     * Create and return the score node
+     */
+    static makeScoreNode() {
+        var score = new TextNode("Score", "x 0");
+        score.position = {x:100, y:95};
+        score.fontColor = "white";
+        return score;
+    }  
 
     /**
      * Creates and returns parent node of all walls

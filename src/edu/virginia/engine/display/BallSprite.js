@@ -10,6 +10,7 @@ class BallSprite extends Sprite {
     
     constructor(id, filename){
         super(id, filename);
+        this.startingPosition = false;
     }
 
     /**
@@ -85,6 +86,26 @@ class BallSprite extends Sprite {
         // handle colliding with the 'success' area of the trash can
         if (this.detectCollisionWith(trash)) {
             trash.hitbox.color = "green";
+            if (this.startingPosition) {
+                this.position = copyPoints([this.startingPosition])[0];
+            }
+            else {
+                var randomX;
+                if (Math.random() > .67) randomX = trash.position.x + 100 + (80 * Math.random());
+                else var randomX = 150 + Math.random() * 400;
+                this.position = {x: randomX, y: 180};
+            }
+            if (this.startingVelocity) this.physics.velocity = copyPoints([this.startingVelocity])[0];
+            else {
+                this.physics.velocity = {x:0, y:0};
+            }
+            if (gameInstance.timer) {
+                gameInstance.timer.timeLeft += 3 * 1000;
+            }
+            if (gameInstance.scoreNode) {
+                gameInstance.score += 1;
+                gameInstance.scoreNode.text = "x " + gameInstance.score;
+            }
         }
         else {
             trash.hitbox.color = "black";
