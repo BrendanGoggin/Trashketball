@@ -171,7 +171,7 @@ class Menu extends DisplayObjectNode {
         // var levelHeight = 100;
         // var levelWidth = 200;
 
-        var levelCount = 5;
+        var levelCount = 3;
 
         for (var i = 0; i < levelCount; i++) {
             var levelNode = this.makeLevel(i, levelCount);

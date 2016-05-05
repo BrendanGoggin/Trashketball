@@ -22,14 +22,49 @@ class LevelOne extends Level {
         gameInstance.walls  = wallNode.children;
         gameInstance.trash  = trash;
         gameInstance.balls  = [ball];
+        gameInstance.balls[0].startingPosition = false;
         gameInstance.player = player;
+
+        gameInstance.score = 0;
+        gameInstance.timeLeft = 60000;
+        gameInstance.addRock = 10000;
+        gameInstance.timer = this.makeTimer();
+        gameInstance.scoreNode = this.makeScoreNode();
 
         gameInstance.root.addChild(background);
         gameInstance.root.addChild(wallNode);
         gameInstance.root.addChild(player);
         gameInstance.root.addChild(ball);
         gameInstance.root.addChild(trash);
+        gameInstance.root.addChild(gameInstance.timer);
+        gameInstance.root.addChild(gameInstance.scoreNode);
     }
+
+
+
+    /**
+     * Create and return the timer
+     */
+    static makeTimer() {
+        var timer = new TimerNode("Timer", "");
+        var startTime = 60 * 1000;
+        var timeStep = 10 * 1000;
+        timer.setToStart(startTime, timeStep);
+        timer.position = {x:50, y:50};
+        timer.fontColor = "white";
+        return timer;
+    }
+
+
+    /**
+     * Create and return the score node
+     */
+    static makeScoreNode() {
+        var score = new TextNode("Score", "x 0");
+        score.position = {x:100, y:95};
+        score.fontColor = "white";
+        return score;
+    }  
 
     /**
      * Creates and returns parent node of all walls
