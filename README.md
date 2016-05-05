@@ -1,2 +1,3 @@
 # Trashketball
-Video Game Design Project: string combos together juggling a soccerball until it lands in a trashcan.
+CS 4730 Video Game Design Project.
+Open "index.html" in a web browser to play Trashketball!
